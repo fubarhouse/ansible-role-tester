@@ -7,6 +7,8 @@ import (
 	"time"
 
 	log "github.com/Sirupsen/logrus"
+	"bytes"
+	"io"
 )
 
 var (
@@ -122,6 +124,41 @@ type Container interface {
 	install(config *AnsibleConfig)
 	kill()
 	test(config *AnsibleConfig)
+}
+
+// Checks if the specified container is running.
+func is_running() bool {
+
+	docker, e := exec.LookPath("docker")
+	if e != nil {
+		log.Errorf("executable 'docker' was not found in $PATH.")
+		return false
+	}
+
+	// Users should not be able to re-run containers with the same name...
+	d := exec.Cmd{}
+	d.Path = docker
+	d.Args = []string{
+		docker,
+		"ps",
+		"-f",
+		"status=running",
+		"--format",
+		"'{{.Names}}'",
+	}
+
+	var out bytes.Buffer
+	multi := io.MultiWriter(&out)
+	d.Stdout = multi
+
+	if err := d.Run(); err != nil {
+		log.Fatalln(err)
+	}
+	d.Wait()
+
+	fmt.Printf("\n*** FULL OUTPUT *** %s\n", out.String())
+
+	return true
 }
 
 // run will launch a new container (containerID) using
