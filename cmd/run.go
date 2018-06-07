@@ -36,6 +36,7 @@ to quickly create a Cobra application.`,
 			"/Users/karl/.ansible/roles/fubarhouse.golang",
 			"/etc/ansible/roles/fubarhouse.golang",
 			"",
+			"",
 			"test.yml",
 		}
 		Ubuntu1604.run(&config)
