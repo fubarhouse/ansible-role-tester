@@ -1,23 +1,10 @@
-// Copyright © 2018 NAME HERE <EMAIL ADDRESS>
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 package cmd
 
 import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+	"os"
 )
 
 // destroyCmd represents the destroy command
@@ -32,19 +19,20 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("destroy called")
+		fmt.Println(source)
+		fmt.Println(destination)
+		fmt.Println(requirements)
+		fmt.Println(playbook)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(destroyCmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// destroyCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// destroyCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	pwd, _ := os.Getwd()
+	destroyCmd.Flags().StringVarP(&containerID, "name", "n", "", "Name of the container")
+	destroyCmd.Flags().StringVarP(&source, "source", "s", pwd, "Location of the role to test")
+	destroyCmd.Flags().StringVarP(&destination, "destination", "d", "/etc/ansible/roles/role_under_test", "Location which the role will be mounted to")
+	destroyCmd.Flags().StringVarP(&requirements, "requirements", "r", "", "Path to requirements file.")
+	destroyCmd.Flags().StringVarP(&playbook, "playbook", "p", "playbook.yml", "The filename of the playbook")
 }

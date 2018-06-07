@@ -18,6 +18,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+	"os"
 )
 
 // shellCmd represents the shell command
@@ -38,13 +39,10 @@ to quickly create a Cobra application.`,
 func init() {
 	rootCmd.AddCommand(shellCmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// shellCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// shellCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	pwd, _ := os.Getwd()
+	shellCmd.Flags().StringVarP(&containerID, "name", "n", "", "Name of the container")
+	shellCmd.Flags().StringVarP(&source, "source", "s", pwd, "Location of the role to test")
+	shellCmd.Flags().StringVarP(&destination, "destination", "d", "/etc/ansible/roles/role_under_test", "Location which the role will be mounted to")
+	shellCmd.Flags().StringVarP(&requirements, "requirements", "r", "", "Path to requirements file.")
+	shellCmd.Flags().StringVarP(&playbook, "playbook", "p", "playbook.yml", "The filename of the playbook")
 }

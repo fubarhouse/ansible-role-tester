@@ -4,15 +4,10 @@ import (
 	"fmt"
 	"os/exec"
 	"os"
-	"time"
 
 	log "github.com/Sirupsen/logrus"
 	"bytes"
 	"io"
-)
-
-var (
-	containerID = fmt.Sprint(time.Now().Unix())
 )
 
 type AnsibleConfig struct {
@@ -24,11 +19,6 @@ type AnsibleConfig struct {
 	// RemotePath is the path to the roles folder on the container
 	// which should represent the roles folder (ie /etc/ansible/roles)
 	RemotePath string
-
-	// The role name, which will be appended to the RemotePath string
-	// so that playbooks can successfully refer to the mounted directory
-	// on the container.
-	Role string
 
 	// The path to the requirements file relative to HostPath.
 	// Requirements will not attempt installation if the field
@@ -210,7 +200,7 @@ func (dist *Distribution) install(config *AnsibleConfig) {
 
 	if config.RequirementsFile != "" {
 
-		req := fmt.Sprintf("%v/%v/%v", config.RemotePath, config.Role, config.RequirementsFile)
+		req := fmt.Sprintf("%v/%v", config.RemotePath, config.RequirementsFile)
 		log.Printf("Installing requirements from %v\n", req)
 		r := exec.Cmd{}
 		r.Path = docker
@@ -278,7 +268,7 @@ func (dist *Distribution) test_syntax(config *AnsibleConfig) {
 		"--tty",
 		containerID,
 		"ansible-playbook",
-		fmt.Sprintf("%v/%v/tests/%v", config.RemotePath, config.Role, config.PlaybookFile),
+		fmt.Sprintf("%v/tests/%v", config.RemotePath, config.PlaybookFile),
 		"--syntax-check",
 	}
 	c.Stderr = os.Stderr
@@ -308,7 +298,7 @@ func (dist *Distribution) test_role(config *AnsibleConfig) {
 		"--tty",
 		containerID,
 		"ansible-playbook",
-		fmt.Sprintf("%v/%v/tests/%v", config.RemotePath, config.Role, config.PlaybookFile),
+		fmt.Sprintf("%v/tests/%v", config.RemotePath, config.PlaybookFile),
 	}
 	r.Stderr = os.Stderr
 	r.Stdin = os.Stdin
@@ -336,7 +326,7 @@ func (dist *Distribution) test_idempotence(config *AnsibleConfig) {
 		"--tty",
 		string(containerID),
 		"ansible-playbook",
-		fmt.Sprintf("%v/%v/tests/%v", config.RemotePath, config.Role, config.PlaybookFile),
+		fmt.Sprintf("%v/tests/%v", config.RemotePath, config.PlaybookFile),
 	}
 	i.Stderr = os.Stderr
 	i.Stdin = os.Stdin
