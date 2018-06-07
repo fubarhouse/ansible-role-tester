@@ -2,12 +2,13 @@ package cmd
 
 import (
 	"fmt"
-	"os/exec"
 	"os"
+	"os/exec"
 
-	log "github.com/Sirupsen/logrus"
 	"bytes"
+	log "github.com/Sirupsen/logrus"
 	"io"
+	"time"
 )
 
 type AnsibleConfig struct {
@@ -38,13 +39,13 @@ type Distribution struct {
 	Initialise string
 
 	// Name is the identifying name of the distribution
-	Name       string
+	Name string
 
 	// Privileged is a boolean to indicate to use privileged
 	Privileged bool
 
 	// The volume parameter when running a container.
-	Volume     string
+	Volume string
 
 	// The fully qualified container name in the format:
 	// name/image:version - ie fubarhouse/docker-ansible:bionic
@@ -155,6 +156,10 @@ func is_running() bool {
 // the fields in a AnsibleConfig struct.
 func (dist *Distribution) run(config *AnsibleConfig) {
 
+	if containerID == "" {
+		containerID = fmt.Sprint(time.Now().Unix())
+	}
+
 	docker, e := exec.LookPath("docker")
 	if e != nil {
 		log.Errorf("executable 'docker' was not found in $PATH.")
@@ -224,7 +229,7 @@ func (dist *Distribution) install(config *AnsibleConfig) {
 }
 
 // Kill will stop the container and remove it.
-func (dist *Distribution) kill() {
+func kill() {
 
 	docker, e := exec.LookPath("docker")
 	if e != nil {
@@ -232,20 +237,31 @@ func (dist *Distribution) kill() {
 		return
 	}
 
-	log.Printf("Stopping %v\n", containerID)
+	if containerID != "" {
 
-	r := exec.Cmd{}
-	r.Path = docker
-	r.Args = []string{
-		docker,
-		"stop",
-		containerID,
+		if is_running() {
+
+			log.Printf("Stopping %v\n", containerID)
+
+			r := exec.Cmd{}
+			r.Path = docker
+			r.Args = []string{
+				docker,
+				"stop",
+				containerID,
+			}
+			r.Stderr = os.Stderr
+			r.Stdin = os.Stdin
+			r.Stdout = os.Stdout
+			r.Run()
+			r.Wait()
+		} else {
+			log.Errorf("container %v is not running\n")
+		}
+
+	} else {
+		log.Errorln("container name was not specified")
 	}
-	r.Stderr = os.Stderr
-	r.Stdin = os.Stdin
-	r.Stdout = os.Stdout
-	r.Run()
-	r.Wait()
 
 }
 

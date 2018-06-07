@@ -18,7 +18,6 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"os"
 )
 
 // shellCmd represents the shell command
@@ -38,11 +37,5 @@ to quickly create a Cobra application.`,
 
 func init() {
 	rootCmd.AddCommand(shellCmd)
-
-	pwd, _ := os.Getwd()
 	shellCmd.Flags().StringVarP(&containerID, "name", "n", "", "Name of the container")
-	shellCmd.Flags().StringVarP(&source, "source", "s", pwd, "Location of the role to test")
-	shellCmd.Flags().StringVarP(&destination, "destination", "d", "/etc/ansible/roles/role_under_test", "Location which the role will be mounted to")
-	shellCmd.Flags().StringVarP(&requirements, "requirements", "r", "", "Path to requirements file.")
-	shellCmd.Flags().StringVarP(&playbook, "playbook", "p", "playbook.yml", "The filename of the playbook")
 }

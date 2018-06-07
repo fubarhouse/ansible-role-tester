@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-		"github.com/spf13/cobra"
+	"github.com/spf13/cobra"
 	"time"
 )
 
@@ -13,12 +13,18 @@ var (
 	// The container ID.
 	containerID = fmt.Sprint(time.Now().Unix())
 
+	// dist is the Distribution identifier by name.
+	// These are declared as a Distribution and this will
+	// attempt to find a matching Distribution for use.
+	// example: fubarhouse/docker-ansible:bionic
+	dist string
+
 	// source is the location of the role to test.
 	source string
 
 	// destination for the role after mounting.
 	// default: /etc/ansible/roles/role_under_test
-    destination string
+	destination string
 
 	// Path to the requirements file relative to source.
 	requirements string
@@ -26,7 +32,7 @@ var (
 	// Path t
 	playbook string
 
-// rootCmd represents the base command when called without any subcommands
+	// rootCmd represents the base command when called without any subcommands
 	rootCmd = &cobra.Command{
 		Use:   "ansible-test",
 		Short: "Run an Ansible role for testing purposes in an isolated environment.",

@@ -20,25 +20,25 @@ to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("test called")
 		config := AnsibleConfig{
-			"/Users/karl/.ansible/roles/fubarhouse.golang",
-			"/etc/ansible/roles/role_under_test",
-			"",
-			"test.yml",
+			source,
+			destination,
+			requirements,
+			playbook,
 		}
+
 		Ubuntu1604.run(&config)
 		Ubuntu1604.install(&config)
 		Ubuntu1604.test_syntax(&config)
 		Ubuntu1604.test_role(&config)
 		Ubuntu1604.test_idempotence(&config)
-		Ubuntu1604.kill()
+		kill()
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(testCmd)
-
 	pwd, _ := os.Getwd()
-	testCmd.Flags().StringVarP(&containerID, "name", "n", "", "Name of the container")
+	testCmd.Flags().StringVarP(&containerID, "name", "n", containerID, "Name of the container")
 	testCmd.Flags().StringVarP(&source, "source", "s", pwd, "Location of the role to test")
 	testCmd.Flags().StringVarP(&destination, "destination", "d", "/etc/ansible/roles/role_under_test", "Location which the role will be mounted to")
 	testCmd.Flags().StringVarP(&requirements, "requirements", "r", "", "Path to requirements file.")

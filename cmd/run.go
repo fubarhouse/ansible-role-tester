@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
 	"os"
 )
@@ -18,26 +16,22 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("run called")
 		config := AnsibleConfig{
-			"/Users/karl/.ansible/roles/fubarhouse.golang",
-			"/etc/ansible/roles/role_under_test",
+			source,
+			destination,
 			"",
-			"test.yml",
+			"",
 		}
 		Ubuntu1604.run(&config)
 		Ubuntu1604.install(&config)
-		Ubuntu1604.kill()
+		kill()
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(runCmd)
-
 	pwd, _ := os.Getwd()
-	runCmd.Flags().StringVarP(&containerID, "name", "n", "", "Name of the container")
+	runCmd.Flags().StringVarP(&containerID, "name", "n", containerID, "Name of the container")
 	runCmd.Flags().StringVarP(&source, "source", "s", pwd, "Location of the role to test")
 	runCmd.Flags().StringVarP(&destination, "destination", "d", "/etc/ansible/roles/role_under_test", "Location which the role will be mounted to")
-	runCmd.Flags().StringVarP(&requirements, "requirements", "r", "", "Path to requirements file.")
-	runCmd.Flags().StringVarP(&playbook, "playbook", "p", "playbook.yml", "The filename of the playbook")
 }
