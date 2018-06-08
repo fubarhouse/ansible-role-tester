@@ -9,6 +9,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"io"
 	"time"
+	"strings"
 )
 
 type AnsibleConfig struct {
@@ -29,81 +30,6 @@ type AnsibleConfig struct {
 	// The path to the playbook located in the tests file relative to
 	// HostPath (ie HostPath/tests/playbook.yml)
 	PlaybookFile string
-}
-
-// A Distribution declares the options to
-// pass to Docker to run and test the container.
-type Distribution struct {
-
-	// Initialise is the initialisation command
-	Initialise string
-
-	// Name is the identifying name of the distribution
-	Name string
-
-	// Privileged is a boolean to indicate to use privileged
-	Privileged bool
-
-	// The volume parameter when running a container.
-	Volume string
-
-	// The fully qualified container name in the format:
-	// name/image:version - ie fubarhouse/docker-ansible:bionic
-	Container string
-}
-
-// CentOS 6
-var CentOS6 = Distribution{
-	"/sbin/init",
-	"centos6",
-	true,
-	"",
-	"geerlingguy/docker-centos6-ansible:latest",
-}
-
-// CentOS 7
-var CentOS7 = Distribution{
-	"/usr/lib/systemd/systemd",
-	"centos7",
-	true,
-	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
-	"geerlingguy/docker-centos7-ansible:latest",
-}
-
-// Ubuntu 14.04
-var Ubuntu1404 = Distribution{
-	"/sbin/init",
-	"ubuntu1404",
-	true,
-	"",
-	"geerlingguy/docker-ubuntu1404-ansible:latest",
-}
-
-// Ubuntu 16.04
-var Ubuntu1604 = Distribution{
-	"/lib/systemd/systemd",
-	"ubuntu1604",
-	true,
-	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
-	"geerlingguy/docker-ubuntu1604-ansible:latest",
-}
-
-// Ubuntu 18.04
-var Ubuntu1804 = Distribution{
-	"/lib/systemd/systemd",
-	"ubuntu1804",
-	true,
-	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
-	"geerlingguy/docker-ubuntu1804-ansible:latest",
-}
-
-// A slice of distributions.
-var Distributions = []Distribution{
-	CentOS6,
-	CentOS7,
-	Ubuntu1404,
-	Ubuntu1604,
-	Ubuntu1804,
 }
 
 // Container is an interface which allows
@@ -344,16 +270,43 @@ func (dist *Distribution) test_idempotence(config *AnsibleConfig) {
 		"ansible-playbook",
 		fmt.Sprintf("%v/tests/%v", config.RemotePath, config.PlaybookFile),
 	}
-	i.Stderr = os.Stderr
-	i.Stdin = os.Stdin
-	i.Stdout = os.Stdout
-	i.Run()
-	i.Wait()
 
-	//idempotence_log=$(mktemp)
-	//docker exec --tty "$CONTAINER_ID" ansible-playbook "${ROLE_PATH_IN_CONTAINER}/tests/${PLAYBOOK}" | tee -a $idempotence_log
-	//
-	//tail $idempotence_log | grep -q 'changed=0.*failed=0' \
-	//&& (printf "\n${GREEN}Idempotence test: PASS${NEUTRAL}\n\n" && exit 0) \
-	//|| (printf "\n${GREEN}Idempotence test: ${RED}FAIL${NEUTRAL}\n\n" && exit 1)
+	out, _ := i.Output()
+
+	idempotence := idempotence_result(string(out))
+	if idempotence {
+		log.Infoln("Idempotence test: PASS")
+	} else {
+		log.Errorln("Idempotence test: FAIL")
+	}
+}
+
+func idempotence_result(output string) bool {
+
+	lines := strings.Split(output, "\n")
+
+	changed := ""
+	failed := ""
+
+	for _, line := range lines {
+		if strings.Contains(line, "=") {
+			f := strings.Split(line, "=")
+			if strings.Contains(line, "changed=") {
+				changed = strings.Split(f[2], " ")[0]
+			}
+			if strings.Contains(line, "failed=") {
+				failed = strings.Split(f[4], " ")[0]
+			}
+		}
+	}
+
+	if failed != "0" {
+		return false
+	}
+
+	if changed != "0" {
+		return false
+	}
+
+	return true
 }
