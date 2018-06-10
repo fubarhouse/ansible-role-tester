@@ -13,11 +13,11 @@ var (
 	// The container ID.
 	containerID = fmt.Sprint(time.Now().Unix())
 
-	// dist is the Distribution identifier by name.
+	// image is the Distribution identifier by name.
 	// These are declared as a Distribution and this will
 	// attempt to find a matching Distribution for use.
 	// example: fubarhouse/docker-ansible:bionic
-	dist string
+	image string
 
 	// source is the location of the role to test.
 	source string

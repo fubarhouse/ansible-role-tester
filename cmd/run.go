@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/spf13/cobra"
 	"os"
 )
@@ -22,6 +23,10 @@ to quickly create a Cobra application.`,
 			"",
 			"",
 		}
+
+		fmt.Println("dist: ", image)
+		os.Exit(0)
+
 		Ubuntu1604.run(&config)
 		Ubuntu1604.install(&config)
 		kill()
@@ -34,4 +39,5 @@ func init() {
 	runCmd.Flags().StringVarP(&containerID, "name", "n", containerID, "Name of the container")
 	runCmd.Flags().StringVarP(&source, "source", "s", pwd, "Location of the role to test")
 	runCmd.Flags().StringVarP(&destination, "destination", "d", "/etc/ansible/roles/role_under_test", "Location which the role will be mounted to")
+	runCmd.Flags().StringVarP(&image, "image", "i", "fubarhouse/docker-ansible:bionic", "The image reference to use.")
 }

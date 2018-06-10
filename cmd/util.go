@@ -6,10 +6,11 @@ import (
 	"os/exec"
 
 	"bytes"
+	"errors"
 	log "github.com/Sirupsen/logrus"
 	"io"
-	"time"
 	"strings"
+	"time"
 )
 
 type AnsibleConfig struct {
@@ -76,6 +77,56 @@ func is_running() bool {
 	fmt.Printf("\n*** FULL OUTPUT *** %s\n", out.String())
 
 	return true
+}
+
+// getDistribution will get the distribution object to allow dynamic
+// loading of different distributions. A suitable struct will be compiled
+// from the inputs and returned with an error if the specified container
+// cannot be found.
+func getDistribution(container, target, init, volume string) (error, Distribution) {
+
+	// We will search for the exact container.
+	for _, dist := range Distributions {
+		if dist.Container == container {
+			return nil, dist
+		}
+	}
+
+	docker, e := exec.LookPath("docker")
+	if e != nil {
+		log.Errorf("executable 'docker' was not found in $PATH.")
+		os.Exit(1)
+	}
+
+	c := exec.Cmd{}
+	c.Path = docker
+	c.Args = []string{
+		docker,
+		"images",
+		//"-q",
+		container,
+	}
+
+	d, _ := c.Output()
+	if !strings.Contains(string(d), container) {
+		log.Errorf("no valid image was found for '%v'\n", container)
+		os.Exit(1)
+	} else {
+
+	}
+	c.Stderr = os.Stderr
+	c.Stdin = os.Stdin
+	c.Stdout = os.Stdout
+	c.Run()
+	c.Wait()
+
+	return errors.New("could not find matching distribution, returned a compatible data structure"), Distribution{
+		init,
+		target,
+		true,
+		volume,
+		container,
+	}
 }
 
 // run will launch a new container (containerID) using
