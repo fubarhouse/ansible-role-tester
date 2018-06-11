@@ -237,6 +237,51 @@ var Ubuntu1804 = Distribution{
 	"fubarhouse/docker-ansible:bionic",
 }
 
+// CentOS 6
+var JeffCentOS6 = Distribution{
+	"/sbin/init",
+	"centos6",
+	true,
+	"",
+	"geerlingguy/docker-centos6-ansible:latest",
+}
+
+// CentOS 7
+var JeffCentOS7 = Distribution{
+	"/usr/lib/systemd/systemd",
+	"centos7",
+	true,
+	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
+	"geerlingguy/docker-centos7-ansible:latest",
+}
+
+// Ubuntu 14.04
+var JeffUbuntu1404 = Distribution{
+	"/sbin/init",
+	"ubuntu1404",
+	true,
+	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
+	"geerlingguy/docker-ubuntu1404-ansible:latest",
+}
+
+// Ubuntu 16.04
+var JeffUbuntu1604 = Distribution{
+	"/lib/systemd/systemd",
+	"ubuntu1604",
+	true,
+	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
+	"geerlingguy/docker-ubuntu1604-ansible:latest",
+}
+
+// Ubuntu 18.04
+var JeffUbuntu1804 = Distribution{
+	"/lib/systemd/systemd",
+	"ubuntu1804",
+	true,
+	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
+	"geerlingguy/docker-ubuntu1804-ansible:latest",
+}
+
 // A slice of distributions.
 var Distributions = []Distribution{
 	CentOS6,
@@ -263,4 +308,9 @@ var Distributions = []Distribution{
 	Ubuntu1704,
 	Ubuntu1710,
 	Ubuntu1804,
+	JeffCentOS6,
+	JeffCentOS7,
+	JeffUbuntu1404,
+	JeffUbuntu1604,
+	JeffUbuntu1804,
 }
