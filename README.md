@@ -4,13 +4,12 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/fubarhouse/ansible-role-tester?style=for-the-badge)](https://goreportcard.com/report/github.com/fubarhouse/ansible-role-tester)
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge)](https://raw.githubusercontent.com/fubarhouse/ansible-role-tester/master/LICENSE)
 
-This program will allow users to mount ansible roles into isolated Docker images for isolated testing typically replicating testing which is occuring via CI tools such as Travis CI. It should provide for better testing, and greater success rates before pushing to a public state.
+This program will allow users to mount [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html) roles into isolated Docker images for isolated testing typically replicating testing which is occuring via CI tools such as Travis CI. It should provide for better testing, and greater success rates before pushing to a public state.
 
 This self-contained command line tool is inspired from a [script](https://gist.github.com/samdoran/c3d392ee697881fa33a1d1a65814a07b) by [@samdoran](https://github.com/samdoran) originally inspired by [@geerlingguy](https://github.com/geerlingguy)'s ansible role tester [script](https://gist.github.com/geerlingguy/73ef1e5ee45d8694570f334be385e181).
 
 ## Requirements
 
-  * [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
   * [Docker](https://www.docker.com/)
 
 ## Dependencies
