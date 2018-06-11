@@ -9,8 +9,6 @@ var destroyCmd = &cobra.Command{
 	Use:   "destroy",
 	Short: "Destroys a container with a specified ID",
 	Long: `Destroys a container with a specified ID
-
-usage: ansible-role-tester destroy --id ${CONTAINER_ID}
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		kill()
