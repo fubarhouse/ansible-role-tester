@@ -1,21 +1,20 @@
 package cmd
 
 import (
-	"fmt"
-	"github.com/spf13/cobra"
 	"os"
+
+	log "github.com/Sirupsen/logrus"
+	"github.com/spf13/cobra"
 )
 
 // runCmd represents the run command
 var runCmd = &cobra.Command{
 	Use:   "run",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Starts a container",
+	Long: `Start a container from a specified image.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+Volume mount locations image and id are all configurable.
+`,
 	Run: func(cmd *cobra.Command, args []string) {
 		config := AnsibleConfig{
 			source,
@@ -24,19 +23,19 @@ to quickly create a Cobra application.`,
 			"",
 		}
 
-		fmt.Println("dist: ", image)
-		os.Exit(0)
+		e, dist := getDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro")
+		if e != nil {
+			log.Errorln("Incompatible disribution was inputted, attempting autofix.")
+		}
 
-		Ubuntu1604.run(&config)
-		Ubuntu1604.install(&config)
-		kill()
+		dist.run(&config)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(runCmd)
 	pwd, _ := os.Getwd()
-	runCmd.Flags().StringVarP(&containerID, "name", "n", containerID, "Name of the container")
+	runCmd.Flags().StringVarP(&containerID, "id", "n", containerID, "Container ID")
 	runCmd.Flags().StringVarP(&source, "source", "s", pwd, "Location of the role to test")
 	runCmd.Flags().StringVarP(&destination, "destination", "d", "/etc/ansible/roles/role_under_test", "Location which the role will be mounted to")
 	runCmd.Flags().StringVarP(&image, "image", "i", "fubarhouse/docker-ansible:bionic", "The image reference to use.")
