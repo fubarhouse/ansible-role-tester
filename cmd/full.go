@@ -22,8 +22,6 @@ You should be able to run all of this from the role folder on
 the local file system. If you encounter errors, there's a lot
 of flexibility in configuration, just change the defaults as
 required.
-
-usage: ansible-role-tester full -i fubarhouse/docker-ansible:bionic -p test.yml
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		config := AnsibleConfig{
