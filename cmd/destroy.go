@@ -7,13 +7,11 @@ import (
 // destroyCmd represents the destroy command
 var destroyCmd = &cobra.Command{
 	Use:   "destroy",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Destroys a container with a specified ID",
+	Long: `Destroys a container with a specified ID
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+usage: ansible-role-tester destroy --id ${CONTAINER_ID}
+`,
 	Run: func(cmd *cobra.Command, args []string) {
 		kill()
 	},
@@ -21,5 +19,6 @@ to quickly create a Cobra application.`,
 
 func init() {
 	rootCmd.AddCommand(destroyCmd)
-	destroyCmd.Flags().StringVarP(&containerID, "name", "n", containerID, "Name of the container")
+	destroyCmd.Flags().StringVarP(&containerID, "id", "i", "", "Container ID")
+	destroyCmd.MarkFlagRequired("containerID")
 }
