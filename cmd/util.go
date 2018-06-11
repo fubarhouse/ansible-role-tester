@@ -309,7 +309,6 @@ func (dist *Distribution) test_idempotence(config *AnsibleConfig) {
 	}
 
 	// Test role idempotence.
-	// TODO: Actually make this test for idempotence.
 	log.Infoln("Testing role idempotence...")
 	i := exec.Cmd{}
 	i.Path = docker
@@ -323,6 +322,7 @@ func (dist *Distribution) test_idempotence(config *AnsibleConfig) {
 	}
 
 	out, _ := i.Output()
+	fmt.Println(string(out))
 
 	idempotence := idempotence_result(string(out))
 	if idempotence {
