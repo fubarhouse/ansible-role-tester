@@ -46,31 +46,68 @@ type Container interface {
 
 // Checks if the specified container is running.
 func is_running() bool {
-
 	// Users should not be able to re-run containers with the same name...
-	d := exec.Cmd{}
-	d.Path = docker
-	d.Args = []string{
-		docker,
+	out, err := docker_exec([]string{
 		"ps",
 		"-f",
 		"status=running",
 		"--format",
 		"'{{.Names}}'",
+	}, false)
+
+	if err != nil {
+		return false
 	}
 
+	if strings.Contains(out, containerID) {
+		return true
+	}
+
+	return false
+}
+
+// docer_exec will execute a command to the docker binary
+// and use the input args as arguments for that process.
+// You can request output be printed using the bool stdout.
+func docker_exec(args []string, stdout bool) (string, error) {
+
+	// Generate the command, based on input.
+	cmd := exec.Cmd{}
+	cmd.Path = docker
+	cmd.Args = []string{docker}
+
+	// Add our arguments to the command.
+	for _, arg := range args {
+		cmd.Args = append(cmd.Args, arg)
+	}
+
+	// If configured, print to os.Stdout.
+	if stdout {
+		cmd.Stdout = os.Stdout
+		cmd.Stdin = os.Stdin
+		cmd.Stderr = os.Stderr
+	}
+
+	// Create a buffer for the output.
 	var out bytes.Buffer
 	multi := io.MultiWriter(&out)
-	d.Stdout = multi
 
-	if err := d.Run(); err != nil {
-		log.Fatalln(err)
+	if stdout {
+		multi = io.MultiWriter(&out, os.Stdout)
 	}
-	d.Wait()
 
-	fmt.Printf("\n*** FULL OUTPUT *** %s\n", out.String())
+	// Assign the output to the writer.
+	cmd.Stdout = multi
 
-	return true
+	// Check the errors, return as needed.
+	if err := cmd.Run(); err != nil {
+		log.Errorln(err)
+		return out.String(), err
+	}
+	cmd.Wait()
+
+	// Return out output as a string.
+	return out.String(), nil
 }
 
 // getDistribution will get the distribution object to allow dynamic
@@ -86,27 +123,15 @@ func getDistribution(container, target, init, volume string) (error, Distributio
 		}
 	}
 
-	c := exec.Cmd{}
-	c.Path = docker
-	c.Args = []string{
-		docker,
+	c, _ := docker_exec([]string{
 		"images",
-		//"-q",
 		container,
-	}
+	}, false)
 
-	d, _ := c.Output()
-	if !strings.Contains(string(d), container) {
+	if !strings.Contains(c, container) {
 		log.Errorf("no valid image was found for '%v'\n", container)
 		os.Exit(1)
-	} else {
-
 	}
-	c.Stderr = os.Stderr
-	c.Stdin = os.Stdin
-	c.Stdout = os.Stdout
-	c.Run()
-	c.Wait()
 
 	return errors.New("could not find matching distribution, returned a compatible data structure"), Distribution{
 		init,
@@ -125,17 +150,14 @@ func (dist *Distribution) run(config *AnsibleConfig) {
 		containerID = fmt.Sprint(time.Now().Unix())
 	}
 
-	log.Printf("Running %v\n", containerID)
+	log.Printf("Running %v", containerID)
 
 	var run_options string
 	if dist.Privileged {
 		run_options += fmt.Sprintf("--privileged")
 	}
 
-	c := exec.Cmd{}
-	c.Path = docker
-	c.Args = []string{
-		docker,
+	docker_exec([]string{
 		"run",
 		"--detach",
 		fmt.Sprintf("--name=%v", containerID),
@@ -144,38 +166,23 @@ func (dist *Distribution) run(config *AnsibleConfig) {
 		run_options,
 		dist.Container,
 		dist.Initialise,
-	}
-
-	c.Stderr = os.Stderr
-	c.Stdin = os.Stdin
-	c.Stdout = os.Stdout
-	c.Run()
-	c.Wait()
+	}, false)
 }
 
 // Install will install the requirements if the file is configured.
 func (dist *Distribution) install(config *AnsibleConfig) {
 
 	if config.RequirementsFile != "" {
-
 		req := fmt.Sprintf("%v/%v", config.RemotePath, config.RequirementsFile)
 		log.Printf("Installing requirements from %v\n", req)
-		r := exec.Cmd{}
-		r.Path = docker
-		r.Args = []string{
-			docker,
+		docker_exec([]string{
 			"exec",
 			"--tty",
 			containerID,
 			"ansible-galaxy",
 			"install",
 			fmt.Sprintf("-r %v", req),
-		}
-		r.Stderr = os.Stderr
-		r.Stdin = os.Stdin
-		r.Stdout = os.Stdout
-		r.Run()
-		r.Wait()
+		}, true)
 	} else {
 		log.Warnln("Requirements file is not configured (empty/null), skipping...")
 	}
@@ -189,21 +196,12 @@ func kill() {
 		if is_running() {
 
 			log.Printf("Stopping %v\n", containerID)
-
-			r := exec.Cmd{}
-			r.Path = docker
-			r.Args = []string{
-				docker,
+			docker_exec([]string{
 				"stop",
 				containerID,
-			}
-			r.Stderr = os.Stderr
-			r.Stdin = os.Stdin
-			r.Stdout = os.Stdout
-			r.Run()
-			r.Wait()
+			}, false)
 		} else {
-			log.Errorf("container %v is not running\n")
+			log.Errorf("container %v is not running\n", containerID)
 		}
 
 	} else {
@@ -216,23 +214,14 @@ func (dist *Distribution) test_syntax(config *AnsibleConfig) {
 
 	// Ansible syntax check.
 	log.Infoln("Checking role syntax...")
-
-	c := exec.Cmd{}
-	c.Path = docker
-	c.Args = []string{
-		docker,
+	docker_exec([]string{
 		"exec",
 		"--tty",
 		containerID,
 		"ansible-playbook",
 		fmt.Sprintf("%v/tests/%v", config.RemotePath, config.PlaybookFile),
 		"--syntax-check",
-	}
-	c.Stderr = os.Stderr
-	c.Stdin = os.Stdin
-	c.Stdout = os.Stdout
-	c.Run()
-	c.Wait()
+	}, true)
 
 	log.Infoln("PASS")
 }
@@ -240,43 +229,28 @@ func (dist *Distribution) test_role(config *AnsibleConfig) {
 
 	// Test role.
 	log.Infoln("Running the role...")
-
-	r := exec.Cmd{}
-	r.Path = docker
-	r.Args = []string{
-		docker,
+	docker_exec([]string{
 		"exec",
 		"--tty",
 		containerID,
 		"ansible-playbook",
 		fmt.Sprintf("%v/tests/%v", config.RemotePath, config.PlaybookFile),
-	}
-	r.Stderr = os.Stderr
-	r.Stdin = os.Stdin
-	r.Stdout = os.Stdout
-	r.Run()
-	r.Wait()
+	}, true)
 }
 
 func (dist *Distribution) test_idempotence(config *AnsibleConfig) {
 
 	// Test role idempotence.
 	log.Infoln("Testing role idempotence...")
-	i := exec.Cmd{}
-	i.Path = docker
-	i.Args = []string{
-		docker,
+	out, _ := docker_exec([]string{
 		"exec",
 		"--tty",
 		string(containerID),
 		"ansible-playbook",
 		fmt.Sprintf("%v/tests/%v", config.RemotePath, config.PlaybookFile),
-	}
+	}, true)
 
-	out, _ := i.Output()
-	fmt.Println(string(out))
-
-	idempotence := idempotence_result(string(out))
+	idempotence := idempotence_result(out)
 	if idempotence {
 		log.Infoln("Idempotence test: PASS")
 	} else {
