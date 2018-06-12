@@ -133,7 +133,7 @@ func (dist *Distribution) run(config *AnsibleConfig) {
 		run_options,
 		dist.Container,
 		dist.Initialise,
-	}, false)
+	}, true)
 }
 
 // Install will install the requirements if the file is configured.
