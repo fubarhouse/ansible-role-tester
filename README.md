@@ -29,6 +29,51 @@ You can use it by typing `ansible-role-tester`, and by adding `-h` or `--help` y
 
 It's generally encouraged to use the `full` command as we're working on refining the others and the `full` command performs end-to-end tests including container creation, requirements, idempotence, role running and container removal.
 
+## Selecting containers for testing
+
+By entering user names and distributions available declared in the `distributions.go` file, you can selectively target any of them.
+
+**Example use**: `ansible-role-tester full -u fubarhouse -t ubuntu1804`
+
+| user        | distro     |
+| fubarhouse  | centos6    |
+| fubarhouse  | centos7    |
+| fubarhouse  | debian7    |
+| fubarhouse  | debian8    |
+| fubarhouse  | debian9    |
+| fubarhouse  | debian10   |
+| fubarhouse  | fedora24   |
+| fubarhouse  | fedora25   |
+| fubarhouse  | fedora26   |
+| fubarhouse  | fedora27   |
+| fubarhouse  | fedora28   |
+| fubarhouse  | ubuntu1204 |
+| fubarhouse  | ubuntu1210 |
+| fubarhouse  | ubuntu1304 |
+| fubarhouse  | ubuntu1310 |
+| fubarhouse  | ubuntu1404 |
+| fubarhouse  | ubuntu1410 |
+| fubarhouse  | ubuntu1504 |
+| fubarhouse  | ubuntu1510 |
+| fubarhouse  | ubuntu1604 |
+| fubarhouse  | ubuntu1610 |
+| fubarhouse  | ubuntu1704 |
+| fubarhouse  | ubuntu1710 |
+| fubarhouse  | ubuntu1804 |
+| geerlingguy | centos6    |
+| geerlingguy | centos7    |
+| geerlingguy | ubuntu1404 |
+| geerlingguy | ubuntu1604 |
+| geerlingguy | ubuntu1804 |
+
+### Custom containers
+
+Currently you are able to declare all parameters for the containers other than the intialize command and volume parameter.
+
+You can do that with the following example:
+
+`ansible-role-tester full -i fubarhouse/docker-ansible:bionic`
+
 ## License
 
 MIT / BSD
@@ -37,4 +82,4 @@ MIT / BSD
 
 This tool was created in 2018 by [Karl Hepworth](https://twitter.com/fubarhouse).
 
-**Special thanks** to [@samdoran](https://github.com/samdoran) and [@geerlingguy](https://github.com/geerlingguy) for the original bash scripts which were used during creation.
+**Special thanks** to [@samdoran](https://github.com/samdoran) and [@geerlingguy](https://github.com/geerlingguy) for the original bash scripts and ideas which were used during creation.
