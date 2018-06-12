@@ -36,6 +36,7 @@ By entering user names and distributions available declared in the `distribution
 **Example use**: `ansible-role-tester full -u fubarhouse -t ubuntu1804`
 
 | user        | distro     |
+| ----------- | ---------- |
 | fubarhouse  | centos6    |
 | fubarhouse  | centos7    |
 | fubarhouse  | debian7    |
