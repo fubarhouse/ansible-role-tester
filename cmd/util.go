@@ -47,12 +47,6 @@ type Container interface {
 // Checks if the specified container is running.
 func is_running() bool {
 
-	docker, e := exec.LookPath("docker")
-	if e != nil {
-		log.Errorf("executable 'docker' was not found in $PATH.")
-		return false
-	}
-
 	// Users should not be able to re-run containers with the same name...
 	d := exec.Cmd{}
 	d.Path = docker
@@ -90,12 +84,6 @@ func getDistribution(container, target, init, volume string) (error, Distributio
 		if dist.Container == container {
 			return nil, dist
 		}
-	}
-
-	docker, e := exec.LookPath("docker")
-	if e != nil {
-		log.Errorf("executable 'docker' was not found in $PATH.")
-		os.Exit(1)
 	}
 
 	c := exec.Cmd{}
@@ -137,12 +125,6 @@ func (dist *Distribution) run(config *AnsibleConfig) {
 		containerID = fmt.Sprint(time.Now().Unix())
 	}
 
-	docker, e := exec.LookPath("docker")
-	if e != nil {
-		log.Errorf("executable 'docker' was not found in $PATH.")
-		return
-	}
-
 	log.Printf("Running %v\n", containerID)
 
 	var run_options string
@@ -174,12 +156,6 @@ func (dist *Distribution) run(config *AnsibleConfig) {
 // Install will install the requirements if the file is configured.
 func (dist *Distribution) install(config *AnsibleConfig) {
 
-	docker, e := exec.LookPath("docker")
-	if e != nil {
-		log.Errorf("executable 'docker' was not found in $PATH.")
-		return
-	}
-
 	if config.RequirementsFile != "" {
 
 		req := fmt.Sprintf("%v/%v", config.RemotePath, config.RequirementsFile)
@@ -207,12 +183,6 @@ func (dist *Distribution) install(config *AnsibleConfig) {
 
 // Kill will stop the container and remove it.
 func kill() {
-
-	docker, e := exec.LookPath("docker")
-	if e != nil {
-		log.Errorf("executable 'docker' was not found in $PATH.")
-		return
-	}
 
 	if containerID != "" {
 
@@ -244,12 +214,6 @@ func kill() {
 
 func (dist *Distribution) test_syntax(config *AnsibleConfig) {
 
-	docker, e := exec.LookPath("docker")
-	if e != nil {
-		log.Errorf("executable 'docker' was not found in $PATH.")
-		return
-	}
-
 	// Ansible syntax check.
 	log.Infoln("Checking role syntax...")
 
@@ -274,12 +238,6 @@ func (dist *Distribution) test_syntax(config *AnsibleConfig) {
 }
 func (dist *Distribution) test_role(config *AnsibleConfig) {
 
-	docker, e := exec.LookPath("docker")
-	if e != nil {
-		log.Errorf("executable 'docker' was not found in $PATH.")
-		return
-	}
-
 	// Test role.
 	log.Infoln("Running the role...")
 
@@ -301,12 +259,6 @@ func (dist *Distribution) test_role(config *AnsibleConfig) {
 }
 
 func (dist *Distribution) test_idempotence(config *AnsibleConfig) {
-
-	docker, e := exec.LookPath("docker")
-	if e != nil {
-		log.Errorf("executable 'docker' was not found in $PATH.")
-		return
-	}
 
 	// Test role idempotence.
 	log.Infoln("Testing role idempotence...")

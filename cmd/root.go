@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"os"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"os/exec"
 	"time"
 )
 
@@ -12,6 +14,10 @@ var (
 
 	// The container ID.
 	containerID = fmt.Sprint(time.Now().Unix())
+
+	docker string
+
+	docker_found = false
 
 	// image is the Distribution identifier by name.
 	// These are declared as a Distribution and this will
@@ -51,5 +57,17 @@ func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
+	}
+}
+
+func init() {
+	d, e := exec.LookPath("docker")
+	if e != nil {
+		log.Errorf("executable 'docker' was not found in $PATH.\n")
+	}
+	docker = d
+	docker_found = true
+	if !docker_found {
+		log.Fatalln("you cannot use this application without having docker installed")
 	}
 }
