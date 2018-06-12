@@ -31,7 +31,7 @@ required.
 			playbook,
 		}
 
-		e, dist := getDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro")
+		e, dist := getDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)
 		if e != nil {
 			log.Errorln("Incompatible disribution was inputted, attempting autofix.")
 		}
@@ -53,5 +53,8 @@ func init() {
 	fullCmd.Flags().StringVarP(&destination, "destination", "d", "/etc/ansible/roles/role_under_test", "Location which the role will be mounted to")
 	fullCmd.Flags().StringVarP(&requirements, "requirements", "r", "", "Path to requirements file.")
 	fullCmd.Flags().StringVarP(&playbook, "playbook", "p", "playbook.yml", "The filename of the playbook")
-	fullCmd.Flags().StringVarP(&image, "image", "i", "fubarhouse/docker-ansible:bionic", "The image reference to use.")
+
+	fullCmd.Flags().StringVarP(&image, "image", "i", "", "The image reference to use.")
+	fullCmd.Flags().StringVarP(&user, "user", "u", "fubarhouse", "Selectively choose a compatible docker image from a specified user.")
+	fullCmd.Flags().StringVarP(&distro, "distribution", "t", "ubuntu1804", "Selectively choose a compatible docker image of a specified distribution.")
 }

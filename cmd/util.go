@@ -6,7 +6,6 @@ import (
 	"os/exec"
 
 	"bytes"
-	"errors"
 	log "github.com/Sirupsen/logrus"
 	"io"
 	"strings"
@@ -108,38 +107,6 @@ func docker_exec(args []string, stdout bool) (string, error) {
 
 	// Return out output as a string.
 	return out.String(), nil
-}
-
-// getDistribution will get the distribution object to allow dynamic
-// loading of different distributions. A suitable struct will be compiled
-// from the inputs and returned with an error if the specified container
-// cannot be found.
-func getDistribution(container, target, init, volume string) (error, Distribution) {
-
-	// We will search for the exact container.
-	for _, dist := range Distributions {
-		if dist.Container == container {
-			return nil, dist
-		}
-	}
-
-	c, _ := docker_exec([]string{
-		"images",
-		container,
-	}, false)
-
-	if !strings.Contains(c, container) {
-		log.Errorf("no valid image was found for '%v'\n", container)
-		os.Exit(1)
-	}
-
-	return errors.New("could not find matching distribution, returned a compatible data structure"), Distribution{
-		init,
-		target,
-		true,
-		volume,
-		container,
-	}
 }
 
 // run will launch a new container (containerID) using

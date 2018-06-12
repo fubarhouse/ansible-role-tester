@@ -22,7 +22,7 @@ containers won't be removed after completion.`,
 			playbook,
 		}
 
-		e, dist := getDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro")
+		e, dist := getDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)
 		if e != nil {
 			logrus.Errorln("Incompatible disribution was inputted, attempting autofix.")
 		}
@@ -42,5 +42,8 @@ func init() {
 	testCmd.Flags().StringVarP(&destination, "destination", "d", "/etc/ansible/roles/role_under_test", "Location which the role will be mounted to")
 	testCmd.Flags().StringVarP(&requirements, "requirements", "r", "", "Path to requirements file.")
 	testCmd.Flags().StringVarP(&playbook, "playbook", "p", "playbook.yml", "The filename of the playbook")
-	testCmd.Flags().StringVarP(&image, "image", "i", "fubarhouse/docker-ansible:bionic", "The image reference to use.")
+
+	testCmd.Flags().StringVarP(&image, "image", "i", "", "The image reference to use.")
+	testCmd.Flags().StringVarP(&user, "user", "u", "fubarhouse", "Selectively choose a compatible docker image from a specified user.")
+	testCmd.Flags().StringVarP(&distro, "distribution", "t", "ubuntu1804", "Selectively choose a compatible docker image of a specified distribution.")
 }

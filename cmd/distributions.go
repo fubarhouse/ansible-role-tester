@@ -1,5 +1,13 @@
 package cmd
 
+import (
+	"errors"
+	"os"
+	"strings"
+
+	log "github.com/Sirupsen/logrus"
+)
+
 // A Distribution declares the options to
 // pass to Docker to run and test the container.
 type Distribution struct {
@@ -19,6 +27,9 @@ type Distribution struct {
 	// The fully qualified container name in the format:
 	// name/image:version - ie fubarhouse/docker-ansible:bionic
 	Container string
+
+	User   string
+	Distro string
 }
 
 // CentOS 6
@@ -28,6 +39,8 @@ var CentOS6 = Distribution{
 	true,
 	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
 	"fubarhouse/docker-ansible:centos-6",
+	"fubarhouse",
+	"centos6",
 }
 
 // CentOS 7
@@ -37,6 +50,8 @@ var CentOS7 = Distribution{
 	true,
 	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
 	"fubarhouse/docker-ansible:centos-7",
+	"fubarhouse",
+	"centos7",
 }
 
 // Wheezy
@@ -46,6 +61,8 @@ var DebianWheezy = Distribution{
 	true,
 	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
 	"fubarhouse/docker-ansible:wheezy",
+	"fubarhouse",
+	"debian7",
 }
 
 // Jessie
@@ -55,6 +72,8 @@ var DebianJessie = Distribution{
 	true,
 	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
 	"fubarhouse/docker-ansible:jessie",
+	"fubarhouse",
+	"debian8",
 }
 
 // Stretch
@@ -64,6 +83,8 @@ var DebianStretch = Distribution{
 	true,
 	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
 	"fubarhouse/docker-ansible:stretch",
+	"fubarhouse",
+	"debian9",
 }
 
 // Buster
@@ -73,6 +94,8 @@ var DebianBuster = Distribution{
 	true,
 	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
 	"fubarhouse/docker-ansible:buster",
+	"fubarhouse",
+	"debian10",
 }
 
 // Fedora 24
@@ -82,6 +105,8 @@ var Fedora24 = Distribution{
 	true,
 	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
 	"fubarhouse/docker-ansible:fedora-24",
+	"fubarhouse",
+	"fedora24",
 }
 
 // Fedora 25
@@ -91,6 +116,8 @@ var Fedora25 = Distribution{
 	true,
 	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
 	"fubarhouse/docker-ansible:fedora-25",
+	"fubarhouse",
+	"fedora25",
 }
 
 // Fedora 26
@@ -100,6 +127,8 @@ var Fedora26 = Distribution{
 	true,
 	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
 	"fubarhouse/docker-ansible:fedora-26",
+	"fubarhouse",
+	"fedora26",
 }
 
 // Fedora 27
@@ -109,6 +138,8 @@ var Fedora27 = Distribution{
 	true,
 	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
 	"fubarhouse/docker-ansible:fedora-27",
+	"fubarhouse",
+	"fedora27",
 }
 
 // Fedora 28
@@ -118,6 +149,8 @@ var Fedora28 = Distribution{
 	true,
 	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
 	"fubarhouse/docker-ansible:fedora-28",
+	"fubarhouse",
+	"fedora28",
 }
 
 // Ubuntu 12.04
@@ -127,6 +160,8 @@ var Ubuntu1204 = Distribution{
 	true,
 	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
 	"fubarhouse/docker-ansible:precise",
+	"fubarhouse",
+	"ubuntu1204",
 }
 
 // Ubuntu 12.10
@@ -136,6 +171,8 @@ var Ubuntu1210 = Distribution{
 	true,
 	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
 	"fubarhouse/docker-ansible:quantal",
+	"fubarhouse",
+	"ubuntu1210",
 }
 
 // Ubuntu 13.04
@@ -145,6 +182,8 @@ var Ubuntu1304 = Distribution{
 	true,
 	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
 	"fubarhouse/docker-ansible:raring",
+	"fubarhouse",
+	"ubuntu1304",
 }
 
 // Ubuntu 13.10
@@ -154,6 +193,8 @@ var Ubuntu1310 = Distribution{
 	true,
 	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
 	"fubarhouse/docker-ansible:saucy",
+	"fubarhouse",
+	"ubuntu1310",
 }
 
 // Ubuntu 14.04
@@ -163,6 +204,8 @@ var Ubuntu1404 = Distribution{
 	true,
 	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
 	"fubarhouse/docker-ansible:trusty",
+	"fubarhouse",
+	"ubuntu1404",
 }
 
 // Ubuntu 14.10
@@ -172,6 +215,8 @@ var Ubuntu1410 = Distribution{
 	true,
 	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
 	"fubarhouse/docker-ansible:utopic",
+	"fubarhouse",
+	"ubuntu1410",
 }
 
 // Ubuntu 15.04
@@ -181,6 +226,8 @@ var Ubuntu1504 = Distribution{
 	true,
 	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
 	"fubarhouse/docker-ansible:vivid",
+	"fubarhouse",
+	"ubuntu1504",
 }
 
 // Ubuntu 15.10
@@ -190,6 +237,8 @@ var Ubuntu1510 = Distribution{
 	true,
 	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
 	"fubarhouse/docker-ansible:wily",
+	"fubarhouse",
+	"ubuntu1510",
 }
 
 // Ubuntu 16.04
@@ -199,6 +248,8 @@ var Ubuntu1604 = Distribution{
 	true,
 	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
 	"fubarhouse/docker-ansible:xenial",
+	"fubarhouse",
+	"ubuntu1604",
 }
 
 // Ubuntu 16.10
@@ -208,6 +259,8 @@ var Ubuntu1610 = Distribution{
 	true,
 	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
 	"fubarhouse/docker-ansible:yakkety",
+	"fubarhouse",
+	"ubuntu1610",
 }
 
 // Ubuntu 17.04
@@ -217,6 +270,8 @@ var Ubuntu1704 = Distribution{
 	true,
 	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
 	"fubarhouse/docker-ansible:zesty",
+	"fubarhouse",
+	"ubuntu1704",
 }
 
 // Ubuntu 17.10
@@ -226,6 +281,8 @@ var Ubuntu1710 = Distribution{
 	true,
 	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
 	"fubarhouse/docker-ansible:artful",
+	"fubarhouse",
+	"ubuntu1710",
 }
 
 // Ubuntu 18.04
@@ -235,6 +292,8 @@ var Ubuntu1804 = Distribution{
 	true,
 	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
 	"fubarhouse/docker-ansible:bionic",
+	"fubarhouse",
+	"ubuntu1804",
 }
 
 // CentOS 6
@@ -244,6 +303,8 @@ var JeffCentOS6 = Distribution{
 	true,
 	"",
 	"geerlingguy/docker-centos6-ansible:latest",
+	"geerlingguy",
+	"centos6",
 }
 
 // CentOS 7
@@ -253,6 +314,8 @@ var JeffCentOS7 = Distribution{
 	true,
 	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
 	"geerlingguy/docker-centos7-ansible:latest",
+	"geerlingguy",
+	"centos7",
 }
 
 // Ubuntu 14.04
@@ -262,6 +325,8 @@ var JeffUbuntu1404 = Distribution{
 	true,
 	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
 	"geerlingguy/docker-ubuntu1404-ansible:latest",
+	"geerlingguy",
+	"ubuntu1404",
 }
 
 // Ubuntu 16.04
@@ -271,6 +336,8 @@ var JeffUbuntu1604 = Distribution{
 	true,
 	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
 	"geerlingguy/docker-ubuntu1604-ansible:latest",
+	"geerlingguy",
+	"ubuntu1604",
 }
 
 // Ubuntu 18.04
@@ -280,6 +347,8 @@ var JeffUbuntu1804 = Distribution{
 	true,
 	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
 	"geerlingguy/docker-ubuntu1804-ansible:latest",
+	"geerlingguy",
+	"ubuntu1804",
 }
 
 // A slice of distributions.
@@ -313,4 +382,43 @@ var Distributions = []Distribution{
 	JeffUbuntu1404,
 	JeffUbuntu1604,
 	JeffUbuntu1804,
+}
+
+// getDistribution will get the distribution object to allow dynamic
+// loading of different distributions. A suitable struct will be compiled
+// from the inputs and returned with an error if the specified container
+// cannot be found.
+func getDistribution(container, target, init, volume, user, distro string) (error, Distribution) {
+
+	// We will search for the exact container.
+	for _, dist := range Distributions {
+		// Check for explicit matches using image.
+		if dist.Container == container {
+			return nil, dist
+		}
+		// Check for explicit matches for user and distro.
+		if dist.User == user && dist.Distro == distro {
+			return nil, dist
+		}
+	}
+
+	c, _ := docker_exec([]string{
+		"images",
+		container,
+	}, false)
+
+	if !strings.Contains(c, container) {
+		log.Errorf("no valid image was found for '%v'\n", container)
+		os.Exit(1)
+	}
+
+	return errors.New("could not find matching distribution, returned a compatible data structure"), Distribution{
+		init,
+		target,
+		true,
+		volume,
+		container,
+		user,
+		distro,
+	}
 }
