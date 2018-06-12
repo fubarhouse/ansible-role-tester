@@ -15,8 +15,17 @@ var (
 	// The container ID.
 	containerID = fmt.Sprint(time.Now().Unix())
 
+	// docker is simply the path to the Docker binary.
+	// this will be located using exec.LookPath().
+	// this must validate to a working binary named
+	// docker in $PATH, otherwise the program will
+	// report a fatal error.
 	docker string
 
+	// docker_found is a simple boolean which is set
+	// to false by default, it's used in addition to
+	// the docker string above to identify if the
+	// docker binary is found to simplify flow control.
 	docker_found = false
 
 	// image is the Distribution identifier by name.
