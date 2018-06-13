@@ -44,7 +44,7 @@ type Container interface {
 }
 
 // Checks if the specified container is running.
-func is_running() bool {
+func dockerCheck() bool {
 	// Users should not be able to re-run containers with the same name...
 	out, err := docker_exec([]string{
 		"ps",
@@ -128,7 +128,7 @@ func (dist *Distribution) run(config *AnsibleConfig) {
 		containerID = fmt.Sprint(time.Now().Unix())
 	}
 
-	if !is_running() {
+	if !dockerCheck() {
 		log.Printf("Running %v", containerID)
 
 		var run_options string
@@ -175,7 +175,7 @@ func kill() {
 
 	if containerID != "" {
 
-		if is_running() {
+		if dockerCheck() {
 
 			log.Printf("Stopping %v\n", containerID)
 			docker_exec([]string{
