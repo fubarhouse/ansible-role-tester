@@ -18,5 +18,6 @@ var destroyCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(destroyCmd)
 	destroyCmd.Flags().StringVarP(&containerID, "id", "i", "", "Container ID")
+	destroyCmd.Flags().BoolVarP(&noOutput, "no-output", "o", false, "Hide output from all Docker commands")
 	destroyCmd.MarkFlagRequired("containerID")
 }

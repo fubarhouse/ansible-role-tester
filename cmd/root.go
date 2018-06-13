@@ -58,6 +58,10 @@ var (
 	// with the user variable to identify a given Distribution.
 	distro string
 
+	// noOutput is a boolean indicating the output of docker commands
+	// should remain completely hidden from Stdout.
+	noOutput = false
+
 	// rootCmd represents the base command when called without any subcommands
 	rootCmd = &cobra.Command{
 		Use:   "ansible-test",

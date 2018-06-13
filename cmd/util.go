@@ -91,7 +91,7 @@ func docker_exec(args []string, stdout bool) (string, error) {
 	var out bytes.Buffer
 	multi := io.MultiWriter(&out)
 
-	if stdout {
+	if stdout && !noOutput {
 		multi = io.MultiWriter(&out, os.Stdout)
 	}
 

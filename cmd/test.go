@@ -42,6 +42,7 @@ func init() {
 	testCmd.Flags().StringVarP(&destination, "destination", "d", "/etc/ansible/roles/role_under_test", "Location which the role will be mounted to")
 	testCmd.Flags().StringVarP(&requirements, "requirements", "r", "", "Path to requirements file.")
 	testCmd.Flags().StringVarP(&playbook, "playbook", "p", "playbook.yml", "The filename of the playbook")
+	testCmd.Flags().BoolVarP(&noOutput, "no-output", "o", false, "Hide output from all Docker commands")
 
 	testCmd.Flags().StringVarP(&image, "image", "i", "", "The image reference to use.")
 	testCmd.Flags().StringVarP(&user, "user", "u", "fubarhouse", "Selectively choose a compatible docker image from a specified user.")
