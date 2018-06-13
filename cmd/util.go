@@ -192,7 +192,7 @@ func kill() {
 
 }
 
-func (dist *Distribution) test_syntax(config *AnsibleConfig) {
+func (dist *Distribution) roleSyntaxCheck(config *AnsibleConfig) {
 
 	// Ansible syntax check.
 	log.Infoln("Checking role syntax...")
