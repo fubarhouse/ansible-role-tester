@@ -46,7 +46,7 @@ type Container interface {
 // Checks if the specified container is running.
 func dockerCheck() bool {
 	// Users should not be able to re-run containers with the same name...
-	out, err := docker_exec([]string{
+	out, err := dockerExec([]string{
 		"ps",
 		"-f",
 		"status=running",
@@ -68,7 +68,7 @@ func dockerCheck() bool {
 // docer_exec will execute a command to the docker binary
 // and use the input args as arguments for that process.
 // You can request output be printed using the bool stdout.
-func docker_exec(args []string, stdout bool) (string, error) {
+func dockerExec(args []string, stdout bool) (string, error) {
 
 	// Generate the command, based on input.
 	cmd := exec.Cmd{}
@@ -136,7 +136,7 @@ func (dist *Distribution) run(config *AnsibleConfig) {
 			run_options += fmt.Sprintf("--privileged")
 		}
 
-		docker_exec([]string{
+		dockerExec([]string{
 			"run",
 			"--detach",
 			fmt.Sprintf("--name=%v", containerID),
@@ -157,7 +157,7 @@ func (dist *Distribution) install(config *AnsibleConfig) {
 	if config.RequirementsFile != "" {
 		req := fmt.Sprintf("%v/%v", config.RemotePath, config.RequirementsFile)
 		log.Printf("Installing requirements from %v\n", req)
-		docker_exec([]string{
+		dockerExec([]string{
 			"exec",
 			"--tty",
 			containerID,
@@ -178,7 +178,7 @@ func kill() {
 		if dockerCheck() {
 
 			log.Printf("Stopping %v\n", containerID)
-			docker_exec([]string{
+			dockerExec([]string{
 				"stop",
 				containerID,
 			}, false)
@@ -196,7 +196,7 @@ func (dist *Distribution) test_syntax(config *AnsibleConfig) {
 
 	// Ansible syntax check.
 	log.Infoln("Checking role syntax...")
-	docker_exec([]string{
+	dockerExec([]string{
 		"exec",
 		"--tty",
 		containerID,
@@ -211,7 +211,7 @@ func (dist *Distribution) test_role(config *AnsibleConfig) {
 
 	// Test role.
 	log.Infoln("Running the role...")
-	docker_exec([]string{
+	dockerExec([]string{
 		"exec",
 		"--tty",
 		containerID,
@@ -224,7 +224,7 @@ func (dist *Distribution) idempotenceTest(config *AnsibleConfig) {
 
 	// Test role idempotence.
 	log.Infoln("Testing role idempotence...")
-	out, _ := docker_exec([]string{
+	out, _ := dockerExec([]string{
 		"exec",
 		"--tty",
 		string(containerID),

@@ -402,7 +402,7 @@ func getDistribution(container, target, init, volume, user, distro string) (Dist
 		}
 	}
 
-	c, _ := docker_exec([]string{
+	c, _ := dockerExec([]string{
 		"images",
 		container,
 	}, false)
