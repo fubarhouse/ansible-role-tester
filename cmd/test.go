@@ -4,6 +4,8 @@ import (
 	"github.com/Sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"os"
+
+	"github.com/fubarhouse/ansible-role-tester/util"
 )
 
 // testCmd represents the test command
@@ -15,22 +17,24 @@ var testCmd = &cobra.Command{
 If container does not exist it will be created, however
 containers won't be removed after completion.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		config := AnsibleConfig{
+		config := util.AnsibleConfig{
 			source,
 			destination,
 			requirements,
 			playbook,
+			verbose,
 		}
 
-		dist, e := getDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)
+		dist, e := util.GetDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)
 		if e != nil {
 			logrus.Errorln("Incompatible disribution was inputted, attempting autofix.")
 		}
 
-		dist.roleInstall(&config)
-		dist.roleSyntaxCheck(&config)
-		dist.roleTest(&config)
-		dist.idempotenceTest(&config)
+		dist.CID = containerID
+		dist.RoleInstall(&config)
+		dist.RoleSyntaxCheck(&config)
+		dist.RoleTest(&config)
+		dist.IdempotenceTest(&config)
 	},
 }
 

@@ -5,6 +5,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"github.com/fubarhouse/ansible-role-tester/util"
 )
 
 // fullCmd represents the full command
@@ -24,23 +25,26 @@ of flexibility in configuration, just change the defaults as
 required.
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		config := AnsibleConfig{
+		config := util.AnsibleConfig{
 			source,
 			destination,
 			requirements,
 			playbook,
+			verbose,
 		}
 
-		dist, e := getDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)
+		dist, e := util.GetDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)
 		if e != nil {
 			log.Errorln("Incompatible disribution was inputted, attempting autofix.")
 		}
-		dist.dockerRun(&config)
-		dist.roleInstall(&config)
-		dist.roleSyntaxCheck(&config)
-		dist.roleTest(&config)
-		dist.idempotenceTest(&config)
-		dockerKill()
+
+		dist.CID = containerID
+		dist.DockerRun(&config)
+		dist.RoleInstall(&config)
+		dist.RoleSyntaxCheck(&config)
+		dist.RoleTest(&config)
+		dist.IdempotenceTest(&config)
+		dist.DockerKill()
 	},
 }
 

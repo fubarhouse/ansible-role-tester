@@ -1,4 +1,4 @@
-package cmd
+package util
 
 import (
 	"errors"
@@ -11,6 +11,9 @@ import (
 // A Distribution declares the options to
 // pass to Docker to dockerRun and test the container.
 type Distribution struct {
+
+	// CID is the name/id of the container.
+	CID string
 
 	// Initialise is the initialisation command
 	Initialise string
@@ -34,6 +37,7 @@ type Distribution struct {
 
 // CentOS 6
 var CentOS6 = Distribution{
+	"",
 	"/sbin/init",
 	"centos6",
 	true,
@@ -45,6 +49,7 @@ var CentOS6 = Distribution{
 
 // CentOS 7
 var CentOS7 = Distribution{
+	"",
 	"/usr/lib/systemd/systemd",
 	"centos7",
 	true,
@@ -56,6 +61,7 @@ var CentOS7 = Distribution{
 
 // Wheezy
 var DebianWheezy = Distribution{
+	"",
 	"/bin/systemd",
 	"wheezy",
 	true,
@@ -67,6 +73,7 @@ var DebianWheezy = Distribution{
 
 // Jessie
 var DebianJessie = Distribution{
+	"",
 	"/lib/systemd",
 	"jessie",
 	true,
@@ -78,6 +85,7 @@ var DebianJessie = Distribution{
 
 // Stretch
 var DebianStretch = Distribution{
+	"",
 	"/bin/systemd",
 	"stretch",
 	true,
@@ -89,6 +97,7 @@ var DebianStretch = Distribution{
 
 // Buster
 var DebianBuster = Distribution{
+	"",
 	"/bin/systemd",
 	"buster",
 	true,
@@ -100,6 +109,7 @@ var DebianBuster = Distribution{
 
 // Fedora 24
 var Fedora24 = Distribution{
+	"",
 	"/usr/lib/systemd/systemd",
 	"fedora24",
 	true,
@@ -111,6 +121,7 @@ var Fedora24 = Distribution{
 
 // Fedora 25
 var Fedora25 = Distribution{
+	"",
 	"/usr/lib/systemd/systemd",
 	"fedora25",
 	true,
@@ -122,6 +133,7 @@ var Fedora25 = Distribution{
 
 // Fedora 26
 var Fedora26 = Distribution{
+	"",
 	"/usr/lib/systemd/systemd",
 	"fedora26",
 	true,
@@ -133,6 +145,7 @@ var Fedora26 = Distribution{
 
 // Fedora 27
 var Fedora27 = Distribution{
+	"",
 	"/usr/lib/systemd/systemd",
 	"fedora27",
 	true,
@@ -144,6 +157,7 @@ var Fedora27 = Distribution{
 
 // Fedora 28
 var Fedora28 = Distribution{
+	"",
 	"/usr/lib/systemd/systemd",
 	"fedora28",
 	true,
@@ -155,6 +169,7 @@ var Fedora28 = Distribution{
 
 // Ubuntu 12.04
 var Ubuntu1204 = Distribution{
+	"",
 	"/sbin/init",
 	"ubuntu1204",
 	true,
@@ -166,6 +181,7 @@ var Ubuntu1204 = Distribution{
 
 // Ubuntu 12.10
 var Ubuntu1210 = Distribution{
+	"",
 	"/sbin/init",
 	"ubuntu1210",
 	true,
@@ -177,6 +193,7 @@ var Ubuntu1210 = Distribution{
 
 // Ubuntu 13.04
 var Ubuntu1304 = Distribution{
+	"",
 	"/sbin/init",
 	"ubuntu1304",
 	true,
@@ -188,6 +205,7 @@ var Ubuntu1304 = Distribution{
 
 // Ubuntu 13.10
 var Ubuntu1310 = Distribution{
+	"",
 	"/sbin/init",
 	"ubuntu1310",
 	true,
@@ -199,6 +217,7 @@ var Ubuntu1310 = Distribution{
 
 // Ubuntu 14.04
 var Ubuntu1404 = Distribution{
+	"",
 	"/sbin/init",
 	"ubuntu1404",
 	true,
@@ -210,6 +229,7 @@ var Ubuntu1404 = Distribution{
 
 // Ubuntu 14.10
 var Ubuntu1410 = Distribution{
+	"",
 	"/sbin/init",
 	"ubuntu1410",
 	true,
@@ -221,6 +241,7 @@ var Ubuntu1410 = Distribution{
 
 // Ubuntu 15.04
 var Ubuntu1504 = Distribution{
+	"",
 	"/sbin/init",
 	"ubuntu1504",
 	true,
@@ -232,6 +253,7 @@ var Ubuntu1504 = Distribution{
 
 // Ubuntu 15.10
 var Ubuntu1510 = Distribution{
+	"",
 	"/sbin/init",
 	"ubuntu1510",
 	true,
@@ -243,6 +265,7 @@ var Ubuntu1510 = Distribution{
 
 // Ubuntu 16.04
 var Ubuntu1604 = Distribution{
+	"",
 	"/sbin/init",
 	"ubuntu1604",
 	true,
@@ -254,6 +277,7 @@ var Ubuntu1604 = Distribution{
 
 // Ubuntu 16.10
 var Ubuntu1610 = Distribution{
+	"",
 	"/sbin/init",
 	"ubuntu1610",
 	true,
@@ -265,6 +289,7 @@ var Ubuntu1610 = Distribution{
 
 // Ubuntu 17.04
 var Ubuntu1704 = Distribution{
+	"",
 	"/sbin/init",
 	"ubuntu1704",
 	true,
@@ -276,6 +301,7 @@ var Ubuntu1704 = Distribution{
 
 // Ubuntu 17.10
 var Ubuntu1710 = Distribution{
+	"",
 	"/sbin/init",
 	"ubuntu1710",
 	true,
@@ -287,6 +313,7 @@ var Ubuntu1710 = Distribution{
 
 // Ubuntu 18.04
 var Ubuntu1804 = Distribution{
+	"",
 	"/sbin/init",
 	"ubuntu1804",
 	true,
@@ -298,6 +325,7 @@ var Ubuntu1804 = Distribution{
 
 // CentOS 6
 var JeffCentOS6 = Distribution{
+	"",
 	"/sbin/init",
 	"centos6",
 	true,
@@ -309,6 +337,7 @@ var JeffCentOS6 = Distribution{
 
 // CentOS 7
 var JeffCentOS7 = Distribution{
+	"",
 	"/usr/lib/systemd/systemd",
 	"centos7",
 	true,
@@ -320,6 +349,7 @@ var JeffCentOS7 = Distribution{
 
 // Ubuntu 14.04
 var JeffUbuntu1404 = Distribution{
+	"",
 	"/sbin/init",
 	"ubuntu1404",
 	true,
@@ -331,6 +361,7 @@ var JeffUbuntu1404 = Distribution{
 
 // Ubuntu 16.04
 var JeffUbuntu1604 = Distribution{
+	"",
 	"/lib/systemd/systemd",
 	"ubuntu1604",
 	true,
@@ -342,6 +373,7 @@ var JeffUbuntu1604 = Distribution{
 
 // Ubuntu 18.04
 var JeffUbuntu1804 = Distribution{
+	"",
 	"/lib/systemd/systemd",
 	"ubuntu1804",
 	true,
@@ -388,7 +420,7 @@ var Distributions = []Distribution{
 // loading of different distributions. A suitable struct will be compiled
 // from the inputs and returned with an error if the specified container
 // cannot be found.
-func getDistribution(container, target, init, volume, user, distro string) (Distribution, error) {
+func GetDistribution(container, target, init, volume, user, distro string) (Distribution, error) {
 
 	// We will search for the exact container.
 	for _, dist := range Distributions {
@@ -402,7 +434,7 @@ func getDistribution(container, target, init, volume, user, distro string) (Dist
 		}
 	}
 
-	c, _ := dockerExec([]string{
+	c, _ := DockerExec([]string{
 		"images",
 		container,
 	}, false)
@@ -413,6 +445,7 @@ func getDistribution(container, target, init, volume, user, distro string) (Dist
 	}
 
 	return Distribution{
+		"",
 		init,
 		target,
 		true,

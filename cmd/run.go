@@ -5,6 +5,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/spf13/cobra"
+	util "github.com/fubarhouse/ansible-role-tester/util"
 )
 
 // runCmd represents the dockerRun command
@@ -16,19 +17,21 @@ var runCmd = &cobra.Command{
 Volume mount locations image and id are all configurable.
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		config := AnsibleConfig{
+		config := util.AnsibleConfig{
 			source,
 			destination,
 			"",
 			"",
+			verbose,
 		}
 
-		dist, e := getDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)
+		dist, e := util.GetDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)
 		if e != nil {
 			log.Errorln("Incompatible disribution was inputted, attempting autofix.")
 		}
 
-		dist.dockerRun(&config)
+		dist.CID = containerID
+		dist.DockerRun(&config)
 	},
 }
 
