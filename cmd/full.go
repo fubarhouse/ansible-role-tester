@@ -38,7 +38,7 @@ required.
 		dist.run(&config)
 		dist.install(&config)
 		dist.test_syntax(&config)
-		dist.test_role(&config)
+		dist.roleTest(&config)
 		dist.idempotenceTest(&config)
 		kill()
 	},

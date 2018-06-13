@@ -207,7 +207,7 @@ func (dist *Distribution) test_syntax(config *AnsibleConfig) {
 
 	log.Infoln("PASS")
 }
-func (dist *Distribution) test_role(config *AnsibleConfig) {
+func (dist *Distribution) roleTest(config *AnsibleConfig) {
 
 	// Test role.
 	log.Infoln("Running the role...")
