@@ -75,7 +75,7 @@ func Execute() {
 func init() {
 	d, e := exec.LookPath("docker")
 	if e != nil {
-		log.Errorf("executable 'docker' was not found in $PATH.\n")
+		log.Errorln("executable 'docker' was not found in $PATH.")
 	}
 	docker = d
 	docker_found = true
