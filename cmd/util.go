@@ -151,8 +151,8 @@ func (dist *Distribution) run(config *AnsibleConfig) {
 	}
 }
 
-// Install will install the requirements if the file is configured.
-func (dist *Distribution) install(config *AnsibleConfig) {
+// Install will roleInstall the requirements if the file is configured.
+func (dist *Distribution) roleInstall(config *AnsibleConfig) {
 
 	if config.RequirementsFile != "" {
 		req := fmt.Sprintf("%v/%v", config.RemotePath, config.RequirementsFile)
@@ -162,7 +162,7 @@ func (dist *Distribution) install(config *AnsibleConfig) {
 			"--tty",
 			containerID,
 			"ansible-galaxy",
-			"install",
+			"roleInstall",
 			fmt.Sprintf("-r %v", req),
 		}, true)
 	} else {

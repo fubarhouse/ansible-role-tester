@@ -27,7 +27,7 @@ containers won't be removed after completion.`,
 			logrus.Errorln("Incompatible disribution was inputted, attempting autofix.")
 		}
 
-		dist.install(&config)
+		dist.roleInstall(&config)
 		dist.roleSyntaxCheck(&config)
 		dist.roleTest(&config)
 		dist.idempotenceTest(&config)
