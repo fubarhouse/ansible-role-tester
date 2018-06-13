@@ -117,23 +117,27 @@ func (dist *Distribution) run(config *AnsibleConfig) {
 		containerID = fmt.Sprint(time.Now().Unix())
 	}
 
-	log.Printf("Running %v", containerID)
+	if !is_running() {
+		log.Printf("Running %v", containerID)
 
-	var run_options string
-	if dist.Privileged {
-		run_options += fmt.Sprintf("--privileged")
+		var run_options string
+		if dist.Privileged {
+			run_options += fmt.Sprintf("--privileged")
+		}
+
+		docker_exec([]string{
+			"run",
+			"--detach",
+			fmt.Sprintf("--name=%v", containerID),
+			fmt.Sprintf("--volume=%v", dist.Volume),
+			fmt.Sprintf("--volume=%v:%v", config.HostPath, config.RemotePath),
+			run_options,
+			dist.Container,
+			dist.Initialise,
+		}, true)
+	} else {
+		log.Warnf("container %v is already running, skipping the run stage")
 	}
-
-	docker_exec([]string{
-		"run",
-		"--detach",
-		fmt.Sprintf("--name=%v", containerID),
-		fmt.Sprintf("--volume=%v", dist.Volume),
-		fmt.Sprintf("--volume=%v:%v", config.HostPath, config.RemotePath),
-		run_options,
-		dist.Container,
-		dist.Initialise,
-	}, true)
 }
 
 // Install will install the requirements if the file is configured.

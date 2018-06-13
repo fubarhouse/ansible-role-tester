@@ -388,17 +388,17 @@ var Distributions = []Distribution{
 // loading of different distributions. A suitable struct will be compiled
 // from the inputs and returned with an error if the specified container
 // cannot be found.
-func getDistribution(container, target, init, volume, user, distro string) (error, Distribution) {
+func getDistribution(container, target, init, volume, user, distro string) (Distribution, error) {
 
 	// We will search for the exact container.
 	for _, dist := range Distributions {
 		// Check for explicit matches using image.
 		if dist.Container == container {
-			return nil, dist
+			return dist, nil
 		}
 		// Check for explicit matches for user and distro.
 		if dist.User == user && dist.Distro == distro {
-			return nil, dist
+			return dist, nil
 		}
 	}
 
@@ -412,7 +412,7 @@ func getDistribution(container, target, init, volume, user, distro string) (erro
 		os.Exit(1)
 	}
 
-	return errors.New("could not find matching distribution, returned a compatible data structure"), Distribution{
+	return Distribution{
 		init,
 		target,
 		true,
@@ -420,5 +420,6 @@ func getDistribution(container, target, init, volume, user, distro string) (erro
 		container,
 		user,
 		distro,
-	}
+	},
+	errors.New("could not find matching distribution, returned a compatible data structure")
 }

@@ -22,7 +22,7 @@ containers won't be removed after completion.`,
 			playbook,
 		}
 
-		e, dist := getDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)
+		dist, e := getDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)
 		if e != nil {
 			logrus.Errorln("Incompatible disribution was inputted, attempting autofix.")
 		}
