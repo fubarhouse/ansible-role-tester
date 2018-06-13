@@ -171,7 +171,7 @@ func (dist *Distribution) roleInstall(config *AnsibleConfig) {
 }
 
 // Kill will stop the container and remove it.
-func kill() {
+func dockerKill() {
 
 	if containerID != "" {
 

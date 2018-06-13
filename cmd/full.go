@@ -40,7 +40,7 @@ required.
 		dist.roleSyntaxCheck(&config)
 		dist.roleTest(&config)
 		dist.idempotenceTest(&config)
-		kill()
+		dockerKill()
 	},
 }
 

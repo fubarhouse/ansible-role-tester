@@ -11,7 +11,7 @@ var destroyCmd = &cobra.Command{
 	Long: `Destroys a container with a specified ID
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		kill()
+		dockerKill()
 	},
 }
 
