@@ -133,7 +133,7 @@ func (dist *Distribution) run(config *AnsibleConfig) {
 
 		var run_options string
 		if dist.Privileged {
-			run_options += fmt.Sprintf("--privileged")
+			run_options += fmt.Sprint("--privileged")
 		}
 
 		dockerExec([]string{
@@ -147,7 +147,7 @@ func (dist *Distribution) run(config *AnsibleConfig) {
 			dist.Initialise,
 		}, true)
 	} else {
-		log.Warnf("container %v is already running, skipping the run stage")
+		log.Warnf("container %v is already running, skipping the run stage", containerID)
 	}
 }
 
