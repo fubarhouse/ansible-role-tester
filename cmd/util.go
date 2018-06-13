@@ -232,7 +232,7 @@ func (dist *Distribution) test_idempotence(config *AnsibleConfig) {
 		fmt.Sprintf("%v/tests/%v", config.RemotePath, config.PlaybookFile),
 	}, true)
 
-	idempotence := idempotence_result(out)
+	idempotence := idempotenceResult(out)
 	if idempotence {
 		log.Infoln("Idempotence test: PASS")
 	} else {
@@ -240,7 +240,7 @@ func (dist *Distribution) test_idempotence(config *AnsibleConfig) {
 	}
 }
 
-func idempotence_result(output string) bool {
+func idempotenceResult(output string) bool {
 
 	lines := strings.Split(output, "\n")
 
