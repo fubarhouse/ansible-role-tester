@@ -48,7 +48,14 @@ var (
 	// the 'tests' folder.
 	playbook string
 
+	// user is the optional argument which specifies the
+	// user associated to the selected distribution, which
+	// will be used to locate a Distribution with the same user.
 	user   string
+
+	// distribution is the optional argument which specifies the
+	// distribution field associated to a Distribution, which is used
+	// with the user variable to identify a given Distribution.
 	distro string
 
 	// rootCmd represents the base command when called without any subcommands
