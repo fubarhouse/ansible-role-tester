@@ -1,23 +1,31 @@
 package util
 
 import (
-	"fmt"
-	"strings"
+		"strings"
 
 	log "github.com/Sirupsen/logrus"
+	"fmt"
 )
 
 func (dist *Distribution) IdempotenceTest(config *AnsibleConfig) {
 
 	// Test role idempotence.
 	log.Infoln("Testing role idempotence...")
-	out, _ := DockerExec([]string{
+
+	args := []string{
 		"exec",
 		"--tty",
 		dist.CID,
 		"ansible-playbook",
 		fmt.Sprintf("%v/tests/%v", config.RemotePath, config.PlaybookFile),
-	}, true)
+	}
+
+	// Add verbose if configured
+	if config.Verbose {
+		args = append(args, "-vvvv")
+	}
+
+	out, _ := DockerExec(args, true)
 
 	idempotence := IdempotenceResult(out)
 	if idempotence {

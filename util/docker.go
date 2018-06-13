@@ -22,20 +22,9 @@ func DockerExec(args []string, stdout bool) (string, error) {
 	cmd.Path = docker
 	cmd.Args = []string{docker}
 
-	// Check for an Ansible command
-	var isAnsibleCommand = false
-
 	// Add our arguments to the command.
 	for _, arg := range args {
-		if strings.Contains(arg, "ansible") {
-			isAnsibleCommand = true
-		}
 		cmd.Args = append(cmd.Args, arg)
-	}
-
-	// Add verbose if configured
-	if isAnsibleCommand {
-		//cmd.Args = append(cmd.Args, "-vvvv")
 	}
 
 	// If configured, print to os.Stdout.
