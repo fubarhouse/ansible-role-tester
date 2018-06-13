@@ -44,7 +44,8 @@ var (
 	// Path to the requirements file relative to source.
 	requirements string
 
-	// Path t
+	// playbook is the path to the playbook to execute inside of
+	// the 'tests' folder.
 	playbook string
 
 	user   string
