@@ -7,9 +7,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// runCmd represents the run command
+// runCmd represents the dockerRun command
 var runCmd = &cobra.Command{
-	Use:   "run",
+	Use:   "dockerRun",
 	Short: "Starts a container",
 	Long: `Start a container from a specified image.
 
@@ -28,7 +28,7 @@ Volume mount locations image and id are all configurable.
 			log.Errorln("Incompatible disribution was inputted, attempting autofix.")
 		}
 
-		dist.run(&config)
+		dist.dockerRun(&config)
 	},
 }
 

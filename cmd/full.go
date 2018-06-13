@@ -18,7 +18,7 @@ var fullCmd = &cobra.Command{
   - runs the role
   - tests for idempotence
   - removes the container
-You should be able to run all of this from the role folder on
+You should be able to dockerRun all of this from the role folder on
 the local file system. If you encounter errors, there's a lot
 of flexibility in configuration, just change the defaults as
 required.
@@ -35,7 +35,7 @@ required.
 		if e != nil {
 			log.Errorln("Incompatible disribution was inputted, attempting autofix.")
 		}
-		dist.run(&config)
+		dist.dockerRun(&config)
 		dist.roleInstall(&config)
 		dist.roleSyntaxCheck(&config)
 		dist.roleTest(&config)

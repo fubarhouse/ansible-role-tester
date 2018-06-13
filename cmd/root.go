@@ -63,7 +63,7 @@ var (
 	noOutput = false
 
 	// verbose is a boolean indicating all Ansible commands should
-	// be run with the --verbose flag.
+	// be dockerRun with the --verbose flag.
 	verbose = false
 
 	// rootCmd represents the base command when called without any subcommands

@@ -34,7 +34,7 @@ type AnsibleConfig struct {
 
 // Container is an interface which allows
 // a user from plugging in a Distribution
-// to use these functions to run Ansible tests.
+// to use these functions to dockerRun Ansible tests.
 // Details on
 type Container interface {
 	run(config *AnsibleConfig)
@@ -45,7 +45,7 @@ type Container interface {
 
 // Checks if the specified container is running.
 func dockerCheck() bool {
-	// Users should not be able to re-run containers with the same name...
+	// Users should not be able to re-dockerRun containers with the same name...
 	out, err := dockerExec([]string{
 		"ps",
 		"-f",
@@ -120,9 +120,9 @@ func dockerExec(args []string, stdout bool) (string, error) {
 	return out.String(), nil
 }
 
-// run will launch a new container (containerID) using
+// dockerRun will launch a new container (containerID) using
 // the fields in a AnsibleConfig struct.
-func (dist *Distribution) run(config *AnsibleConfig) {
+func (dist *Distribution) dockerRun(config *AnsibleConfig) {
 
 	if containerID == "" {
 		containerID = fmt.Sprint(time.Now().Unix())
@@ -137,7 +137,7 @@ func (dist *Distribution) run(config *AnsibleConfig) {
 		}
 
 		dockerExec([]string{
-			"run",
+			"dockerRun",
 			"--detach",
 			fmt.Sprintf("--name=%v", containerID),
 			fmt.Sprintf("--volume=%v", dist.Volume),
@@ -147,7 +147,7 @@ func (dist *Distribution) run(config *AnsibleConfig) {
 			dist.Initialise,
 		}, true)
 	} else {
-		log.Warnf("container %v is already running, skipping the run stage", containerID)
+		log.Warnf("container %v is already running, skipping the dockerRun stage", containerID)
 	}
 }
 

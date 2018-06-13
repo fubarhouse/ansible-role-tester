@@ -9,7 +9,7 @@ import (
 )
 
 // A Distribution declares the options to
-// pass to Docker to run and test the container.
+// pass to Docker to dockerRun and test the container.
 type Distribution struct {
 
 	// Initialise is the initialisation command
