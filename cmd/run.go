@@ -39,6 +39,7 @@ func init() {
 	runCmd.Flags().StringVarP(&source, "source", "s", pwd, "Location of the role to test")
 	runCmd.Flags().StringVarP(&destination, "destination", "d", "/etc/ansible/roles/role_under_test", "Location which the role will be mounted to")
 	runCmd.Flags().BoolVarP(&noOutput, "no-output", "o", false, "Hide output from all Docker commands")
+	runCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "Enable verbose mode for Ansible commands.")
 
 	runCmd.Flags().StringVarP(&image, "image", "i", "", "The image reference to use.")
 	runCmd.Flags().StringVarP(&user, "user", "u", "fubarhouse", "Selectively choose a compatible docker image from a specified user.")

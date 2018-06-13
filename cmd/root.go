@@ -62,6 +62,10 @@ var (
 	// should remain completely hidden from Stdout.
 	noOutput = false
 
+	// verbose is a boolean indicating all Ansible commands should
+	// be run with the --verbose flag.
+	verbose = false
+
 	// rootCmd represents the base command when called without any subcommands
 	rootCmd = &cobra.Command{
 		Use:   "ansible-test",

@@ -43,6 +43,7 @@ func init() {
 	testCmd.Flags().StringVarP(&requirements, "requirements", "r", "", "Path to requirements file.")
 	testCmd.Flags().StringVarP(&playbook, "playbook", "p", "playbook.yml", "The filename of the playbook")
 	testCmd.Flags().BoolVarP(&noOutput, "no-output", "o", false, "Hide output from all Docker commands")
+	testCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "Enable verbose mode for Ansible commands.")
 
 	testCmd.Flags().StringVarP(&image, "image", "i", "", "The image reference to use.")
 	testCmd.Flags().StringVarP(&user, "user", "u", "fubarhouse", "Selectively choose a compatible docker image from a specified user.")
