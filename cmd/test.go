@@ -30,7 +30,7 @@ containers won't be removed after completion.`,
 		dist.install(&config)
 		dist.test_syntax(&config)
 		dist.test_role(&config)
-		dist.test_idempotence(&config)
+		dist.idempotenceTest(&config)
 	},
 }
 

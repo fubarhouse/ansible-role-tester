@@ -220,7 +220,7 @@ func (dist *Distribution) test_role(config *AnsibleConfig) {
 	}, true)
 }
 
-func (dist *Distribution) test_idempotence(config *AnsibleConfig) {
+func (dist *Distribution) idempotenceTest(config *AnsibleConfig) {
 
 	// Test role idempotence.
 	log.Infoln("Testing role idempotence...")
