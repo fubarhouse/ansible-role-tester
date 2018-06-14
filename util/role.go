@@ -52,9 +52,12 @@ func (dist *Distribution) RoleSyntaxCheck(config *AnsibleConfig) {
 		args = append(args, "-vvvv")
 	}
 
-	DockerExec(args, true)
-
-	log.Infoln("PASS")
+	_, err := DockerExec(args, true)
+	if err != nil {
+		log.Errorln("Syntax check: FAIL")
+	} else {
+		log.Infoln("Syntax check: PASS")
+	}
 }
 func (dist *Distribution) RoleTest(config *AnsibleConfig) {
 
