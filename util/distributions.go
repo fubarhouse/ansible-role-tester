@@ -31,7 +31,12 @@ type Distribution struct {
 	// name/image:version - ie fubarhouse/docker-ansible:bionic
 	Container string
 
-	User   string
+	// User is the user associated to the image file, used
+	// when searching for a user from the command line tool.
+	User string
+
+	// Distro is the distro associated to the image file, used
+	// when searching for a distro from the command line tool.
 	Distro string
 }
 
