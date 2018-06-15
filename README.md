@@ -33,7 +33,9 @@ It's generally encouraged to use the `full` command as we're working on refining
 
 By entering user names and distributions available declared in the `distributions.go` file, you can selectively target any of them.
 
-**Example use**: `ansible-role-tester full -u fubarhouse -t ubuntu1804`
+**Example use**:
+
+```ansible-role-tester full -u $USER -t $DISTRO```
 
 | user        | distro     |
 | ----------- | ---------- |
@@ -73,7 +75,7 @@ Currently you are able to declare all parameters for the containers other than t
 
 You can do that with the following example:
 
-`ansible-role-tester full -i fubarhouse/docker-ansible:bionic`
+```ansible-role-tester full -i fubarhouse/docker-ansible:bionic```
 
 ## License
 
