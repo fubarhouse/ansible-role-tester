@@ -102,11 +102,11 @@ func (dist *Distribution) DockerRun(config *AnsibleConfig) {
 			"run",
 			"--detach",
 			fmt.Sprintf("--name=%v", dist.CID),
-			fmt.Sprintf("--volume=%v", dist.Volume),
+			fmt.Sprintf("--volume=%v", dist.Family.Volume),
 			fmt.Sprintf("--volume=%v:%v", config.HostPath, config.RemotePath),
 			run_options,
 			dist.Container,
-			dist.Initialise,
+			dist.Family.Initialise,
 		}, true)
 	} else {
 		log.Warnf("container %v is already running, skipping the dockerRun stage", dist.CID)
