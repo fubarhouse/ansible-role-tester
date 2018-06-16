@@ -77,6 +77,14 @@ You can do that with the following example:
 
 ```ansible-role-tester full -i fubarhouse/docker-ansible:bionic```
 
+## Interesting uses.
+
+The following command will execute properly inside a [DrupalVM](https://github.com/geerlingguy/drupal-vm) clone, however it won't include the configuration variables, but it's an interesting case which proves how flexible this tool can be.
+
+````
+ansible-role-tester full -p ../provisioning/playbook.yml -u fubarhouse -t centos7 -r provisioning/requirements.yml 
+````
+
 ## License
 
 MIT / BSD
