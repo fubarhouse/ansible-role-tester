@@ -39,7 +39,6 @@ By entering user names and distributions available declared in the `distribution
 ansible-role-tester full -u $USER -t $DISTRO
 ````
 
-| ----------- | ---------- |
 | user        | distro     |
 | ----------- | ---------- |
 | fubarhouse  | centos6    |
