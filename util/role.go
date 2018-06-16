@@ -27,7 +27,10 @@ func (dist *Distribution) RoleInstall(config *AnsibleConfig) {
 			args = append(args, "-vvvv")
 		}
 
-		DockerExec(args, true)
+		_, err := DockerExec(args, true)
+		if err != nil {
+			log.Errorln(err)
+		}
 
 	} else {
 		log.Warnln("Requirements file is not configured (empty/null), skipping...")
