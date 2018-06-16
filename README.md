@@ -35,8 +35,11 @@ By entering user names and distributions available declared in the `distribution
 
 **Example use**:
 
-```ansible-role-tester full -u $USER -t $DISTRO```
+````
+ansible-role-tester full -u $USER -t $DISTRO
+````
 
+| ----------- | ---------- |
 | user        | distro     |
 | ----------- | ---------- |
 | fubarhouse  | centos6    |
@@ -75,7 +78,9 @@ Currently you are able to declare all parameters for the containers other than t
 
 You can do that with the following example:
 
-```ansible-role-tester full -i fubarhouse/docker-ansible:bionic```
+````
+ansible-role-tester full -i fubarhouse/docker-ansible:bionic
+````
 
 ## Interesting uses.
 
