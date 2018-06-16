@@ -17,8 +17,9 @@ func (dist *Distribution) RoleInstall(config *AnsibleConfig) {
 			"--tty",
 			dist.CID,
 			"ansible-galaxy",
-			"roleInstall",
-			fmt.Sprintf("-r %v", req),
+			"install",
+			"-r",
+			req,
 		}
 
 		// Add verbose if configured
