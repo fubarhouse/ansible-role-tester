@@ -39,38 +39,6 @@ By entering user names and distributions available declared in the `distribution
 ansible-role-tester full -u $USER -t $DISTRO
 ````
 
-| user        | distro     |
-| ----------- | ---------- |
-| fubarhouse  | centos6    |
-| fubarhouse  | centos7    |
-| fubarhouse  | debian7    |
-| fubarhouse  | debian8    |
-| fubarhouse  | debian9    |
-| fubarhouse  | debian10   |
-| fubarhouse  | fedora24   |
-| fubarhouse  | fedora25   |
-| fubarhouse  | fedora26   |
-| fubarhouse  | fedora27   |
-| fubarhouse  | fedora28   |
-| fubarhouse  | ubuntu1204 |
-| fubarhouse  | ubuntu1210 |
-| fubarhouse  | ubuntu1304 |
-| fubarhouse  | ubuntu1310 |
-| fubarhouse  | ubuntu1404 |
-| fubarhouse  | ubuntu1410 |
-| fubarhouse  | ubuntu1504 |
-| fubarhouse  | ubuntu1510 |
-| fubarhouse  | ubuntu1604 |
-| fubarhouse  | ubuntu1610 |
-| fubarhouse  | ubuntu1704 |
-| fubarhouse  | ubuntu1710 |
-| fubarhouse  | ubuntu1804 |
-| geerlingguy | centos6    |
-| geerlingguy | centos7    |
-| geerlingguy | ubuntu1404 |
-| geerlingguy | ubuntu1604 |
-| geerlingguy | ubuntu1804 |
-
 ### Custom containers
 
 Currently you are able to declare all parameters for the containers other than the intialize command and volume parameter.
@@ -78,8 +46,42 @@ Currently you are able to declare all parameters for the containers other than t
 You can do that with the following example:
 
 ````
-ansible-role-tester full -i fubarhouse/docker-ansible:bionic
+ansible-role-tester full -i $IMAGE
 ````
+
+### Available distributions
+
+| user        | distro     | image                                        |
+| ----------- | ---------- | -------------------------------------------- |
+| fubarhouse  | centos6    | fubarhouse/docker-ansible:centos-6           |
+| fubarhouse  | centos7    | fubarhouse/docker-ansible:centos-7           |
+| fubarhouse  | debian7    | fubarhouse/docker-ansible:wheezy             |
+| fubarhouse  | debian8    | fubarhouse/docker-ansible:jessie             |
+| fubarhouse  | debian9    | fubarhouse/docker-ansible:stretch            |
+| fubarhouse  | debian10   | fubarhouse/docker-ansible:buster             |
+| fubarhouse  | fedora24   | fubarhouse/docker-ansible:fedora-24          |
+| fubarhouse  | fedora25   | fubarhouse/docker-ansible:fedora-25          |
+| fubarhouse  | fedora26   | fubarhouse/docker-ansible:fedora-26          |
+| fubarhouse  | fedora27   | fubarhouse/docker-ansible:fedora-27          |
+| fubarhouse  | fedora28   | fubarhouse/docker-ansible:fedora-28          |
+| fubarhouse  | ubuntu1204 | fubarhouse/docker-ansible:precise            |
+| fubarhouse  | ubuntu1210 | fubarhouse/docker-ansible:quantal            |
+| fubarhouse  | ubuntu1304 | fubarhouse/docker-ansible:raring             |
+| fubarhouse  | ubuntu1310 | fubarhouse/docker-ansible:saucy              |
+| fubarhouse  | ubuntu1404 | fubarhouse/docker-ansible:trusty             |
+| fubarhouse  | ubuntu1410 | fubarhouse/docker-ansible:utopic             |
+| fubarhouse  | ubuntu1504 | fubarhouse/docker-ansible:vivid              |
+| fubarhouse  | ubuntu1510 | fubarhouse/docker-ansible:wily               |
+| fubarhouse  | ubuntu1604 | fubarhouse/docker-ansible:xenial             |
+| fubarhouse  | ubuntu1610 | fubarhouse/docker-ansible:yakkety            |
+| fubarhouse  | ubuntu1704 | fubarhouse/docker-ansible:zesty              |
+| fubarhouse  | ubuntu1710 | fubarhouse/docker-ansible:artful             |
+| fubarhouse  | ubuntu1804 | fubarhouse/docker-ansible:bionic             |
+| geerlingguy | centos6    | geerlingguy/docker-centos6-ansible:latest    |
+| geerlingguy | centos7    | geerlingguy/docker-centos7-ansible:latest    |
+| geerlingguy | ubuntu1404 | geerlingguy/docker-ubuntu1404-ansible:latest |
+| geerlingguy | ubuntu1604 | geerlingguy/docker-ubuntu1604-ansible:latest |
+| geerlingguy | ubuntu1804 | geerlingguy/docker-ubuntu1804-ansible:latest |
 
 ## Interesting uses.
 
