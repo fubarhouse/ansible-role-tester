@@ -10,7 +10,7 @@ import (
 
 // runCmd represents the dockerRun command
 var runCmd = &cobra.Command{
-	Use:   "dockerRun",
+	Use:   "run",
 	Short: "Starts a container",
 	Long: `Start a container from a specified image.
 
