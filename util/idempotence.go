@@ -5,6 +5,8 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"fmt"
+	"strconv"
+	"errors"
 )
 
 // IdempotenceTest will run an Ansible playbook once and check the
@@ -45,26 +47,32 @@ func IdempotenceResult(output string) bool {
 
 	lines := strings.Split(output, "\n")
 
-	changed := ""
-	failed := ""
+	var changed int64
+	var failed int64
+	error := errors.New("empty error")
 
 	for _, line := range lines {
 		if strings.Contains(line, "ok=") && strings.Contains(line, "changed=") {
 			f := strings.Split(line, "=")
 			if strings.Contains(line, "changed=") {
-				changed = strings.Split(f[2], " ")[0]
+				changed, error = strconv.ParseInt(strings.Split(f[2], " ")[0], 0, 0)
 			}
 			if strings.Contains(line, "failed=") {
-				failed = strings.Split(f[4], " ")[0]
+				failed, error = strconv.ParseInt(strings.Split(f[4], " ")[0], 0, 0)
 			}
 		}
 	}
 
-	if failed != "0" {
+	if error != nil {
+		log.Errorln(error)
 		return false
 	}
 
-	if changed != "0" {
+	if failed > 0 {
+		return false
+	}
+
+	if changed > 0 {
 		return false
 	}
 
