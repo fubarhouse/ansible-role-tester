@@ -91,6 +91,10 @@ The following command will execute properly inside a [DrupalVM](https://github.c
 ansible-role-tester full -p ../provisioning/playbook.yml -u fubarhouse -t centos7 -r provisioning/requirements.yml 
 ````
 
+## Screenshots
+
+<img style="display:inline-block; width:100%; max-width:100%" src="https://github.com/fubarhouse/ansible-role-tester/raw/master/screenshot-1.png">
+
 ## License
 
 MIT / BSD
