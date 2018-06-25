@@ -26,11 +26,11 @@ required.
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		config := util.AnsibleConfig{
-			source,
-			destination,
-			requirements,
-			playbook,
-			verbose,
+			HostPath: source,
+			RemotePath: destination,
+			RequirementsFile: requirements,
+			PlaybookFile: playbook,
+			Verbose: verbose,
 		}
 
 		dist, e := util.GetDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)

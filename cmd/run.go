@@ -18,11 +18,11 @@ Volume mount locations image and id are all configurable.
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		config := util.AnsibleConfig{
-			source,
-			destination,
-			"",
-			"",
-			verbose,
+			HostPath: source,
+			RemotePath: destination,
+			RequirementsFile: "",
+			PlaybookFile: "",
+			Verbose: verbose,
 		}
 
 		dist, e := util.GetDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)
