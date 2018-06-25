@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-// docer_exec will execute a command to the docker binary
+// DockerExec will execute a command to the docker binary
 // and use the input args as arguments for that process.
 // You can request output be printed using the bool stdout.
 func DockerExec(args []string, stdout bool) (string, error) {
@@ -23,9 +23,7 @@ func DockerExec(args []string, stdout bool) (string, error) {
 	cmd.Args = []string{docker}
 
 	// Add our arguments to the command.
-	for _, arg := range args {
-		cmd.Args = append(cmd.Args, arg)
-	}
+	cmd.Args = append(cmd.Args, args...)
 
 	// If configured, print to os.Stdout.
 	if stdout {
@@ -51,13 +49,17 @@ func DockerExec(args []string, stdout bool) (string, error) {
 		log.Errorln(err)
 		return out.String(), err
 	}
-	cmd.Wait()
+
+	if err := cmd.Wait(); err != nil {
+		log.Errorln(err)
+		return out.String(), err
+	}
 
 	// Return out output as a string.
 	return out.String(), nil
 }
 
-// Checks if the specified container is running.
+// DockerCheck checks if the specified container is running.
 func (dist *Distribution) DockerCheck() bool {
 	// Users should not be able to re-dockerRun containers with the same name...
 	if dist.CID != "" {
@@ -82,7 +84,7 @@ func (dist *Distribution) DockerCheck() bool {
 	return false
 }
 
-// dockerRun will launch a new container (containerID) using
+// DockerRun will launch a new container (containerID) using
 // the fields in a AnsibleConfig struct.
 func (dist *Distribution) DockerRun(config *AnsibleConfig) {
 
@@ -93,27 +95,30 @@ func (dist *Distribution) DockerRun(config *AnsibleConfig) {
 	if !dist.DockerCheck() {
 		log.Printf("Running %v", dist.CID)
 
-		var run_options string
+		var runOptions string
 		if dist.Privileged {
-			run_options += fmt.Sprint("--privileged")
+			runOptions += fmt.Sprint("--privileged")
 		}
 
-		DockerExec([]string{
+		if _, err := DockerExec([]string{
 			"run",
 			"--detach",
 			fmt.Sprintf("--name=%v", dist.CID),
 			fmt.Sprintf("--volume=%v", dist.Family.Volume),
 			fmt.Sprintf("--volume=%v:%v", config.HostPath, config.RemotePath),
-			run_options,
+			runOptions,
 			dist.Container,
 			dist.Family.Initialise,
-		}, true)
+		}, true); err != nil {
+			log.Errorln(err)
+		}
+
 	} else {
 		log.Warnf("container %v is already running, skipping the dockerRun stage", dist.CID)
 	}
 }
 
-// Kill will stop the container and remove it.
+// DockerKill will stop the container and remove it.
 func (dist *Distribution) DockerKill() {
 
 	if dist.CID != "" {
@@ -121,16 +126,20 @@ func (dist *Distribution) DockerKill() {
 		if dist.DockerCheck() {
 
 			log.Printf("Stopping %v\n", dist.CID)
-			DockerExec([]string{
+			if _, err := DockerExec([]string{
 				"stop",
 				dist.CID,
-			}, false)
+			}, false); err != nil {
+				log.Errorln(err)
+			}
 
 			log.Printf("Removing %v\n", dist.CID)
-			DockerExec([]string{
+			if _, err := DockerExec([]string{
 				"rm",
 				dist.CID,
-			}, false)
+			}, false); err != nil {
+				log.Errorln(err)
+			}
 		} else {
 			log.Errorf("container %v is not running\n", dist.CID)
 		}

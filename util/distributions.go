@@ -45,29 +45,35 @@ type Family struct {
 	Volume string
 }
 
+// CentOS Family Distribution Identifier
 var CentOS = Family{
 	"CentOS",
 	"/sbin/init",
 	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
 }
 
+// Debian Family Distribution Identifier
 var Debian = Family{
 	"Debian",
 	"/bin/systemd",
 	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
 }
+
+// Fedora Family Distribution Identifier
 var Fedora = Family{
 	"Fedora",
 	"/usr/lib/systemd/systemd",
 	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
 }
+
+// Ubuntu Family Distribution Identifier
 var Ubuntu = Family{
 	"Ubuntu",
 	"/sbin/init",
 	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
 }
 
-// CentOS 6
+// CentOS6 Distribution declaration
 var CentOS6 = Distribution{
 	"",
 	"centos6",
@@ -78,7 +84,7 @@ var CentOS6 = Distribution{
 	CentOS,
 }
 
-// CentOS 7
+// CentOS7 Distribution declaration
 var CentOS7 = Distribution{
 	"",
 	"centos7",
@@ -89,7 +95,7 @@ var CentOS7 = Distribution{
 	CentOS,
 }
 
-// Wheezy
+// DebianWheezy Distribution declaration
 var DebianWheezy = Distribution{
 	"",
 	"wheezy",
@@ -100,7 +106,7 @@ var DebianWheezy = Distribution{
 	Debian,
 }
 
-// Jessie
+// DebianJessie Distribution declaration
 var DebianJessie = Distribution{
 	"",
 	"jessie",
@@ -111,7 +117,7 @@ var DebianJessie = Distribution{
 	Debian,
 }
 
-// Stretch
+// DebianStretch Distribution declaration
 var DebianStretch = Distribution{
 	"",
 	"stretch",
@@ -122,7 +128,7 @@ var DebianStretch = Distribution{
 	Debian,
 }
 
-// Buster
+// DebianBuster Distribution declaration
 var DebianBuster = Distribution{
 	"",
 	"buster",
@@ -133,7 +139,7 @@ var DebianBuster = Distribution{
 	Debian,
 }
 
-// Fedora 24
+// Fedora24 Distribution declaration
 var Fedora24 = Distribution{
 	"",
 	"fedora24",
@@ -144,7 +150,7 @@ var Fedora24 = Distribution{
 	Fedora,
 }
 
-// Fedora 25
+// Fedora25 Distribution declaration
 var Fedora25 = Distribution{
 	"",
 	"fedora25",
@@ -155,7 +161,7 @@ var Fedora25 = Distribution{
 	Fedora,
 }
 
-// Fedora 26
+// Fedora26 Distribution declaration
 var Fedora26 = Distribution{
 	"",
 	"fedora26",
@@ -166,7 +172,7 @@ var Fedora26 = Distribution{
 	Fedora,
 }
 
-// Fedora 27
+// Fedora27 Distribution declaration
 var Fedora27 = Distribution{
 	"",
 	"fedora27",
@@ -177,7 +183,7 @@ var Fedora27 = Distribution{
 	Fedora,
 }
 
-// Fedora 28
+// Fedora28 Distribution declaration
 var Fedora28 = Distribution{
 	"",
 	"fedora28",
@@ -188,7 +194,7 @@ var Fedora28 = Distribution{
 	Fedora,
 }
 
-// Ubuntu 12.04
+// Ubuntu1204 Distribution declaration
 var Ubuntu1204 = Distribution{
 	"",
 	"ubuntu1204",
@@ -199,7 +205,7 @@ var Ubuntu1204 = Distribution{
 	Ubuntu,
 }
 
-// Ubuntu 12.10
+// Ubuntu1210 Distribution declaration
 var Ubuntu1210 = Distribution{
 	"",
 	"ubuntu1210",
@@ -210,7 +216,7 @@ var Ubuntu1210 = Distribution{
 	Ubuntu,
 }
 
-// Ubuntu 13.04
+// Ubuntu1304 Distribution declaration
 var Ubuntu1304 = Distribution{
 	"",
 	"ubuntu1304",
@@ -221,7 +227,7 @@ var Ubuntu1304 = Distribution{
 	Ubuntu,
 }
 
-// Ubuntu 13.10
+// Ubuntu1310 Distribution declaration
 var Ubuntu1310 = Distribution{
 	"",
 	"ubuntu1310",
@@ -232,7 +238,7 @@ var Ubuntu1310 = Distribution{
 	Ubuntu,
 }
 
-// Ubuntu 14.04
+// Ubuntu1404 Distribution declaration
 var Ubuntu1404 = Distribution{
 	"",
 	"ubuntu1404",
@@ -243,7 +249,7 @@ var Ubuntu1404 = Distribution{
 	Ubuntu,
 }
 
-// Ubuntu 14.10
+// Ubuntu1410 Distribution declaration
 var Ubuntu1410 = Distribution{
 	"",
 	"ubuntu1410",
@@ -254,7 +260,7 @@ var Ubuntu1410 = Distribution{
 	Ubuntu,
 }
 
-// Ubuntu 15.04
+// Ubuntu1504 Distribution declaration
 var Ubuntu1504 = Distribution{
 	"",
 	"ubuntu1504",
@@ -265,7 +271,7 @@ var Ubuntu1504 = Distribution{
 	Ubuntu,
 }
 
-// Ubuntu 15.10
+// Ubuntu1510 Distribution declaration
 var Ubuntu1510 = Distribution{
 	"",
 	"ubuntu1510",
@@ -276,7 +282,7 @@ var Ubuntu1510 = Distribution{
 	Ubuntu,
 }
 
-// Ubuntu 16.04
+// Ubuntu1604 Distribution declaration
 var Ubuntu1604 = Distribution{
 	"",
 	"ubuntu1604",
@@ -287,7 +293,7 @@ var Ubuntu1604 = Distribution{
 	Ubuntu,
 }
 
-// Ubuntu 16.10
+// Ubuntu1610 Distribution declaration
 var Ubuntu1610 = Distribution{
 	"",
 	"ubuntu1610",
@@ -298,7 +304,7 @@ var Ubuntu1610 = Distribution{
 	Ubuntu,
 }
 
-// Ubuntu 17.04
+// Ubuntu1704 Distribution declaration
 var Ubuntu1704 = Distribution{
 	"",
 	"ubuntu1704",
@@ -309,7 +315,7 @@ var Ubuntu1704 = Distribution{
 	Ubuntu,
 }
 
-// Ubuntu 17.10
+// Ubuntu1710 Distribution declaration
 var Ubuntu1710 = Distribution{
 	"",
 	"ubuntu1710",
@@ -320,7 +326,7 @@ var Ubuntu1710 = Distribution{
 	Ubuntu,
 }
 
-// Ubuntu 18.04
+// Ubuntu1804 Distribution declaration
 var Ubuntu1804 = Distribution{
 	"",
 	"ubuntu1804",
@@ -331,7 +337,7 @@ var Ubuntu1804 = Distribution{
 	Ubuntu,
 }
 
-// CentOS 6
+// JeffCentOS6 Distribution declaration
 var JeffCentOS6 = Distribution{
 	"",
 	"centos6",
@@ -342,7 +348,7 @@ var JeffCentOS6 = Distribution{
 	CentOS,
 }
 
-// CentOS 7
+// JeffCentOS7 Distribution declaration
 var JeffCentOS7 = Distribution{
 	"",
 	"centos7",
@@ -353,7 +359,7 @@ var JeffCentOS7 = Distribution{
 	CentOS,
 }
 
-// Ubuntu 14.04
+// JeffUbuntu1404 Distribution declaration
 var JeffUbuntu1404 = Distribution{
 	"",
 	"ubuntu1404",
@@ -364,7 +370,7 @@ var JeffUbuntu1404 = Distribution{
 	Ubuntu,
 }
 
-// Ubuntu 16.04
+// JeffUbuntu1604 Distribution declaration
 var JeffUbuntu1604 = Distribution{
 	"",
 	"ubuntu1604",
@@ -375,7 +381,7 @@ var JeffUbuntu1604 = Distribution{
 	Ubuntu,
 }
 
-// Ubuntu 18.04
+// JeffUbuntu1804 Distribution declaration
 var JeffUbuntu1804 = Distribution{
 	"",
 	"ubuntu1804",
@@ -386,7 +392,7 @@ var JeffUbuntu1804 = Distribution{
 	Ubuntu,
 }
 
-// A slice of distributions.
+// Distributions is a slice of all distributions listed above.
 var Distributions = []Distribution{
 	CentOS6,
 	CentOS7,
@@ -419,7 +425,7 @@ var Distributions = []Distribution{
 	JeffUbuntu1804,
 }
 
-// getDistribution will get the distribution object to allow dynamic
+// GetDistribution will get the distribution object to allow dynamic
 // loading of different distributions. A suitable struct will be compiled
 // from the inputs and returned with an error if the specified container
 // cannot be found.

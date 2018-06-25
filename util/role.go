@@ -6,7 +6,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 )
 
-// Install will roleInstall the requirements if the file is configured.
+// RoleInstall will roleInstall the requirements if the file is configured.
 func (dist *Distribution) RoleInstall(config *AnsibleConfig) {
 
 	if config.RequirementsFile != "" {
@@ -37,6 +37,9 @@ func (dist *Distribution) RoleInstall(config *AnsibleConfig) {
 	}
 }
 
+// RoleSyntaxCheck will run a syntax check of the mounted volume inside
+// of the active container. This helps with pure isolation of the syntax
+// to separate it from other potential Ansible versions.
 func (dist *Distribution) RoleSyntaxCheck(config *AnsibleConfig) {
 
 	// Ansible syntax check.
@@ -63,6 +66,10 @@ func (dist *Distribution) RoleSyntaxCheck(config *AnsibleConfig) {
 		log.Infoln("Syntax check: PASS")
 	}
 }
+
+// RoleTest will execute the specified playbook inside
+// the container once. It will assemble a request to
+// pass into the Docker execution function DockerRun.
 func (dist *Distribution) RoleTest(config *AnsibleConfig) {
 
 	// Test role.
@@ -81,5 +88,7 @@ func (dist *Distribution) RoleTest(config *AnsibleConfig) {
 		args = append(args, "-vvvv")
 	}
 
-	DockerExec(args, true)
+	if _, err := DockerExec(args, true); err != nil {
+		log.Errorln(err)
+	}
 }

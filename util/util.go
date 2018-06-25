@@ -14,14 +14,16 @@ var (
 	// report a fatal error.
 	docker string
 
-	// docker_found is a simple boolean which is set
+	// dockerFound is a simple boolean which is set
 	// to false by default, it's used in addition to
 	// the docker string above to identify if the
 	// docker binary is found to simplify flow control.
-	docker_found = false
+	dockerFound = false
 
 )
 
+// AnsibleConfig represents a series of configuration options
+// for an ansible command to be executed.
 type AnsibleConfig struct {
 
 	// HostPath is the path to the directory containing the role
@@ -37,8 +39,8 @@ type AnsibleConfig struct {
 	// does not have a value (when value == "")
 	RequirementsFile string
 
-	// The path to the playbook located in the tests file relative to
-	// HostPath (ie HostPath/tests/playbook.yml)
+	// PlaybookFile is the path to the playbook located in the
+	// tests file relative to HostPath (ie HostPath/tests/playbook.yml)
 	PlaybookFile string
 
 	// verbose
@@ -51,10 +53,10 @@ type AnsibleConfig struct {
 // to use these functions to dockerRun Ansible tests.
 // Details on
 type Container interface {
-	dockerRun(config *AnsibleConfig)
-	dockerKill()
-	roleInstall(config *AnsibleConfig)
-	roleTest(config *AnsibleConfig)
+	DockerRun(config *AnsibleConfig)
+	DockerKill()
+	RoleInstall(config *AnsibleConfig)
+	RoleTest(config *AnsibleConfig)
 }
 
 func init() {
@@ -63,8 +65,8 @@ func init() {
 		log.Errorln("executable 'docker' was not found in $PATH.")
 	}
 	docker = d
-	docker_found = true
-	if !docker_found {
+	dockerFound = true
+	if !dockerFound {
 		log.Fatalln("you cannot use this application without having docker installed")
 	}
 }

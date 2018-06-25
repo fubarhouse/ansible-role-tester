@@ -7,6 +7,8 @@ import (
 	"fmt"
 )
 
+// IdempotenceTest will run an Ansible playbook once and check the
+// output for any changed or failed tasks as reported by Ansible.
 func (dist *Distribution) IdempotenceTest(config *AnsibleConfig) {
 
 	// Test role idempotence.
@@ -35,6 +37,10 @@ func (dist *Distribution) IdempotenceTest(config *AnsibleConfig) {
 	}
 }
 
+// IdempotenceResult will get the result of an idempotence test
+// which is the full output of a role, and it will identify each
+// of the applicable checks for idempotence. In this case, we
+// simply need the values of changed and failed and some basic logic.
 func IdempotenceResult(output string) bool {
 
 	lines := strings.Split(output, "\n")
