@@ -49,7 +49,7 @@ func IdempotenceResult(output string) bool {
 	failed := ""
 
 	for _, line := range lines {
-		if strings.Contains(line, "=") {
+		if strings.Contains(line, "ok=") && strings.Contains(line, "changed=") {
 			f := strings.Split(line, "=")
 			if strings.Contains(line, "changed=") {
 				changed = strings.Split(f[2], " ")[0]
