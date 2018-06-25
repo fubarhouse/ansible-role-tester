@@ -50,11 +50,12 @@ func DockerExec(args []string, stdout bool) (string, error) {
 		return out.String(), err
 	}
 
-	err := cmd.Wait();
-	if  err != nil {
-		log.Errorln(err)
-		return out.String(), err
-	}
+	cmd.Wait();
+	//err := cmd.Wait();
+	//if  err != nil {
+	//	log.Errorln(err)
+	//	return out.String(), err
+	//}
 
 	// Return out output as a string.
 	return out.String(), nil
