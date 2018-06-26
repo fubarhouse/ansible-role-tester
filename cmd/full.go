@@ -53,7 +53,11 @@ required.
 		}
 
 		dist.CID = containerID
-		dist.DockerRun(&config)
+
+		if !dist.DockerCheck() {
+			dist.DockerRun(&config)
+		}
+
 		dist.RoleInstall(&config)
 		dist.RoleSyntaxCheck(&config)
 		dist.RoleTest(&config)

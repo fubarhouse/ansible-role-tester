@@ -45,7 +45,12 @@ Volume mount locations image and id are all configurable.
 		}
 
 		dist.CID = containerID
-		dist.DockerRun(&config)
+
+		if dist.DockerCheck() {
+			dist.DockerRun(&config)
+		} else {
+			log.Warnf("Container %v is not currently running", dist.CID)
+		}
 
 	},
 }

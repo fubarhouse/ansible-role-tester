@@ -17,6 +17,7 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"github.com/fubarhouse/ansible-role-tester/util"
+	log "github.com/Sirupsen/logrus"
 	)
 
 // destroyCmd represents the destroy command
@@ -28,7 +29,11 @@ var destroyCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		dist, _ := util.GetDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)
 		dist.CID = containerID
-		dist.DockerKill()
+		if dist.DockerCheck() {
+			dist.DockerKill()
+		} else {
+			log.Warnf("Container %v is not currently running", dist.CID)
+		}
 	},
 }
 

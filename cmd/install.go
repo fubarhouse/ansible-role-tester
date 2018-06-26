@@ -16,8 +16,8 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-		"github.com/fubarhouse/ansible-role-tester/util"
-	"log"
+	"github.com/fubarhouse/ansible-role-tester/util"
+	log "github.com/Sirupsen/logrus"
 )
 
 // testCmd represents the test command
@@ -40,7 +40,12 @@ var installCmd = &cobra.Command{
 		}
 
 		dist.CID = containerID
-		dist.RoleInstall(&config)
+
+		if dist.DockerCheck() {
+			dist.RoleInstall(&config)
+		} else {
+			log.Warnf("Container %v is not currently running", dist.CID)
+		}
 	},
 }
 

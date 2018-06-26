@@ -17,6 +17,7 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"github.com/fubarhouse/ansible-role-tester/util"
+	log "github.com/Sirupsen/logrus"
 	)
 
 // shellCmd represents the shell command
@@ -31,7 +32,15 @@ var shellCmd = &cobra.Command{
 			containerID,
 			"bash",
 		}
-		util.DockerExec(arguments, true)
+
+		dist, _ := util.GetDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)
+		dist.CID = containerID
+
+		if dist.DockerCheck() {
+			util.DockerExec(arguments, true)
+		} else {
+			log.Warnf("Container %v is not currently running", dist.CID)
+		}
 	},
 }
 
