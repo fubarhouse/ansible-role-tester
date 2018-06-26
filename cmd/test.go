@@ -42,6 +42,7 @@ containers won't be removed after completion.`,
 		dist.CID = containerID
 
 		if dist.DockerCheck() {
+			dist.RoleSyntaxCheck(&config)
 			dist.RoleTest(&config)
 			dist.IdempotenceTest(&config)
 		} else {
@@ -54,6 +55,7 @@ func init() {
 	rootCmd.AddCommand(testCmd)
 	testCmd.Flags().StringVarP(&containerID, "name", "n", containerID, "Container ID")
 	testCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "Enable verbose mode for Ansible commands.")
+	testCmd.Flags().StringVarP(&playbook, "playbook", "p", "playbook.yml", "The filename of the playbook")
 
 	testCmd.MarkFlagRequired("name")
 }

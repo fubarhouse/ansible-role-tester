@@ -55,5 +55,6 @@ var installCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(installCmd)
 	installCmd.Flags().StringVarP(&containerID, "name", "n", containerID, "Container ID")
+	installCmd.Flags().StringVarP(&requirements, "requirements", "r", "", "Path to requirements file.")
 	installCmd.MarkFlagRequired("name")
 }
