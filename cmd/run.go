@@ -46,10 +46,13 @@ Volume mount locations image and id are all configurable.
 
 		dist.CID = containerID
 
-		if dist.DockerCheck() {
+		if !config.IsAnsibleRole() {
+			log.Fatalf("Path %v is not recognized as an Ansible role.", config.HostPath)
+		}
+		if !dist.DockerCheck() {
 			dist.DockerRun(&config)
 		} else {
-			log.Warnf("Container %v is not currently running", dist.CID)
+			log.Warnf("Container %v is already running", dist.CID)
 		}
 
 	},

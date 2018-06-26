@@ -54,6 +54,9 @@ required.
 
 		dist.CID = containerID
 
+		if !config.IsAnsibleRole() {
+			log.Fatalf("Path %v is not recognized as an Ansible role.", config.HostPath)
+		}
 		if !dist.DockerCheck() {
 			dist.DockerRun(&config)
 		}

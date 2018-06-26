@@ -5,9 +5,21 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"time"
+	"os"
 )
 
-// RoleInstall will roleInstall the requirements if the file is configured.
+// IsAnsibleRole will identify if the mounted directory is an Ansible role.
+func (config *AnsibleConfig) IsAnsibleRole() bool {
+	if _, err := os.Stat(config.HostPath + string(os.PathSeparator) + "tasks" + string(os.PathSeparator) + "main.yml"); os.IsNotExist(err) {
+		return false
+	}
+	if _, err := os.Stat(config.HostPath + string(os.PathSeparator) + "meta" + string(os.PathSeparator) + "main.yml"); os.IsNotExist(err) {
+		return false
+	}
+	return true
+}
+
+// RoleInstall will install the requirements if the file is configured.
 func (dist *Distribution) RoleInstall(config *AnsibleConfig) {
 
 	if config.RequirementsFile != "" {
