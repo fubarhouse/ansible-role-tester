@@ -27,8 +27,6 @@ Ansible-Role-Tester is based upon the [Cobra command line framework](https://git
 
 You can use it by typing `ansible-role-tester`, and by adding `-h` or `--help` you can see additional help.
 
-It's generally encouraged to use the `full` command as we're working on refining the others and the `full` command performs end-to-end tests including container creation, requirements, idempotence, role running and container removal.
-
 ## Selecting containers for testing
 
 By entering user names and distributions available declared in the `distributions.go` file, you can selectively target any of them.
@@ -94,6 +92,8 @@ ansible-role-tester full -p ../provisioning/playbook.yml -u fubarhouse -t centos
 ## Screenshots
 
 <img style="display:inline-block; width:100%; max-width:100%" src="https://github.com/fubarhouse/ansible-role-tester/raw/master/screenshot-1.png">
+<p>&nbsp;</p>
+<img style="display:inline-block; width:100%; max-width:100%" src="https://github.com/fubarhouse/ansible-role-tester/raw/master/screenshot-2.png">
 
 ## License
 
