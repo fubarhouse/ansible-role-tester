@@ -15,11 +15,11 @@
 package cmd
 
 import (
-	"github.com/Sirupsen/logrus"
-	"github.com/spf13/cobra"
+		"github.com/spf13/cobra"
 	"os"
 
 	"github.com/fubarhouse/ansible-role-tester/util"
+	"log"
 )
 
 // testCmd represents the test command
@@ -41,7 +41,7 @@ containers won't be removed after completion.`,
 
 		dist, e := util.GetDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)
 		if e != nil {
-			logrus.Errorln("Incompatible disribution was inputted, attempting autofix.")
+			log.Fatalln("Incompatible distribution was inputted.")
 		}
 
 		dist.CID = containerID
