@@ -105,7 +105,11 @@ ansible-role-tester full -p ../provisioning/playbook.yml -u fubarhouse -t centos
 
 ## License
 
-MIT / BSD
+Officially this repository is designed primarily for personal use.
+
+As GitHub and the license state permission must be sought for personal use, you may consider this as a waiver to that until this can be formally revised (hopefully pre-1.0).
+
+[Apache 2.0](https://github.com/fubarhouse/ansible-role-tester/blob/master/LICENSE)
 
 ## Author Information
 
