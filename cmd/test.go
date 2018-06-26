@@ -45,8 +45,6 @@ containers won't be removed after completion.`,
 		}
 
 		dist.CID = containerID
-		dist.RoleInstall(&config)
-		dist.RoleSyntaxCheck(&config)
 		dist.RoleTest(&config)
 		dist.IdempotenceTest(&config)
 	},
@@ -55,7 +53,7 @@ containers won't be removed after completion.`,
 func init() {
 	rootCmd.AddCommand(testCmd)
 	pwd, _ := os.Getwd()
-	testCmd.Flags().StringVarP(&containerID, "id", "n", containerID, "Container ID")
+	testCmd.Flags().StringVarP(&containerID, "name", "n", containerID, "Container ID")
 	testCmd.Flags().StringVarP(&source, "source", "s", pwd, "Location of the role to test")
 	testCmd.Flags().StringVarP(&destination, "destination", "d", "/etc/ansible/roles/role_under_test", "Location which the role will be mounted to")
 	testCmd.Flags().StringVarP(&requirements, "requirements", "r", "", "Path to requirements file.")
@@ -66,4 +64,6 @@ func init() {
 	testCmd.Flags().StringVarP(&image, "image", "i", "", "The image reference to use.")
 	testCmd.Flags().StringVarP(&user, "user", "u", "fubarhouse", "Selectively choose a compatible docker image from a specified user.")
 	testCmd.Flags().StringVarP(&distro, "distribution", "t", "ubuntu1804", "Selectively choose a compatible docker image of a specified distribution.")
+
+	testCmd.MarkFlagRequired("name")
 }

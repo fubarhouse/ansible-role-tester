@@ -16,6 +16,7 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
+	"github.com/fubarhouse/ansible-role-tester/util"
 	)
 
 // destroyCmd represents the destroy command
@@ -25,13 +26,14 @@ var destroyCmd = &cobra.Command{
 	Long: `Destroys a container with a specified ID
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		//util.DockerKill(containerID)
+		dist, _ := util.GetDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)
+		dist.CID = containerID
+		dist.DockerKill()
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(destroyCmd)
-	destroyCmd.Flags().StringVarP(&containerID, "id", "i", "", "Container ID")
-	destroyCmd.Flags().BoolVarP(&noOutput, "no-output", "o", false, "Hide output from all Docker commands")
-	destroyCmd.MarkFlagRequired("containerID")
+	destroyCmd.Flags().StringVarP(&containerID, "name", "n", "", "Container ID")
+	destroyCmd.MarkFlagRequired("name")
 }

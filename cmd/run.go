@@ -46,19 +46,20 @@ Volume mount locations image and id are all configurable.
 
 		dist.CID = containerID
 		dist.DockerRun(&config)
+
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(runCmd)
 	pwd, _ := os.Getwd()
-	runCmd.Flags().StringVarP(&containerID, "id", "n", containerID, "Container ID")
+	runCmd.Flags().StringVarP(&containerID, "name", "n", containerID, "Container ID")
 	runCmd.Flags().StringVarP(&source, "source", "s", pwd, "Location of the role to test")
 	runCmd.Flags().StringVarP(&destination, "destination", "d", "/etc/ansible/roles/role_under_test", "Location which the role will be mounted to")
-	runCmd.Flags().BoolVarP(&noOutput, "no-output", "o", false, "Hide output from all Docker commands")
-	runCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "Enable verbose mode for Ansible commands.")
 
 	runCmd.Flags().StringVarP(&image, "image", "i", "", "The image reference to use.")
 	runCmd.Flags().StringVarP(&user, "user", "u", "fubarhouse", "Selectively choose a compatible docker image from a specified user.")
 	runCmd.Flags().StringVarP(&distro, "distribution", "t", "ubuntu1804", "Selectively choose a compatible docker image of a specified distribution.")
+
+	runCmd.MarkFlagRequired("name")
 }
