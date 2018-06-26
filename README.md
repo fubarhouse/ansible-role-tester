@@ -1,6 +1,7 @@
 # Ansible Role Tester
 
 [![Build Status](https://img.shields.io/travis/fubarhouse/ansible-role-tester/master.svg?style=for-the-badge)](https://travis-ci.org/fubarhouse/ansible-role-tester)
+![stability-experimental](https://img.shields.io/badge/stability-experimental-orange.svg?style=for-the-badge)
 [![Go Report Card](https://goreportcard.com/badge/github.com/fubarhouse/ansible-role-tester?style=for-the-badge)](https://goreportcard.com/report/github.com/fubarhouse/ansible-role-tester)
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge)](https://raw.githubusercontent.com/fubarhouse/ansible-role-tester/master/LICENSE)
 
