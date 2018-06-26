@@ -7,7 +7,7 @@
 
 This program will allow users to mount [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html) roles into isolated Docker images for testing typically achieved using CI tools such as Travis CI.
 
-The goal of this project is to facilitate better localized testing testing, which will secure greater success rates before pushing to a public state.
+The goal of this project is to facilitate better localized testing, which will secure greater success rates for development and idempotence before pushing to a public state.
 
 This self-contained command line tool is inspired from a [script](https://gist.github.com/samdoran/c3d392ee697881fa33a1d1a65814a07b) by [@samdoran](https://github.com/samdoran) originally inspired by [@geerlingguy](https://github.com/geerlingguy)'s ansible role tester [script](https://gist.github.com/geerlingguy/73ef1e5ee45d8694570f334be385e181).
 
