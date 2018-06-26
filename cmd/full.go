@@ -49,7 +49,7 @@ required.
 
 		dist, e := util.GetDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)
 		if e != nil {
-			log.Errorln("Incompatible disribution was inputted, attempting autofix.")
+			log.Fatalln("Incompatible distribution was inputted.")
 		}
 
 		dist.CID = containerID
