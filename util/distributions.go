@@ -403,6 +403,50 @@ var JeffUbuntu1804 = Distribution{
 	Ubuntu,
 }
 
+// JeffDebian8 Distribution declaration
+var JeffDebian8 = Distribution{
+	"",
+	"debian8",
+	true,
+	"geerlingguy/docker-debian8-ansible:latest",
+	"geerlingguy",
+	"debian8",
+	Debian,
+}
+
+// JeffDebian9 Distribution declaration
+var JeffDebian9 = Distribution{
+	"",
+	"debian9",
+	true,
+	"geerlingguy/docker-debian9-ansible:latest",
+	"geerlingguy",
+	"debian9",
+	Debian,
+}
+
+// JeffFedora24 Distribution declaration
+var JeffFedora24 = Distribution{
+	"",
+	"fedora24",
+	true,
+	"geerlingguy/docker-fedora24-ansible:latest",
+	"geerlingguy",
+	"fedora24",
+	Fedora,
+}
+
+// JeffFedora27 Distribution declaration
+var JeffFedora27 = Distribution{
+	"",
+	"fedora27",
+	true,
+	"geerlingguy/docker-fedora27-ansible:latest",
+	"geerlingguy",
+	"fedora27",
+	Fedora,
+}
+
 // Distributions is a slice of all distributions listed above.
 var Distributions = []Distribution{
 	CentOS6,
@@ -435,6 +479,10 @@ var Distributions = []Distribution{
 	JeffUbuntu1404,
 	JeffUbuntu1604,
 	JeffUbuntu1804,
+	JeffDebian8,
+	JeffDebian9,
+	JeffFedora24,
+	JeffFedora27,
 }
 
 // GetDistribution will get the distribution object to allow dynamic
