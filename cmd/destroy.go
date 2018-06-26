@@ -15,10 +15,10 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
-	"github.com/fubarhouse/ansible-role-tester/util"
 	log "github.com/Sirupsen/logrus"
-	)
+	"github.com/fubarhouse/ansible-role-tester/util"
+	"github.com/spf13/cobra"
+)
 
 // destroyCmd represents the destroy command
 var destroyCmd = &cobra.Command{

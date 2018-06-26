@@ -15,16 +15,16 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
-	"github.com/fubarhouse/ansible-role-tester/util"
 	log "github.com/Sirupsen/logrus"
-	)
+	"github.com/fubarhouse/ansible-role-tester/util"
+	"github.com/spf13/cobra"
+)
 
 // shellCmd represents the shell command
 var shellCmd = &cobra.Command{
 	Use:   "shell",
 	Short: "Shells into a container",
-	Long: `Shell into a container after creation.`,
+	Long:  `Shell into a container after creation.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		arguments := []string{
 			"exec",

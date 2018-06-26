@@ -49,7 +49,7 @@ var (
 	// user is the optional argument which specifies the
 	// user associated to the selected distribution, which
 	// will be used to locate a Distribution with the same user.
-	user   string
+	user string
 
 	// distribution is the optional argument which specifies the
 	// distribution field associated to a Distribution, which is used
@@ -68,7 +68,7 @@ var (
 	rootCmd = &cobra.Command{
 		Use:   "ansible-test",
 		Short: "Run an Ansible role for testing purposes in an isolated environment.",
-		Long: ``,
+		Long:  ``,
 	}
 )
 

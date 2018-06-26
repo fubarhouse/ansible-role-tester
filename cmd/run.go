@@ -18,8 +18,8 @@ import (
 	"os"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/spf13/cobra"
 	util "github.com/fubarhouse/ansible-role-tester/util"
+	"github.com/spf13/cobra"
 )
 
 // runCmd represents the dockerRun command
@@ -32,11 +32,11 @@ Volume mount locations image and id are all configurable.
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		config := util.AnsibleConfig{
-			HostPath: source,
-			RemotePath: destination,
+			HostPath:         source,
+			RemotePath:       destination,
 			RequirementsFile: "",
-			PlaybookFile: "",
-			Verbose: verbose,
+			PlaybookFile:     "",
+			Verbose:          verbose,
 		}
 
 		dist, e := util.GetDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)

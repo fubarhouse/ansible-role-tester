@@ -18,8 +18,8 @@ import (
 	"os"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/spf13/cobra"
 	"github.com/fubarhouse/ansible-role-tester/util"
+	"github.com/spf13/cobra"
 )
 
 // fullCmd represents the full command
@@ -40,11 +40,11 @@ required.
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		config := util.AnsibleConfig{
-			HostPath: source,
-			RemotePath: destination,
+			HostPath:         source,
+			RemotePath:       destination,
 			RequirementsFile: requirements,
-			PlaybookFile: playbook,
-			Verbose: verbose,
+			PlaybookFile:     playbook,
+			Verbose:          verbose,
 		}
 
 		dist, e := util.GetDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)

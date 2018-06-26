@@ -15,10 +15,10 @@
 package cmd
 
 import (
-		"github.com/spf13/cobra"
-		"github.com/fubarhouse/ansible-role-tester/util"
-		log "github.com/Sirupsen/logrus"
-	)
+	log "github.com/Sirupsen/logrus"
+	"github.com/fubarhouse/ansible-role-tester/util"
+	"github.com/spf13/cobra"
+)
 
 // testCmd represents the test command
 var testCmd = &cobra.Command{
@@ -30,11 +30,11 @@ If container does not exist it will be created, however
 containers won't be removed after completion.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		config := util.AnsibleConfig{
-			HostPath: source,
-			RemotePath: destination,
+			HostPath:         source,
+			RemotePath:       destination,
 			RequirementsFile: requirements,
-			PlaybookFile: playbook,
-			Verbose: verbose,
+			PlaybookFile:     playbook,
+			Verbose:          verbose,
 		}
 
 		dist, _ := util.GetDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)
