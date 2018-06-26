@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	log "github.com/Sirupsen/logrus"
-	"time"
 	"os"
+	"time"
 )
 
 // IsAnsibleRole will identify if the mounted directory is an Ansible role.

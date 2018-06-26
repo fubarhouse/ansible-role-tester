@@ -1,16 +1,16 @@
 package util
 
 import (
-	"os/exec"
-	"strings"
-	"os"
 	"bytes"
 	"io"
+	"os"
+	"os/exec"
+	"strings"
 
-	log "github.com/Sirupsen/logrus"
 	"fmt"
-	"time"
+	log "github.com/Sirupsen/logrus"
 	"sync"
+	"time"
 )
 
 // DockerExec will execute a command to the docker binary

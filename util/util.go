@@ -1,9 +1,9 @@
 package util
 
 import (
-	"os/exec"
 	log "github.com/Sirupsen/logrus"
-		)
+	"os/exec"
+)
 
 var (
 
@@ -19,7 +19,6 @@ var (
 	// the docker string above to identify if the
 	// docker binary is found to simplify flow control.
 	dockerFound = false
-
 )
 
 // AnsibleConfig represents a series of configuration options
@@ -45,7 +44,6 @@ type AnsibleConfig struct {
 
 	// verbose
 	Verbose bool
-
 }
 
 // Container is an interface which allows

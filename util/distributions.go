@@ -40,9 +40,9 @@ type Distribution struct {
 // Family is a set of characteristics describing a family of linux distributions.
 // For example, ubuntu, centos, debian or fedora.
 type Family struct {
-	Name string
+	Name       string
 	Initialise string
-	Volume string
+	Volume     string
 }
 
 // CentOS Family Distribution Identifier
@@ -514,5 +514,5 @@ func GetDistribution(container, target, init, volume, user, distro string) (Dist
 	}
 
 	return Distribution{},
-	errors.New("could not find matching distribution")
+		errors.New("could not find matching distribution")
 }
