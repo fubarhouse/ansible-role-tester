@@ -10,6 +10,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"fmt"
 	"time"
+	"sync"
 )
 
 // DockerExec will execute a command to the docker binary
@@ -45,17 +46,13 @@ func DockerExec(args []string, stdout bool) (string, error) {
 	cmd.Stdout = multi
 
 	// Check the errors, return as needed.
+	var wg sync.WaitGroup
+	wg.Add(1)
 	if err := cmd.Run(); err != nil {
 		log.Errorln(err)
 		return out.String(), err
 	}
-
-	cmd.Wait();
-	//err := cmd.Wait();
-	//if  err != nil {
-	//	log.Errorln(err)
-	//	return out.String(), err
-	//}
+	wg.Done()
 
 	// Return out output as a string.
 	return out.String(), nil
