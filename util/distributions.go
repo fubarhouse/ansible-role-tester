@@ -359,7 +359,7 @@ var JeffCentOS7 = Distribution{
 	CentOS,
 }
 
-// JeffUbuntu1404 Distribution declaration
+// JeffUbuntu1204 Distribution declaration
 var JeffUbuntu1204 = Distribution{
 	"",
 	"ubuntu1204",
