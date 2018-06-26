@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"strconv"
 	"errors"
+	"time"
 )
 
 // IdempotenceTest will run an Ansible playbook once and check the
@@ -29,7 +30,9 @@ func (dist *Distribution) IdempotenceTest(config *AnsibleConfig) {
 		args = append(args, "-vvvv")
 	}
 
+	now := time.Now()
 	out, _ := DockerExec(args, true)
+	log.Infof("Idempotence was checked in %v", time.Since(now))
 
 	idempotence := IdempotenceResult(out)
 	if idempotence {

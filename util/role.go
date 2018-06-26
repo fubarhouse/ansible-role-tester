@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	log "github.com/Sirupsen/logrus"
+	"time"
 )
 
 // RoleInstall will roleInstall the requirements if the file is configured.
@@ -88,7 +89,9 @@ func (dist *Distribution) RoleTest(config *AnsibleConfig) {
 		args = append(args, "-vvvv")
 	}
 
+	now := time.Now()
 	if _, err := DockerExec(args, true); err != nil {
 		log.Errorln(err)
 	}
+	log.Infof("Role ran in %v", time.Since(now))
 }
