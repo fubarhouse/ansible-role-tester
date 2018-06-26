@@ -360,6 +360,17 @@ var JeffCentOS7 = Distribution{
 }
 
 // JeffUbuntu1404 Distribution declaration
+var JeffUbuntu1204 = Distribution{
+	"",
+	"ubuntu1204",
+	true,
+	"geerlingguy/docker-ubuntu1204-ansible:latest",
+	"geerlingguy",
+	"ubuntu1204",
+	Ubuntu,
+}
+
+// JeffUbuntu1404 Distribution declaration
 var JeffUbuntu1404 = Distribution{
 	"",
 	"ubuntu1404",
@@ -420,6 +431,7 @@ var Distributions = []Distribution{
 	Ubuntu1804,
 	JeffCentOS6,
 	JeffCentOS7,
+	JeffUbuntu1204,
 	JeffUbuntu1404,
 	JeffUbuntu1604,
 	JeffUbuntu1804,
