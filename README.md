@@ -78,6 +78,7 @@ ansible-role-tester full -i $IMAGE
 | fubarhouse  | ubuntu1704 | fubarhouse/docker-ansible:zesty              |
 | fubarhouse  | ubuntu1710 | fubarhouse/docker-ansible:artful             |
 | fubarhouse  | ubuntu1804 | fubarhouse/docker-ansible:bionic             |
+| fubarhouse  | ubuntu1810 | fubarhouse/docker-ansible:cosmic             |
 | geerlingguy | centos6    | geerlingguy/docker-centos6-ansible:latest    |
 | geerlingguy | centos7    | geerlingguy/docker-centos7-ansible:latest    |
 | geerlingguy | debian8    | geerlingguy/docker-debian8-ansible:latest    |

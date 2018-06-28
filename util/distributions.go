@@ -337,6 +337,17 @@ var Ubuntu1804 = Distribution{
 	Ubuntu,
 }
 
+// Ubuntu1804 Distribution declaration
+var Ubuntu1810 = Distribution{
+	"",
+	"ubuntu1810",
+	true,
+	"fubarhouse/docker-ansible:cosmic",
+	"fubarhouse",
+	"ubuntu1810",
+	Ubuntu,
+}
+
 // JeffCentOS6 Distribution declaration
 var JeffCentOS6 = Distribution{
 	"",
@@ -473,6 +484,7 @@ var Distributions = []Distribution{
 	Ubuntu1704,
 	Ubuntu1710,
 	Ubuntu1804,
+	Ubuntu1810,
 	JeffCentOS6,
 	JeffCentOS7,
 	JeffUbuntu1204,
