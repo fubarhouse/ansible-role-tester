@@ -1,0 +1,43 @@
+---
+
+go:
+  - 1.10
+python:
+  - 2.7
+
+services: docker
+
+env:
+  - distro: precise
+  - distro: quantal
+  - distro: raring
+  - distro: saucy
+  - distro: trusty
+  - distro: utopic
+  - distro: vivid
+  - distro: wily
+  - distro: xenial
+  - distro: yakkety
+  - distro: zesty
+  - distro: artful
+  - distro: bionic
+  - distro: cosmic
+  - distro: centos-6
+  - distro: centos-7
+  - distro: wheezy
+  - distro: jessie
+  - distro: stretch
+  - distro: buster
+  - distro: fedora-24
+  - distro: fedora-25
+  - distro: fedora-26
+  - distro: fedora-27
+  - distro: fedora-28
+
+before_install:
+  - go get -v github.com/fubarhouse/ansible-role-tester
+
+script:
+  - container_id=$(mktemp)
+  - git clone git@github.com:fubarhouse/ansible-role-golang.git /etc/ansible/roles/role_under_test
+  - ansible-role-tester full --playbook test.yml --user fubarhouse --distribution ${distro} --source /etc/ansible/roles/role_under_test
