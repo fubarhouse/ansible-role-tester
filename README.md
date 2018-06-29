@@ -100,9 +100,9 @@ ansible-role-tester full -p ../provisioning/playbook.yml -u fubarhouse -t centos
 
 ## Screenshots
 
-<img style="display:inline-block; width:100%; max-width:100%" src="https://github.com/fubarhouse/ansible-role-tester/raw/master/screenshot-1.png">
+<img style="display:inline-block; width:100%; max-width:100%" src="https://github.com/fubarhouse/ansible-role-tester/raw/master/img/screenshot-1.png">
 <p>&nbsp;</p>
-<img style="display:inline-block; width:100%; max-width:100%" src="https://github.com/fubarhouse/ansible-role-tester/raw/master/screenshot-2.png">
+<img style="display:inline-block; width:100%; max-width:100%" src="https://github.com/fubarhouse/ansible-role-tester/raw/master/img/screenshot-2.png">
 
 ## License
 
