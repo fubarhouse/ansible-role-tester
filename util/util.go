@@ -3,6 +3,7 @@ package util
 import (
 	log "github.com/Sirupsen/logrus"
 	"os/exec"
+	"os"
 )
 
 var (
@@ -61,10 +62,8 @@ func init() {
 	d, e := exec.LookPath("docker")
 	if e != nil {
 		log.Errorln("executable 'docker' was not found in $PATH.")
+		os.Exit(1)
 	}
 	docker = d
 	dockerFound = true
-	if !dockerFound {
-		log.Fatalln("you cannot use this application without having docker installed")
-	}
 }
