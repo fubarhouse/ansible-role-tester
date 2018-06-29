@@ -50,6 +50,7 @@ func DockerExec(args []string, stdout bool) (string, error) {
 	wg.Add(1)
 	if err := cmd.Run(); err != nil {
 		log.Errorln(err)
+		os.Exit(1)
 		return out.String(), err
 	}
 	wg.Done()
@@ -110,6 +111,7 @@ func (dist *Distribution) DockerRun(config *AnsibleConfig) {
 			dist.Family.Initialise,
 		}, true); err != nil {
 			log.Errorln(err)
+			os.Exit(1)
 		}
 
 	} else {
