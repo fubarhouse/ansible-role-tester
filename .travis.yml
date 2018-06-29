@@ -39,5 +39,5 @@ before_install:
 
 script:
   - container_id=$(mktemp)
-  - git clone git@github.com:fubarhouse/ansible-role-golang.git /etc/ansible/roles/role_under_test
-  - ansible-role-tester full --playbook test.yml --user fubarhouse --distribution ${distro} --source /etc/ansible/roles/role_under_test
+  - git clone git@github.com:fubarhouse/ansible-role-golang.git ${HOME}/my_role
+  - ansible-role-tester full --playbook test.yml --user fubarhouse --distribution ${distro} --source ${HOME}/my_role
