@@ -68,6 +68,12 @@ required.
 		if _, err := os.Stat(fp); os.IsNotExist(err) {
 			log.Fatalf("Specified playbook file %v does not exist.", fp)
 		}
+		if requirements != "" {
+			fr := fmt.Sprintf(source + "/" + requirements)
+			if _, err := os.Stat(fr); os.IsNotExist(err) {
+				log.Fatalf("Specified requirements file %v does not exist.", fr)
+			}
+		}
 		if !dist.DockerCheck() {
 			dist.DockerRun(&config)
 		}
