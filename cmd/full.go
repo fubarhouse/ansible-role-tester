@@ -26,6 +26,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/fubarhouse/ansible-role-tester/util"
 	"github.com/spf13/cobra"
+	"fmt"
 )
 
 // fullCmd represents the full command
@@ -62,6 +63,10 @@ required.
 
 		if !config.IsAnsibleRole() {
 			log.Fatalf("Path %v is not recognized as an Ansible role.", config.HostPath)
+		}
+		fp := fmt.Sprintf(source + "/tests/" + playbook)
+		if _, err := os.Stat(fp); os.IsNotExist(err) {
+			log.Fatalf("Specified playbook file %v does not exist.", fp)
 		}
 		if !dist.DockerCheck() {
 			dist.DockerRun(&config)
