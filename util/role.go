@@ -43,6 +43,7 @@ func (dist *Distribution) RoleInstall(config *AnsibleConfig) {
 		_, err := DockerExec(args, true)
 		if err != nil {
 			log.Errorln(err)
+			os.Exit(1)
 		}
 
 	} else {
@@ -75,6 +76,7 @@ func (dist *Distribution) RoleSyntaxCheck(config *AnsibleConfig) {
 	_, err := DockerExec(args, true)
 	if err != nil {
 		log.Errorln("Syntax check: FAIL")
+		os.Exit(1)
 	} else {
 		log.Infoln("Syntax check: PASS")
 	}
@@ -104,6 +106,7 @@ func (dist *Distribution) RoleTest(config *AnsibleConfig) {
 	now := time.Now()
 	if _, err := DockerExec(args, true); err != nil {
 		log.Errorln(err)
+		os.Exit(1)
 	}
 	log.Infof("Role ran in %v", time.Since(now))
 }

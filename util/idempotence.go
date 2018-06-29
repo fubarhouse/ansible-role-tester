@@ -8,6 +8,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"strconv"
 	"time"
+	"os"
 )
 
 // IdempotenceTest will run an Ansible playbook once and check the
@@ -39,6 +40,7 @@ func (dist *Distribution) IdempotenceTest(config *AnsibleConfig) {
 		log.Infoln("Idempotence test: PASS")
 	} else {
 		log.Errorln("Idempotence test: FAIL")
+		os.Exit(1)
 	}
 }
 
@@ -69,14 +71,17 @@ func IdempotenceResult(output string) bool {
 	if error != nil {
 		log.Errorln(error)
 		return false
+		os.Exit(1)
 	}
 
 	if failed > 0 {
 		return false
+		os.Exit(1)
 	}
 
 	if changed > 0 {
 		return false
+		os.Exit(1)
 	}
 
 	return true
