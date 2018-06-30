@@ -9,33 +9,61 @@ services: docker
 
 env:
   - distro: ubuntu1204
+    image: precise
   - distro: ubuntu1210
+    image: quantal
   - distro: ubuntu1304
+    image: raring
   - distro: ubuntu1310
+    image: saucy
   - distro: ubuntu1404
+    image: trusty
   - distro: ubuntu1410
+    image: utopic
   - distro: ubuntu1504
+    image: vivid
   - distro: ubuntu1510
+    image: wily
   - distro: ubuntu1604
+    image: xenial
   - distro: ubuntu1610
+    image: yakkety
   - distro: ubuntu1704
+    image: zesty
   - distro: ubuntu1710
+    image: artful
   - distro: ubuntu1804
+    image: bionic
   - distro: ubuntu1810
+    image: cosmic
   - distro: centos6
+    image: centos-6
   - distro: centos7
+    image: centos-7
   - distro: debian7
+    image: wheezy
   - distro: debian8
+    image: jessie
   - distro: debian9
+    image: stretch
   - distro: debian10
+    image: buster
   - distro: fedora24
+    image: fedora-24
   - distro: fedora25
+    image: fedora-25
   - distro: fedora26
+    image: fedora-26
   - distro: fedora27
+    image: fedora-27
   - distro: fedora28
+    image: fedora-28
 
 before_install:
   - go get -v github.com/fubarhouse/ansible-role-tester
+
+  # Separate image instantiation due to problems with Debian 7.
+  - docker pull fubarhouse/ansible-docker:${image}
 
 script:
   - container_id=$(date +%s)
