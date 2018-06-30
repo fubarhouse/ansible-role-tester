@@ -38,6 +38,10 @@ before_install:
   - go get -v github.com/fubarhouse/ansible-role-tester
 
 script:
-  - container_id=$(mktemp)
+  - container_id=$(date +%s)
   - git clone https://github.com/fubarhouse/ansible-role-golang.git ${HOME}/my_role
-  - travis_wait 30 ansible-role-tester full --playbook test.yml --user fubarhouse --distribution ${distro} --source ${HOME}/my_role
+  - ansible-role-tester run --name ${container_id} --user fubarhouse --distribution ${distro} --source ${HOME}/my_role
+  - ansible-role-tester install --name ${container_id}
+  - travis_wait 30 ansible-role-tester test --name ${container_id} --playbook test.yml
+  - ansible-role-tester destroy --name ${container_id}
+
