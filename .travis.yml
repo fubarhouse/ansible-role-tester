@@ -63,7 +63,7 @@ before_install:
   - go get -v github.com/fubarhouse/ansible-role-tester
 
   # Separate image instantiation due to problems with Debian 7.
-  - docker pull fubarhouse/docker-ansible:${image}
+  - docker pull fubarhouse/ansible-docker:${image}
 
 script:
   - container_id=$(date +%s)
