@@ -497,6 +497,11 @@ var Distributions = []Distribution{
 	JeffFedora27,
 }
 
+// NewCustomDistribution will return an empty distribution.
+func NewCustomDistribution() *Distribution {
+	return new(Distribution)
+}
+
 // GetDistribution will get the distribution object to allow dynamic
 // loading of different distributions. A suitable struct will be compiled
 // from the inputs and returned with an error if the specified container
