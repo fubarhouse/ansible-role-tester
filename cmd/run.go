@@ -70,6 +70,10 @@ func init() {
 	runCmd.Flags().StringVarP(&containerID, "name", "n", containerID, "Container ID")
 	runCmd.Flags().StringVarP(&source, "source", "s", pwd, "Location of the role to test")
 	runCmd.Flags().StringVarP(&destination, "destination", "d", "/etc/ansible/roles/role_under_test", "Location which the role will be mounted to")
+	runCmd.Flags().BoolVarP(&custom, "custom", "c", false, "Provide my own custom distribution.")
+
+	runCmd.Flags().StringVarP(&image, "initialise", "a", "/bin/systemd", "The initialise command for the image")
+	runCmd.Flags().StringVarP(&volume, "volume", "l", "/sys/fs/cgroup:/sys/fs/cgroup:ro", "The volume argument for the image")
 
 	runCmd.Flags().StringVarP(&image, "image", "i", "", "The image reference to use.")
 	runCmd.Flags().StringVarP(&user, "user", "u", "fubarhouse", "Selectively choose a compatible docker image from a specified user.")
