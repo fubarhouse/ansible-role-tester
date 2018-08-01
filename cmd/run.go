@@ -24,8 +24,10 @@ import (
 	"os"
 
 	log "github.com/Sirupsen/logrus"
-	util "github.com/fubarhouse/ansible-role-tester/util"
+	"github.com/fubarhouse/ansible-role-tester/util"
 	"github.com/spf13/cobra"
+	"fmt"
+	"strings"
 )
 
 // runCmd represents the dockerRun command
@@ -45,9 +47,29 @@ Volume mount locations image and id are all configurable.
 			Verbose:          verbose,
 		}
 
-		dist, e := util.GetDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)
-		if e != nil {
-			log.Fatalln("Incompatible distribution was inputted.")
+		var dist util.Distribution
+
+		if !custom {
+			var e error
+			dist, e = util.GetDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)
+			if e != nil {
+				log.Fatalln("Incompatible distribution was inputted.")
+			}
+		} else {
+			dist = *util.NewCustomDistribution()
+			user := strings.Split(image, "/")[0]
+			container := strings.Split(image, ":")[0]
+			container = strings.Split(container, "/")[1]
+			tag := strings.Split(image, ":")[1]
+
+			dist.Privileged = true
+			util.CustomDistributionValueSet(&dist, "Name", containerID)
+			//util.CustomValueSet(&dist, "Privileged", "true")
+			util.CustomDistributionValueSet(&dist, "Container", fmt.Sprintf("%s/%s:%s", user, image, tag))
+			util.CustomDistributionValueSet(&dist, "User", user)
+			util.CustomDistributionValueSet(&dist, "Distro", image)
+			util.CustomFamilyValueSet(&dist.Family, "Initialise", initialise)
+			util.CustomFamilyValueSet(&dist.Family, "Volume", volume)
 		}
 
 		dist.CID = containerID
