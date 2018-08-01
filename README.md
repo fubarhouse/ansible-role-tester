@@ -46,12 +46,12 @@ In the event you need to use an unsupported image, you can specify `--custom` wi
 
 Example of usage:
 
-````
+``sh
 # Example:
 ansible-role-tester full --custom --image $IMAGE --initialise $INIT --volume $VOLUME
 # Practical example:
 ansible-role-tester full --custom --image webdevops/ansible:latest --initialise /bin/systemd --volume /sys/fs/cgroup:/sys/fs/cgroup:ro
-````
+``
 
 ### Available distributions
 
