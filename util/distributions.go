@@ -6,6 +6,8 @@ import (
 	"strings"
 
 	log "github.com/Sirupsen/logrus"
+	"reflect"
+	"fmt"
 )
 
 // A Distribution declares the options to
@@ -500,6 +502,30 @@ var Distributions = []Distribution{
 // NewCustomDistribution will return an empty distribution.
 func NewCustomDistribution() *Distribution {
 	return new(Distribution)
+}
+
+// CustomDistributionValueSet will set a field to a given value from a Distribution.
+func CustomDistributionValueSet(dist *Distribution, key, value string) error {
+	v := reflect.ValueOf(dist).Elem().FieldByName(key)
+	if v.IsValid() {
+		v.SetString(value)
+		return nil
+	} else {
+		return errors.New("invalid key/value pair was specified")
+	}
+}
+
+// CustomDistributionValueGet will get a field value from a Distribution.
+func CustomDistributionValueGet(dist *Distribution, key string) (error, string) {
+	s := reflect.ValueOf(dist).Elem()
+	typeOfT := s.Type()
+	for i := 0; i < s.NumField(); i++ {
+		if typeOfT.Field(i).Name == key {
+			f := s.Field(i)
+			return nil, fmt.Sprintf("%s", f.Interface())
+		}
+	}
+	return errors.New("could not find the specified field"), ""
 }
 
 // GetDistribution will get the distribution object to allow dynamic
