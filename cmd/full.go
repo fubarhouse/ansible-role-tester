@@ -73,7 +73,7 @@ required.
 			dist.Privileged = true
 			util.CustomDistributionValueSet(&dist, "Name", containerID)
 			//util.CustomValueSet(&dist, "Privileged", "true")
-			util.CustomDistributionValueSet(&dist, "Container", fmt.Sprintf("%s/%s:%s", user, image, tag))
+			util.CustomDistributionValueSet(&dist, "Container", fmt.Sprintf("%s/%s:%s", user, container, tag))
 			util.CustomDistributionValueSet(&dist, "User", user)
 			util.CustomDistributionValueSet(&dist, "Distro", image)
 			util.CustomFamilyValueSet(&dist.Family, "Initialise", initialise)
