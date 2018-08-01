@@ -42,12 +42,15 @@ ansible-role-tester full -u $USER -t $DISTRO
 
 ### Custom containers
 
-Currently you are able to declare all parameters for the containers other than the intialize command and volume parameter.
+In the event you need to use an unsupported image, you can specify `--custom` with the `--image`, `--intialiase` and the `--volume` flag which have sensible defaults.
 
-You can do that with the following example:
+Example of usage:
 
 ````
-ansible-role-tester full -i $IMAGE
+# Example:
+ansible-role-tester full --custom --image $IMAGE --initialise $INIT --volume $VOLUME
+# Practical example:
+ansible-role-tester full --custom --image webdevops/ansible:latest --initialise /bin/systemd --volume /sys/fs/cgroup:/sys/fs/cgroup:ro
 ````
 
 ### Available distributions
