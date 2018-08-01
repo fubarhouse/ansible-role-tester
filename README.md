@@ -42,7 +42,7 @@ ansible-role-tester full -u $USER -t $DISTRO
 
 ### Custom containers
 
-In the event you need to use an unsupported image, you can specify `--custom` with the `--image`, `--intialiase` and the `--volume` flag which have sensible defaults.
+In the event you need to use an unsupported image, you can specify `--custom` with the `--image`, `--initialise` and the `--volume` flag which have sensible defaults.
 
 Example of usage:
 
