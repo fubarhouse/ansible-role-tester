@@ -120,7 +120,7 @@ func init() {
 	fullCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "Enable verbose mode for Ansible commands.")
 	fullCmd.Flags().BoolVarP(&custom, "custom", "c", false, "Provide my own custom distribution.")
 
-	fullCmd.Flags().StringVarP(&image, "initialise", "a", "/bin/systemd", "The initialise command for the image")
+	fullCmd.Flags().StringVarP(&initialise, "initialise", "a", "/bin/systemd", "The initialise command for the image")
 	fullCmd.Flags().StringVarP(&volume, "volume", "l", "/sys/fs/cgroup:/sys/fs/cgroup:ro", "The volume argument for the image")
 
 	fullCmd.Flags().StringVarP(&image, "image", "i", "", "The image reference to use.")
