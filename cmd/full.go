@@ -27,6 +27,7 @@ import (
 	"github.com/fubarhouse/ansible-role-tester/util"
 	"github.com/spf13/cobra"
 	"fmt"
+	"strings"
 )
 
 // fullCmd represents the full command
@@ -54,9 +55,29 @@ required.
 			Verbose:          verbose,
 		}
 
-		dist, e := util.GetDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)
-		if e != nil {
-			log.Fatalln("Incompatible distribution was inputted.")
+		var dist util.Distribution
+
+		if !custom {
+			var e error
+			dist, e = util.GetDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)
+			if e != nil {
+				log.Fatalln("Incompatible distribution was inputted.")
+			}
+		} else {
+			dist = *util.NewCustomDistribution()
+			user := strings.Split(image, "/")[0]
+			container := strings.Split(image, ":")[0]
+			container = strings.Split(container, "/")[1]
+			tag := strings.Split(image, ":")[1]
+
+			dist.Privileged = true
+			util.CustomDistributionValueSet(&dist, "Name", containerID)
+			//util.CustomValueSet(&dist, "Privileged", "true")
+			util.CustomDistributionValueSet(&dist, "Container", fmt.Sprintf("%s/%s:%s", user, container, tag))
+			util.CustomDistributionValueSet(&dist, "User", user)
+			util.CustomDistributionValueSet(&dist, "Distro", image)
+			util.CustomFamilyValueSet(&dist.Family, "Initialise", initialise)
+			util.CustomFamilyValueSet(&dist.Family, "Volume", volume)
 		}
 
 		dist.CID = containerID
@@ -97,6 +118,10 @@ func init() {
 	fullCmd.Flags().StringVarP(&playbook, "playbook", "p", "playbook.yml", "The filename of the playbook")
 	fullCmd.Flags().BoolVarP(&noOutput, "no-output", "o", false, "Hide output from all Docker commands")
 	fullCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "Enable verbose mode for Ansible commands.")
+	fullCmd.Flags().BoolVarP(&custom, "custom", "c", false, "Provide my own custom distribution.")
+
+	fullCmd.Flags().StringVarP(&initialise, "initialise", "a", "/bin/systemd", "The initialise command for the image")
+	fullCmd.Flags().StringVarP(&volume, "volume", "l", "/sys/fs/cgroup:/sys/fs/cgroup:ro", "The volume argument for the image")
 
 	fullCmd.Flags().StringVarP(&image, "image", "i", "", "The image reference to use.")
 	fullCmd.Flags().StringVarP(&user, "user", "u", "fubarhouse", "Selectively choose a compatible docker image from a specified user.")

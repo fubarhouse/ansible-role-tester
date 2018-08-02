@@ -45,6 +45,9 @@ var (
 	// default: /etc/ansible/roles/role_under_test
 	destination string
 
+	// initialise is the initialisation command for custom distributions
+	initialise string
+
 	// Path to the requirements file relative to source.
 	requirements string
 
@@ -69,6 +72,12 @@ var (
 	// verbose is a boolean indicating all Ansible commands should
 	// be dockerRun with the --verbose flag.
 	verbose = false
+
+	// volume is the initialisation command for custom distributions
+	volume string
+
+	// custom is a boolean to indicate a custom distribution should be used.
+	custom = false
 
 	// rootCmd represents the base command when called without any subcommands
 	rootCmd = &cobra.Command{
