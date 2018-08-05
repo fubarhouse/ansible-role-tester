@@ -40,14 +40,24 @@ func (dist *Distribution) RoleInstall(config *AnsibleConfig) {
 			args = append(args, "-vvvv")
 		}
 
-		_, err := DockerExec(args, true)
-		if err != nil {
-			log.Errorln(err)
-			os.Exit(1)
+		if !config.Quiet {
+			_, err := DockerExec(args, true)
+			if err != nil {
+				log.Errorln(err)
+				os.Exit(1)
+			}
+		} else {
+			_, err := DockerExec(args, false)
+			if err != nil {
+				log.Errorln(err)
+				os.Exit(1)
+			}
 		}
 
 	} else {
-		log.Warnln("Requirements file is not configured (empty/null), skipping...")
+		if !config.Quiet {
+			log.Warnln("Requirements file is not configured (empty/null), skipping...")
+		}
 	}
 }
 
@@ -57,7 +67,9 @@ func (dist *Distribution) RoleInstall(config *AnsibleConfig) {
 func (dist *Distribution) RoleSyntaxCheck(config *AnsibleConfig) {
 
 	// Ansible syntax check.
-	log.Infoln("Checking role syntax...")
+	if !config.Quiet {
+		log.Infoln("Checking role syntax...")
+	}
 
 	args := []string{
 		"exec",
@@ -73,12 +85,19 @@ func (dist *Distribution) RoleSyntaxCheck(config *AnsibleConfig) {
 		args = append(args, "-vvvv")
 	}
 
-	_, err := DockerExec(args, true)
-	if err != nil {
-		log.Errorln("Syntax check: FAIL")
-		os.Exit(1)
+	if !config.Quiet {
+		_, err := DockerExec(args, true)
+		if err != nil {
+			log.Errorln("Syntax check: FAIL")
+			os.Exit(1)
+		} else {
+			log.Infoln("Syntax check: PASS")
+		}
 	} else {
-		log.Infoln("Syntax check: PASS")
+		_, err := DockerExec(args, false)
+		if err != nil {
+			os.Exit(1)
+		}
 	}
 }
 
@@ -88,7 +107,9 @@ func (dist *Distribution) RoleSyntaxCheck(config *AnsibleConfig) {
 func (dist *Distribution) RoleTest(config *AnsibleConfig) {
 
 	// Test role.
-	log.Infoln("Running the role...")
+	if !config.Quiet {
+		log.Infoln("Running the role...")
+	}
 
 	args := []string{
 		"exec",
@@ -104,9 +125,18 @@ func (dist *Distribution) RoleTest(config *AnsibleConfig) {
 	}
 
 	now := time.Now()
-	if _, err := DockerExec(args, true); err != nil {
-		log.Errorln(err)
-		os.Exit(1)
+	if !config.Quiet {
+		if _, err := DockerExec(args, true); err != nil {
+			log.Errorln(err)
+			os.Exit(1)
+		}
+	} else {
+		if _, err := DockerExec(args, false); err != nil {
+			log.Errorln(err)
+			os.Exit(1)
+		}
 	}
-	log.Infof("Role ran in %v", time.Since(now))
+	if !config.Quiet {
+		log.Infof("Role ran in %v", time.Since(now))
+	}
 }

@@ -53,7 +53,9 @@ containers won't be removed after completion.`,
 			dist.RoleTest(&config)
 			dist.IdempotenceTest(&config)
 		} else {
-			log.Warnf("Container %v is not currently running", dist.CID)
+			if !quiet {
+				log.Warnf("Container %v is not currently running", dist.CID)
+			}
 		}
 	},
 }

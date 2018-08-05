@@ -93,7 +93,9 @@ func (dist *Distribution) DockerRun(config *AnsibleConfig) {
 	}
 
 	if !dist.DockerCheck() {
-		log.Printf("Running %v", dist.CID)
+		if !config.Quiet {
+			log.Printf("Running %v", dist.CID)
+		}
 
 		var runOptions string
 		if dist.Privileged {
@@ -115,18 +117,22 @@ func (dist *Distribution) DockerRun(config *AnsibleConfig) {
 		}
 
 	} else {
-		log.Warnf("container %v is already running, skipping the dockerRun stage", dist.CID)
+		if !config.Quiet {
+			log.Warnf("container %v is already running, skipping the dockerRun stage", dist.CID)
+		}
 	}
 }
 
 // DockerKill will stop the container and remove it.
-func (dist *Distribution) DockerKill() {
+func (dist *Distribution) DockerKill(quiet bool) {
 
 	if dist.CID != "" {
 
 		if dist.DockerCheck() {
 
-			log.Printf("Stopping %v\n", dist.CID)
+			if !quiet {
+				log.Printf("Stopping %v\n", dist.CID)
+			}
 			if _, err := DockerExec([]string{
 				"stop",
 				dist.CID,
@@ -134,7 +140,9 @@ func (dist *Distribution) DockerKill() {
 				log.Errorln(err)
 			}
 
-			log.Printf("Removing %v\n", dist.CID)
+			if !quiet {
+				log.Printf("Removing %v\n", dist.CID)
+			}
 			if _, err := DockerExec([]string{
 				"rm",
 				dist.CID,
@@ -142,11 +150,15 @@ func (dist *Distribution) DockerKill() {
 				log.Errorln(err)
 			}
 		} else {
-			log.Errorf("container %v is not running\n", dist.CID)
+			if !quiet {
+				log.Errorf("container %v is not running\n", dist.CID)
+			}
 		}
 
 	} else {
-		log.Errorln("container name was not specified")
+		if !quiet {
+			log.Errorln("container name was not specified")
+		}
 	}
 
 }

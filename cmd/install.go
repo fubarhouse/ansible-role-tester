@@ -42,19 +42,21 @@ var installCmd = &cobra.Command{
 		}
 
 		dist, e := util.GetDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)
-		if e != nil {
+		if e != nil && !quiet {
 			log.Fatalln("Incompatible distribution was inputted.")
 		}
 
 		dist.CID = containerID
 
-		if !config.IsAnsibleRole() {
+		if !config.IsAnsibleRole() && !quiet {
 			log.Fatalf("Path %v is not recognized as an Ansible role.", config.HostPath)
 		}
 		if dist.DockerCheck() {
 			dist.RoleInstall(&config)
 		} else {
-			log.Warnf("Container %v is not currently running", dist.CID)
+			if !quiet {
+				log.Warnf("Container %v is not currently running", dist.CID)
+			}
 		}
 	},
 }

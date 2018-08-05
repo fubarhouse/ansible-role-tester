@@ -36,9 +36,11 @@ var destroyCmd = &cobra.Command{
 		dist, _ := util.GetDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)
 		dist.CID = containerID
 		if dist.DockerCheck() {
-			dist.DockerKill()
+			dist.DockerKill(quiet)
 		} else {
-			log.Warnf("Container %v is not currently running", dist.CID)
+			if !quiet {
+				log.Warnf("Container %v is not currently running", dist.CID)
+			}
 		}
 	},
 }
