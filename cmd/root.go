@@ -69,6 +69,10 @@ var (
 	// should remain completely hidden from Stdout.
 	noOutput = false
 
+	// quiet simply implies that no output should be presented
+	// through ansible, docker or reporting mechanisms.
+	quiet = true
+
 	// verbose is a boolean indicating all Ansible commands should
 	// be dockerRun with the --verbose flag.
 	verbose = false
