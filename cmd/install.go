@@ -24,6 +24,8 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/fubarhouse/ansible-role-tester/util"
 	"github.com/spf13/cobra"
+	"fmt"
+	"os"
 )
 
 // testCmd represents the test command
@@ -51,6 +53,12 @@ var installCmd = &cobra.Command{
 			log.Fatalf("Path %v is not recognized as an Ansible role.", config.HostPath)
 		}
 		if dist.DockerCheck() {
+			if requirements != "" {
+				fr := fmt.Sprintf(source + "/" + requirements)
+				if _, err := os.Stat(fr); os.IsNotExist(err) {
+					log.Fatalf("Specified requirements file %v does not exist.", fr)
+				}
+			}
 			dist.RoleInstall(&config)
 		} else {
 			log.Warnf("Container %v is not currently running", dist.CID)
