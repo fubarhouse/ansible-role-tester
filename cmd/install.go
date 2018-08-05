@@ -38,6 +38,7 @@ var installCmd = &cobra.Command{
 			RequirementsFile: requirements,
 			PlaybookFile:     playbook,
 			Verbose:          verbose,
+			Quiet:			  quiet,
 		}
 
 		dist, e := util.GetDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)

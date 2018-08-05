@@ -45,6 +45,7 @@ Volume mount locations image and id are all configurable.
 			RequirementsFile: "",
 			PlaybookFile:     "",
 			Verbose:          verbose,
+			Quiet:			  quiet,
 		}
 
 		var dist util.Distribution

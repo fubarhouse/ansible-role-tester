@@ -53,6 +53,7 @@ required.
 			RequirementsFile: requirements,
 			PlaybookFile:     playbook,
 			Verbose:          verbose,
+			Quiet:			  quiet,
 		}
 
 		var dist util.Distribution
