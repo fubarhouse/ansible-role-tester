@@ -93,6 +93,7 @@ func init() {
 	runCmd.Flags().StringVarP(&source, "source", "s", pwd, "Location of the role to test")
 	runCmd.Flags().StringVarP(&destination, "destination", "d", "/etc/ansible/roles/role_under_test", "Location which the role will be mounted to")
 	runCmd.Flags().BoolVarP(&custom, "custom", "c", false, "Provide my own custom distribution.")
+	runCmd.Flags().BoolVarP(&quiet, "quiet", "q", false, "Enable quiet mode")
 
 	runCmd.Flags().StringVarP(&initialise, "initialise", "a", "/bin/systemd", "The initialise command for the image")
 	runCmd.Flags().StringVarP(&volume, "volume", "l", "/sys/fs/cgroup:/sys/fs/cgroup:ro", "The volume argument for the image")

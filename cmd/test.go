@@ -62,6 +62,7 @@ func init() {
 	testCmd.Flags().StringVarP(&containerID, "name", "n", containerID, "Container ID")
 	testCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "Enable verbose mode for Ansible commands.")
 	testCmd.Flags().StringVarP(&playbook, "playbook", "p", "playbook.yml", "The filename of the playbook")
+	testCmd.Flags().BoolVarP(&quiet, "quiet", "q", false, "Enable quiet mode")
 
 	testCmd.MarkFlagRequired("name")
 }

@@ -46,5 +46,6 @@ var destroyCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(destroyCmd)
 	destroyCmd.Flags().StringVarP(&containerID, "name", "n", "", "Container ID")
+	destroyCmd.Flags().BoolVarP(&quiet, "quiet", "q", false, "Enable quiet mode")
 	destroyCmd.MarkFlagRequired("name")
 }

@@ -62,5 +62,6 @@ func init() {
 	rootCmd.AddCommand(installCmd)
 	installCmd.Flags().StringVarP(&containerID, "name", "n", containerID, "Container ID")
 	installCmd.Flags().StringVarP(&requirements, "requirements", "r", "", "Path to requirements file.")
+	installCmd.Flags().BoolVarP(&quiet, "quiet", "q", false, "Enable quiet mode")
 	installCmd.MarkFlagRequired("name")
 }
