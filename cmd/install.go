@@ -38,22 +38,25 @@ var installCmd = &cobra.Command{
 			RequirementsFile: requirements,
 			PlaybookFile:     playbook,
 			Verbose:          verbose,
+			Quiet:			  quiet,
 		}
 
 		dist, e := util.GetDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)
-		if e != nil {
+		if e != nil && !quiet {
 			log.Fatalln("Incompatible distribution was inputted.")
 		}
 
 		dist.CID = containerID
 
-		if !config.IsAnsibleRole() {
+		if !config.IsAnsibleRole() && !quiet {
 			log.Fatalf("Path %v is not recognized as an Ansible role.", config.HostPath)
 		}
 		if dist.DockerCheck() {
 			dist.RoleInstall(&config)
 		} else {
-			log.Warnf("Container %v is not currently running", dist.CID)
+			if !quiet {
+				log.Warnf("Container %v is not currently running", dist.CID)
+			}
 		}
 	},
 }
@@ -62,5 +65,6 @@ func init() {
 	rootCmd.AddCommand(installCmd)
 	installCmd.Flags().StringVarP(&containerID, "name", "n", containerID, "Container ID")
 	installCmd.Flags().StringVarP(&requirements, "requirements", "r", "", "Path to requirements file.")
+	installCmd.Flags().BoolVarP(&quiet, "quiet", "q", false, "Enable quiet mode")
 	installCmd.MarkFlagRequired("name")
 }

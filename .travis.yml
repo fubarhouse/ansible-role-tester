@@ -39,9 +39,9 @@ before_install:
 script:
   - container_id=$(date +%s)
   - directory=${HOME}/my_role
-  - git clone https://github.com/fubarhouse/ansible-role-golang.git ${directory}
+  - git clone https://github.com/fubarhouse/ansible-role-curl.git ${directory}
   - cd ${directory} && ansible-role-tester run --name ${container_id} --user fubarhouse --distribution ${distro} --source ${HOME}/my_role
   - cd ${directory} && ansible-role-tester install --name ${container_id}
-  - cd ${directory} && travis_wait 30 ansible-role-tester test --name ${container_id} --playbook test.yml
+  - cd ${directory} && travis_wait 30 ansible-role-tester test --name ${container_id} --playbook test-package.yml
   - cd ${directory} && ansible-role-tester destroy --name ${container_id}
 

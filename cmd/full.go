@@ -53,6 +53,7 @@ required.
 			RequirementsFile: requirements,
 			PlaybookFile:     playbook,
 			Verbose:          verbose,
+			Quiet:			  quiet,
 		}
 
 		var dist util.Distribution
@@ -60,7 +61,7 @@ required.
 		if !custom {
 			var e error
 			dist, e = util.GetDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)
-			if e != nil {
+			if e != nil && !quiet {
 				log.Fatalln("Incompatible distribution was inputted.")
 			}
 		} else {
@@ -82,17 +83,21 @@ required.
 
 		dist.CID = containerID
 
-		if !config.IsAnsibleRole() {
+		if !config.IsAnsibleRole() && !quiet {
 			log.Fatalf("Path %v is not recognized as an Ansible role.", config.HostPath)
 		}
 		fp := fmt.Sprintf(source + "/tests/" + playbook)
 		if _, err := os.Stat(fp); os.IsNotExist(err) {
-			log.Fatalf("Specified playbook file %v does not exist.", fp)
+			if !quiet {
+				log.Fatalf("Specified playbook file %v does not exist.", fp)
+			}
 		}
 		if requirements != "" {
 			fr := fmt.Sprintf(source + "/" + requirements)
 			if _, err := os.Stat(fr); os.IsNotExist(err) {
-				log.Fatalf("Specified requirements file %v does not exist.", fr)
+				if !quiet {
+					log.Fatalf("Specified requirements file %v does not exist.", fr)
+				}
 			}
 		}
 		if !dist.DockerCheck() {
@@ -103,7 +108,7 @@ required.
 		dist.RoleSyntaxCheck(&config)
 		dist.RoleTest(&config)
 		dist.IdempotenceTest(&config)
-		dist.DockerKill()
+		dist.DockerKill(quiet)
 	},
 }
 
@@ -117,6 +122,7 @@ func init() {
 	fullCmd.Flags().StringVarP(&requirements, "requirements", "r", "", "Path to requirements file.")
 	fullCmd.Flags().StringVarP(&playbook, "playbook", "p", "playbook.yml", "The filename of the playbook")
 	fullCmd.Flags().BoolVarP(&noOutput, "no-output", "o", false, "Hide output from all Docker commands")
+	fullCmd.Flags().BoolVarP(&quiet, "quiet", "q", false, "Enable quiet mode")
 	fullCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "Enable verbose mode for Ansible commands.")
 	fullCmd.Flags().BoolVarP(&custom, "custom", "c", false, "Provide my own custom distribution.")
 

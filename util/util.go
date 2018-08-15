@@ -45,6 +45,9 @@ type AnsibleConfig struct {
 
 	// verbose
 	Verbose bool
+
+	// Quiet will determine if all reporting mechanisms are hidden.
+	Quiet bool
 }
 
 // Container is an interface which allows

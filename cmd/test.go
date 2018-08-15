@@ -41,6 +41,7 @@ containers won't be removed after completion.`,
 			RequirementsFile: requirements,
 			PlaybookFile:     playbook,
 			Verbose:          verbose,
+			Quiet:			  quiet,
 		}
 
 		dist, _ := util.GetDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)
@@ -52,7 +53,9 @@ containers won't be removed after completion.`,
 			dist.RoleTest(&config)
 			dist.IdempotenceTest(&config)
 		} else {
-			log.Warnf("Container %v is not currently running", dist.CID)
+			if !quiet {
+				log.Warnf("Container %v is not currently running", dist.CID)
+			}
 		}
 	},
 }
@@ -62,6 +65,7 @@ func init() {
 	testCmd.Flags().StringVarP(&containerID, "name", "n", containerID, "Container ID")
 	testCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "Enable verbose mode for Ansible commands.")
 	testCmd.Flags().StringVarP(&playbook, "playbook", "p", "playbook.yml", "The filename of the playbook")
+	testCmd.Flags().BoolVarP(&quiet, "quiet", "q", false, "Enable quiet mode")
 
 	testCmd.MarkFlagRequired("name")
 }

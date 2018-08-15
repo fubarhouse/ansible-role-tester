@@ -16,7 +16,9 @@ import (
 func (dist *Distribution) IdempotenceTest(config *AnsibleConfig) {
 
 	// Test role idempotence.
-	log.Infoln("Testing role idempotence...")
+	if !config.Quiet {
+		log.Infoln("Testing role idempotence...")
+	}
 
 	args := []string{
 		"exec",
@@ -32,15 +34,23 @@ func (dist *Distribution) IdempotenceTest(config *AnsibleConfig) {
 	}
 
 	now := time.Now()
-	out, _ := DockerExec(args, true)
-	log.Infof("Idempotence was checked in %v", time.Since(now))
-
-	idempotence := IdempotenceResult(out)
-	if idempotence {
-		log.Infoln("Idempotence test: PASS")
+	var idempotence = false
+	if !config.Quiet {
+		out, _ := DockerExec(args, true)
+		idempotence = IdempotenceResult(out)
 	} else {
-		log.Errorln("Idempotence test: FAIL")
-		os.Exit(1)
+		out, _ := DockerExec(args, false)
+		idempotence = IdempotenceResult(out)
+	}
+
+	if !config.Quiet {
+		log.Infof("Idempotence was checked in %v", time.Since(now))
+		if idempotence {
+			log.Infoln("Idempotence test: PASS")
+		} else {
+			log.Errorln("Idempotence test: FAIL")
+			os.Exit(1)
+		}
 	}
 }
 
