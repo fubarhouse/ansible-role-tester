@@ -119,6 +119,11 @@ func (dist *Distribution) RoleTest(config *AnsibleConfig) {
 		fmt.Sprintf("%v/tests/%v", config.RemotePath, config.PlaybookFile),
 	}
 
+	// Add inventory file if configured
+	if config.Inventory != "" {
+		args = append(args, fmt.Sprintf("-i=%v/%v", config.RemotePath, config.Inventory))
+	}
+
 	// Add verbose if configured
 	if config.Verbose {
 		args = append(args, "-vvvv")

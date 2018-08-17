@@ -30,6 +30,11 @@ type AnsibleConfig struct {
 	// on the host machine, which could be anywhere.
 	HostPath string
 
+	// Inventory is the inventory argument in Ansible commands.
+	// in this case we are focusing on inventory files or inline dicts.
+	// Example: 'container_name,' or './tests/inventory.
+	Inventory string
+
 	// RemotePath is the path to the roles folder on the container
 	// which should represent the roles folder (ie /etc/ansible/roles)
 	RemotePath string

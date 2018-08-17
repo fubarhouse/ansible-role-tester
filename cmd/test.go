@@ -24,6 +24,8 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/fubarhouse/ansible-role-tester/util"
 	"github.com/spf13/cobra"
+	"fmt"
+	"os"
 )
 
 // testCmd represents the test command
@@ -37,6 +39,7 @@ containers won't be removed after completion.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		config := util.AnsibleConfig{
 			HostPath:         source,
+			Inventory:		  inventory,
 			RemotePath:       destination,
 			RequirementsFile: requirements,
 			PlaybookFile:     playbook,
@@ -49,6 +52,17 @@ containers won't be removed after completion.`,
 		dist.CID = containerID
 
 		if dist.DockerCheck() {
+
+			if inventory != "" {
+				invfile := fmt.Sprintf(source + "/" + inventory)
+				if _, err := os.Stat(invfile); os.IsNotExist(err) {
+					if !quiet {
+						log.Fatalf("Specified inventory file %v does not exist.", invfile)
+						log.Println(invfile)
+					}
+				}
+			}
+
 			dist.RoleSyntaxCheck(&config)
 			dist.RoleTest(&config)
 			dist.IdempotenceTest(&config)
@@ -62,10 +76,13 @@ containers won't be removed after completion.`,
 
 func init() {
 	rootCmd.AddCommand(testCmd)
+	pwd, _ := os.Getwd()
 	testCmd.Flags().StringVarP(&containerID, "name", "n", containerID, "Container ID")
+	testCmd.Flags().StringVarP(&inventory, "inventory", "e", "", "Inventory file")
 	testCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "Enable verbose mode for Ansible commands.")
 	testCmd.Flags().StringVarP(&playbook, "playbook", "p", "playbook.yml", "The filename of the playbook")
 	testCmd.Flags().BoolVarP(&quiet, "quiet", "q", false, "Enable quiet mode")
+	testCmd.Flags().StringVarP(&source, "source", "s", pwd, "Location of the role to test")
 
 	testCmd.MarkFlagRequired("name")
 }

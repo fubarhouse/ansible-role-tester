@@ -41,6 +41,7 @@ Volume mount locations image and id are all configurable.
 	Run: func(cmd *cobra.Command, args []string) {
 		config := util.AnsibleConfig{
 			HostPath:         source,
+			Inventory:		  inventory,
 			RemotePath:       destination,
 			RequirementsFile: "",
 			PlaybookFile:     "",
@@ -78,6 +79,16 @@ Volume mount locations image and id are all configurable.
 		if !config.IsAnsibleRole() && !quiet {
 			log.Fatalf("Path %v is not recognized as an Ansible role.", config.HostPath)
 		}
+
+		if inventory != "" {
+			invfile := fmt.Sprintf(source + "/" + inventory)
+			if _, err := os.Stat(invfile); os.IsNotExist(err) {
+				if !quiet {
+					log.Fatalf("Specified inventory file %v does not exist.", invfile)
+				}
+			}
+		}
+
 		if !dist.DockerCheck() {
 			dist.DockerRun(&config)
 		} else {
@@ -95,6 +106,7 @@ func init() {
 	runCmd.Flags().StringVarP(&containerID, "name", "n", containerID, "Container ID")
 	runCmd.Flags().StringVarP(&source, "source", "s", pwd, "Location of the role to test")
 	runCmd.Flags().StringVarP(&destination, "destination", "d", "/etc/ansible/roles/role_under_test", "Location which the role will be mounted to")
+	runCmd.Flags().StringVarP(&inventory, "inventory", "e", "", "Inventory file")
 	runCmd.Flags().BoolVarP(&custom, "custom", "c", false, "Provide my own custom distribution.")
 	runCmd.Flags().BoolVarP(&quiet, "quiet", "q", false, "Enable quiet mode")
 

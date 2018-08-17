@@ -49,6 +49,7 @@ required.
 	Run: func(cmd *cobra.Command, args []string) {
 		config := util.AnsibleConfig{
 			HostPath:         source,
+			Inventory:		  inventory,
 			RemotePath:       destination,
 			RequirementsFile: requirements,
 			PlaybookFile:     playbook,
@@ -86,12 +87,23 @@ required.
 		if !config.IsAnsibleRole() && !quiet {
 			log.Fatalf("Path %v is not recognized as an Ansible role.", config.HostPath)
 		}
+
 		fp := fmt.Sprintf(source + "/tests/" + playbook)
 		if _, err := os.Stat(fp); os.IsNotExist(err) {
 			if !quiet {
 				log.Fatalf("Specified playbook file %v does not exist.", fp)
 			}
 		}
+
+		if inventory != "" {
+			invfile := fmt.Sprintf(source + "/" + inventory)
+			if _, err := os.Stat(invfile); os.IsNotExist(err) {
+				if !quiet {
+					log.Fatalf("Specified inventory file %v does not exist.", invfile)
+				}
+			}
+		}
+
 		if requirements != "" {
 			fr := fmt.Sprintf(source + "/" + requirements)
 			if _, err := os.Stat(fr); os.IsNotExist(err) {
@@ -125,6 +137,7 @@ func init() {
 	fullCmd.Flags().BoolVarP(&quiet, "quiet", "q", false, "Enable quiet mode")
 	fullCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "Enable verbose mode for Ansible commands.")
 	fullCmd.Flags().BoolVarP(&custom, "custom", "c", false, "Provide my own custom distribution.")
+	fullCmd.Flags().StringVarP(&inventory, "inventory", "e", "", "Inventory file")
 
 	fullCmd.Flags().StringVarP(&initialise, "initialise", "a", "/bin/systemd", "The initialise command for the image")
 	fullCmd.Flags().StringVarP(&volume, "volume", "l", "/sys/fs/cgroup:/sys/fs/cgroup:ro", "The volume argument for the image")

@@ -38,6 +38,9 @@ var (
 	// example: fubarhouse/docker-ansible:bionic
 	image string
 
+	// inventory is the input path to the inventory file.
+	inventory string
+
 	// source is the location of the role to test.
 	source string
 
