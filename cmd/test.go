@@ -26,6 +26,7 @@ import (
 	"github.com/spf13/cobra"
 	"fmt"
 	"os"
+	"strings"
 )
 
 // testCmd represents the test command
@@ -61,6 +62,17 @@ containers won't be removed after completion.`,
 						log.Println(invfile)
 					}
 				}
+			}
+
+			// Adjust playbook path
+			if strings.HasPrefix(config.PlaybookFile, "./") {
+				pwd, _ := os.Getwd()
+				config.PlaybookFile = fmt.Sprintf("%v/%v", pwd, config.PlaybookFile)
+			} else
+			if strings.HasPrefix(config.PlaybookFile, "/") {
+				config.PlaybookFile = fmt.Sprintf("%v", config.PlaybookFile)
+			} else {
+				config.PlaybookFile = fmt.Sprintf("%v/tests/%v", config.RemotePath, config.PlaybookFile)
 			}
 
 			if !remote {

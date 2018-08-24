@@ -88,7 +88,18 @@ required.
 			log.Fatalf("Path %v is not recognized as an Ansible role.", config.HostPath)
 		}
 
-		fp := fmt.Sprintf(source + "/tests/" + playbook)
+		// Adjust playbook path
+		if strings.HasPrefix(config.PlaybookFile, "./") {
+			pwd, _ := os.Getwd()
+			config.PlaybookFile = fmt.Sprintf("%v/%v", pwd, config.PlaybookFile)
+		} else
+		if strings.HasPrefix(config.PlaybookFile, "/") {
+			config.PlaybookFile = fmt.Sprintf("%v", config.PlaybookFile)
+		} else {
+			config.PlaybookFile = fmt.Sprintf("%v/tests/%v", config.RemotePath, config.PlaybookFile)
+		}
+
+		fp := fmt.Sprintf(config.PlaybookFile)
 		if _, err := os.Stat(fp); os.IsNotExist(err) {
 			if !quiet {
 				log.Fatalf("Specified playbook file %v does not exist.", fp)
