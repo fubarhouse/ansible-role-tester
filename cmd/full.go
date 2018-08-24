@@ -117,9 +117,15 @@ required.
 		}
 
 		dist.RoleInstall(&config)
-		dist.RoleSyntaxCheck(&config)
-		dist.RoleTest(&config)
-		dist.IdempotenceTest(&config)
+		if !remote {
+			dist.RoleSyntaxCheck(&config)
+			dist.RoleTest(&config)
+			dist.IdempotenceTest(&config)
+		} else {
+			dist.RoleSyntaxCheckRemote(&config)
+			dist.RoleTestRemote(&config)
+			dist.IdempotenceTestRemote(&config)
+		}
 		dist.DockerKill(quiet)
 	},
 }

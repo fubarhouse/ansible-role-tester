@@ -63,9 +63,15 @@ containers won't be removed after completion.`,
 				}
 			}
 
-			dist.RoleSyntaxCheck(&config)
-			dist.RoleTest(&config)
-			dist.IdempotenceTest(&config)
+			if !remote {
+				dist.RoleSyntaxCheck(&config)
+				dist.RoleTest(&config)
+				dist.IdempotenceTest(&config)
+			} else {
+				dist.RoleSyntaxCheckRemote(&config)
+				dist.RoleTestRemote(&config)
+				dist.IdempotenceTestRemote(&config)
+			}
 		} else {
 			if !quiet {
 				log.Warnf("Container %v is not currently running", dist.CID)
