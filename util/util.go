@@ -8,6 +8,12 @@ import (
 
 var (
 
+	// ansibleplaybook is the path to ansible-playbook.
+	// this will only be used on targetted remotes which
+	// replaces the inventory path when calling
+	// ansible-playbook from the host machine.
+	ansibleplaybook string
+
 	// docker is simply the path to the Docker binary.
 	// this will be located using exec.LookPath().
 	// this must validate to a working binary named
@@ -74,4 +80,11 @@ func init() {
 	}
 	docker = d
 	dockerFound = true
+
+	a, e := exec.LookPath("ansible-playbook")
+	if e != nil {
+		log.Errorln("executable 'ansible-playbook' was not found in $PATH.")
+	}
+	ansibleplaybook = a
+
 }
