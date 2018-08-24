@@ -76,6 +76,11 @@ var (
 	// through ansible, docker or reporting mechanisms.
 	quiet = true
 
+	// remote indicates the execution of ansible-playbook should
+	// happen from the localhost to a remote destination - namely
+	// the name parameter which should refer to the container name being tested.
+	remote = false
+
 	// verbose is a boolean indicating all Ansible commands should
 	// be dockerRun with the --verbose flag.
 	verbose = false

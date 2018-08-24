@@ -83,6 +83,7 @@ func init() {
 	testCmd.Flags().StringVarP(&playbook, "playbook", "p", "playbook.yml", "The filename of the playbook")
 	testCmd.Flags().BoolVarP(&quiet, "quiet", "q", false, "Enable quiet mode")
 	testCmd.Flags().StringVarP(&source, "source", "s", pwd, "Location of the role to test")
+	testCmd.Flags().BoolVarP(&remote, "remote", "m", false, "Run the test remotely to the container")
 
 	testCmd.MarkFlagRequired("name")
 }
