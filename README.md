@@ -93,6 +93,15 @@ ansible-role-tester full --custom --image webdevops/ansible:latest --initialise 
 | geerlingguy | ubuntu1604 | geerlingguy/docker-ubuntu1604-ansible:latest |
 | geerlingguy | ubuntu1804 | geerlingguy/docker-ubuntu1804-ansible:latest |
 
+## Gitlab Runner integration
+
+Tests for use with [GitLab Runner](https://docs.gitlab.com/runner/install/) are provided, to run the tests on a docker-in-docker-in-docker approach:
+```bash
+$ gitlab-runner exec docker test-1
+```
+
+You can substitute `test-1` for the applicable test you need to run, declared in `.gitlab-ci.yml`.
+
 ## Interesting uses.
 
 The following command will execute properly inside a [DrupalVM](https://github.com/geerlingguy/drupal-vm) clone, however it won't include the configuration variables, but it's an interesting case which proves how flexible this tool can be.
