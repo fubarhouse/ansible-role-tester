@@ -132,8 +132,6 @@ func AnsiblePlaybook(args []string, stdout bool) (string, error) {
 		cmd.Stderr = os.Stderr
 	}
 
-	fmt.Println(cmd.Args)
-
 	// Create a buffer for the output.
 	var out bytes.Buffer
 	multi := io.MultiWriter(&out)
