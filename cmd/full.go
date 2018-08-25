@@ -89,20 +89,34 @@ required.
 		}
 
 		// Adjust playbook path
-		if strings.HasPrefix(config.PlaybookFile, "./") {
-			pwd, _ := os.Getwd()
-			config.PlaybookFile = fmt.Sprintf("%v/%v", pwd, config.PlaybookFile)
-		} else
-		if strings.HasPrefix(config.PlaybookFile, "/") {
-			config.PlaybookFile = fmt.Sprintf("%v", config.PlaybookFile)
+		if remote {
+			// The playbook will be located on the host if the remote flag is enabled.
+			if strings.HasPrefix(config.PlaybookFile, "./") {
+				pwd, _ := os.Getwd()
+				config.PlaybookFile = fmt.Sprintf("%v/%v", pwd, config.PlaybookFile)
+			} else if strings.HasPrefix(config.PlaybookFile, "/") {
+				config.PlaybookFile = fmt.Sprintf("%v", config.PlaybookFile)
+			} else if !remote {
+				config.PlaybookFile = fmt.Sprintf("%v/tests/%v", source, config.PlaybookFile)
+			} else if remote {
+				config.PlaybookFile = fmt.Sprintf("%v/tests/%v", source, config.PlaybookFile)
+			}
+			fp := fmt.Sprintf(config.PlaybookFile)
+			if _, err := os.Stat(fp); os.IsNotExist(err) {
+				if !quiet {
+					log.Fatalf("Specified playbook file %v does not exist.", fp)
+				}
+			}
 		} else {
-			config.PlaybookFile = fmt.Sprintf("%v/tests/%v", config.RemotePath, config.PlaybookFile)
-		}
-
-		fp := fmt.Sprintf(config.PlaybookFile)
-		if _, err := os.Stat(fp); os.IsNotExist(err) {
-			if !quiet {
-				log.Fatalf("Specified playbook file %v does not exist.", fp)
+			// The playbook will be located on the container (via mount) if the remote flag is enabled.
+			config.PlaybookFile = fmt.Sprintf("/etc/ansible/roles/role_under_test/%v", config.PlaybookFile)
+			pwd, _ := os.Getwd()
+			file := fmt.Sprintf("%v/%v", pwd, playbook)
+			fp := fmt.Sprintf(file)
+			if _, err := os.Stat(fp); os.IsNotExist(err) {
+				if !quiet {
+					log.Fatalf("Specified playbook file %v does not exist.", fp)
+				}
 			}
 		}
 
