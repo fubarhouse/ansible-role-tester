@@ -78,6 +78,7 @@ func (dist *Distribution) RoleSyntaxCheck(config *AnsibleConfig) {
 		dist.CID,
 		"ansible-playbook",
 		"--syntax-check",
+		config.PlaybookFile,
 	}
 
 	// Add verbose if configured
@@ -116,6 +117,7 @@ func (dist *Distribution) RoleTest(config *AnsibleConfig) {
 		"--tty",
 		dist.CID,
 		"ansible-playbook",
+		config.PlaybookFile,
 	}
 
 	// Add playbook path
