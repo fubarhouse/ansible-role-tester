@@ -8,9 +8,10 @@ import (
 	"strings"
 
 	"fmt"
-	log "github.com/Sirupsen/logrus"
 	"sync"
 	"time"
+
+	log "github.com/Sirupsen/logrus"
 )
 
 // DockerExec will execute a command to the docker binary
@@ -84,6 +85,29 @@ func (dist *Distribution) DockerCheck() bool {
 	return false
 }
 
+// buildDockerArgs returns a list of arguments for the docker daemon. Note that the order
+// matters here, and beware of trailing whitespaces.
+func buildDockerArgs(dist *Distribution, config *AnsibleConfig) []string {
+	dockerArgs := []string{
+		"run",
+		"--detach",
+		fmt.Sprintf("--name=%v", dist.CID),
+		fmt.Sprintf("--volume=%v", dist.Family.Volume),
+		fmt.Sprintf("--volume=%v:%v", config.HostPath, config.RemotePath),
+	}
+	if config.ExtraRolesPath != "" {
+		dockerArgs = append(dockerArgs, fmt.Sprintf("--volume=%s:%v", config.ExtraRolesPath, "/root/.ansible/roles"))
+	}
+	if dist.Privileged {
+		dockerArgs = append(dockerArgs, fmt.Sprint("--privileged"))
+	}
+	dockerArgs = append(dockerArgs, []string{
+		dist.Container,
+		dist.Family.Initialise,
+	}...)
+	return dockerArgs
+}
+
 // DockerRun will launch a new container (containerID) using
 // the fields in a AnsibleConfig struct.
 func (dist *Distribution) DockerRun(config *AnsibleConfig) {
@@ -97,21 +121,7 @@ func (dist *Distribution) DockerRun(config *AnsibleConfig) {
 			log.Printf("Running %v", dist.CID)
 		}
 
-		var runOptions string
-		if dist.Privileged {
-			runOptions += fmt.Sprint("--privileged")
-		}
-
-		if _, err := DockerExec([]string{
-			"run",
-			"--detach",
-			fmt.Sprintf("--name=%v", dist.CID),
-			fmt.Sprintf("--volume=%v", dist.Family.Volume),
-			fmt.Sprintf("--volume=%v:%v", config.HostPath, config.RemotePath),
-			runOptions,
-			dist.Container,
-			dist.Family.Initialise,
-		}, true); err != nil {
+		if _, err := DockerExec(buildDockerArgs(dist, config), true); err != nil {
 			log.Errorln(err)
 			os.Exit(1)
 		}
