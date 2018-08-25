@@ -6,6 +6,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"os"
 	"time"
+	"strings"
 )
 
 // IsAnsibleRole will identify if the mounted directory is an Ansible role.
@@ -76,8 +77,8 @@ func (dist *Distribution) RoleSyntaxCheck(config *AnsibleConfig) {
 		"--tty",
 		dist.CID,
 		"ansible-playbook",
-		fmt.Sprintf("%v/tests/%v", config.RemotePath, config.PlaybookFile),
 		"--syntax-check",
+		config.PlaybookFile,
 	}
 
 	// Add verbose if configured
@@ -116,7 +117,16 @@ func (dist *Distribution) RoleTest(config *AnsibleConfig) {
 		"--tty",
 		dist.CID,
 		"ansible-playbook",
-		fmt.Sprintf("%v/tests/%v", config.RemotePath, config.PlaybookFile),
+		config.PlaybookFile,
+	}
+
+	// Add playbook path
+	if strings.HasPrefix(config.PlaybookFile, "./") {
+		args = append(args, fmt.Sprintf("./%v", config.PlaybookFile))
+	} else if strings.HasPrefix(config.PlaybookFile, "/") {
+		args = append(args, fmt.Sprintf("%v", config.PlaybookFile))
+	} else {
+		args = append(args, fmt.Sprintf("%v/tests/%v", config.RemotePath, config.PlaybookFile))
 	}
 
 	// Add inventory file if configured

@@ -26,6 +26,7 @@ import (
 	"github.com/spf13/cobra"
 	"fmt"
 	"os"
+	"strings"
 )
 
 // testCmd represents the test command
@@ -63,9 +64,47 @@ containers won't be removed after completion.`,
 				}
 			}
 
-			dist.RoleSyntaxCheck(&config)
-			dist.RoleTest(&config)
-			dist.IdempotenceTest(&config)
+			// Adjust playbook path
+			if remote {
+				// The playbook will be located on the host if the remote flag is enabled.
+				if strings.HasPrefix(config.PlaybookFile, "./") {
+					pwd, _ := os.Getwd()
+					config.PlaybookFile = fmt.Sprintf("%v/%v", pwd, config.PlaybookFile)
+				} else if strings.HasPrefix(config.PlaybookFile, "/") {
+					config.PlaybookFile = fmt.Sprintf("%v", config.PlaybookFile)
+				} else if !remote {
+					config.PlaybookFile = fmt.Sprintf("%v/tests/%v", source, config.PlaybookFile)
+				} else if remote {
+					config.PlaybookFile = fmt.Sprintf("%v/tests/%v", source, config.PlaybookFile)
+				}
+				fp := fmt.Sprintf(config.PlaybookFile)
+				if _, err := os.Stat(fp); os.IsNotExist(err) {
+					if !quiet {
+						log.Fatalf("Specified playbook file %v does not exist.", fp)
+					}
+				}
+			} else {
+				// The playbook will be located on the container (via mount) if the remote flag is enabled.
+				config.PlaybookFile = fmt.Sprintf("/etc/ansible/roles/role_under_test/%v", config.PlaybookFile)
+				pwd, _ := os.Getwd()
+				file := fmt.Sprintf("%v/%v", pwd, playbook)
+				fp := fmt.Sprintf(file)
+				if _, err := os.Stat(fp); os.IsNotExist(err) {
+					if !quiet {
+						log.Fatalf("Specified playbook file %v does not exist.", fp)
+					}
+				}
+			}
+
+			if !remote {
+				dist.RoleSyntaxCheck(&config)
+				dist.RoleTest(&config)
+				dist.IdempotenceTest(&config)
+			} else {
+				dist.RoleSyntaxCheckRemote(&config)
+				dist.RoleTestRemote(&config)
+				dist.IdempotenceTestRemote(&config)
+			}
 		} else {
 			if !quiet {
 				log.Warnf("Container %v is not currently running", dist.CID)
@@ -83,6 +122,7 @@ func init() {
 	testCmd.Flags().StringVarP(&playbook, "playbook", "p", "playbook.yml", "The filename of the playbook")
 	testCmd.Flags().BoolVarP(&quiet, "quiet", "q", false, "Enable quiet mode")
 	testCmd.Flags().StringVarP(&source, "source", "s", pwd, "Location of the role to test")
+	testCmd.Flags().BoolVarP(&remote, "remote", "m", false, "Run the test remotely to the container")
 
 	testCmd.MarkFlagRequired("name")
 }

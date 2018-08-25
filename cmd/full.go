@@ -88,10 +88,35 @@ required.
 			log.Fatalf("Path %v is not recognized as an Ansible role.", config.HostPath)
 		}
 
-		fp := fmt.Sprintf(source + "/tests/" + playbook)
-		if _, err := os.Stat(fp); os.IsNotExist(err) {
-			if !quiet {
-				log.Fatalf("Specified playbook file %v does not exist.", fp)
+		// Adjust playbook path
+		if remote {
+			// The playbook will be located on the host if the remote flag is enabled.
+			if strings.HasPrefix(config.PlaybookFile, "./") {
+				pwd, _ := os.Getwd()
+				config.PlaybookFile = fmt.Sprintf("%v/%v", pwd, config.PlaybookFile)
+			} else if strings.HasPrefix(config.PlaybookFile, "/") {
+				config.PlaybookFile = fmt.Sprintf("%v", config.PlaybookFile)
+			} else if !remote {
+				config.PlaybookFile = fmt.Sprintf("%v/tests/%v", source, config.PlaybookFile)
+			} else if remote {
+				config.PlaybookFile = fmt.Sprintf("%v/tests/%v", source, config.PlaybookFile)
+			}
+			fp := fmt.Sprintf(config.PlaybookFile)
+			if _, err := os.Stat(fp); os.IsNotExist(err) {
+				if !quiet {
+					log.Fatalf("Specified playbook file %v does not exist.", fp)
+				}
+			}
+		} else {
+			// The playbook will be located on the container (via mount) if the remote flag is enabled.
+			config.PlaybookFile = fmt.Sprintf("/etc/ansible/roles/role_under_test/%v", config.PlaybookFile)
+			pwd, _ := os.Getwd()
+			file := fmt.Sprintf("%v/%v", pwd, playbook)
+			fp := fmt.Sprintf(file)
+			if _, err := os.Stat(fp); os.IsNotExist(err) {
+				if !quiet {
+					log.Fatalf("Specified playbook file %v does not exist.", fp)
+				}
 			}
 		}
 
@@ -117,9 +142,15 @@ required.
 		}
 
 		dist.RoleInstall(&config)
-		dist.RoleSyntaxCheck(&config)
-		dist.RoleTest(&config)
-		dist.IdempotenceTest(&config)
+		if !remote {
+			dist.RoleSyntaxCheck(&config)
+			dist.RoleTest(&config)
+			dist.IdempotenceTest(&config)
+		} else {
+			dist.RoleSyntaxCheckRemote(&config)
+			dist.RoleTestRemote(&config)
+			dist.IdempotenceTestRemote(&config)
+		}
 		dist.DockerKill(quiet)
 	},
 }
@@ -138,6 +169,7 @@ func init() {
 	fullCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "Enable verbose mode for Ansible commands.")
 	fullCmd.Flags().BoolVarP(&custom, "custom", "c", false, "Provide my own custom distribution.")
 	fullCmd.Flags().StringVarP(&inventory, "inventory", "e", "", "Inventory file")
+	fullCmd.Flags().BoolVarP(&remote, "remote", "m", false, "Run the test remotely to the container")
 
 	fullCmd.Flags().StringVarP(&initialise, "initialise", "a", "/bin/systemd", "The initialise command for the image")
 	fullCmd.Flags().StringVarP(&volume, "volume", "l", "/sys/fs/cgroup:/sys/fs/cgroup:ro", "The volume argument for the image")
