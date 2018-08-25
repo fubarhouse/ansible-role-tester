@@ -23,11 +23,12 @@ package cmd
 import (
 	"os"
 
+	"fmt"
+	"strings"
+
 	log "github.com/Sirupsen/logrus"
 	"github.com/fubarhouse/ansible-role-tester/util"
 	"github.com/spf13/cobra"
-	"fmt"
-	"strings"
 )
 
 // runCmd represents the dockerRun command
@@ -42,10 +43,11 @@ Volume mount locations image and id are all configurable.
 		config := util.AnsibleConfig{
 			HostPath:         source,
 			RemotePath:       destination,
+			ExtraRolesPath:   extraRoles,
 			RequirementsFile: "",
 			PlaybookFile:     "",
 			Verbose:          verbose,
-			Quiet:			  quiet,
+			Quiet:            quiet,
 		}
 
 		var dist util.Distribution
@@ -95,6 +97,7 @@ func init() {
 	runCmd.Flags().StringVarP(&containerID, "name", "n", containerID, "Container ID")
 	runCmd.Flags().StringVarP(&source, "source", "s", pwd, "Location of the role to test")
 	runCmd.Flags().StringVarP(&destination, "destination", "d", "/etc/ansible/roles/role_under_test", "Location which the role will be mounted to")
+	runCmd.Flags().StringVarP(&extraRoles, "extra-roles", "e", "", "Path to roles folder with dependencies.")
 	runCmd.Flags().BoolVarP(&custom, "custom", "c", false, "Provide my own custom distribution.")
 	runCmd.Flags().BoolVarP(&quiet, "quiet", "q", false, "Enable quiet mode")
 

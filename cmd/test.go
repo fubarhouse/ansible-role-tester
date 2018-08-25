@@ -41,7 +41,7 @@ containers won't be removed after completion.`,
 			RequirementsFile: requirements,
 			PlaybookFile:     playbook,
 			Verbose:          verbose,
-			Quiet:			  quiet,
+			Quiet:            quiet,
 		}
 
 		dist, _ := util.GetDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)
@@ -63,6 +63,7 @@ containers won't be removed after completion.`,
 func init() {
 	rootCmd.AddCommand(testCmd)
 	testCmd.Flags().StringVarP(&containerID, "name", "n", containerID, "Container ID")
+	testCmd.Flags().StringVarP(&destination, "destination", "d", "/etc/ansible/roles/role_under_test", "Location which the role was mounted to")
 	testCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "Enable verbose mode for Ansible commands.")
 	testCmd.Flags().StringVarP(&playbook, "playbook", "p", "playbook.yml", "The filename of the playbook")
 	testCmd.Flags().BoolVarP(&quiet, "quiet", "q", false, "Enable quiet mode")
