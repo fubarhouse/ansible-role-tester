@@ -1,9 +1,10 @@
 package util
 
 import (
-	log "github.com/Sirupsen/logrus"
-	"os/exec"
 	"os"
+	"os/exec"
+
+	log "github.com/Sirupsen/logrus"
 )
 
 var (
@@ -44,6 +45,12 @@ type AnsibleConfig struct {
 	// RemotePath is the path to the roles folder on the container
 	// which should represent the roles folder (ie /etc/ansible/roles)
 	RemotePath string
+
+	// ExtraRolesPath is the path to the roles folder on the host which will
+	// be mounted on the container to "/root/.ansible/roles" and available to the playbook
+	// as dependencies. This is a useful workaround for CI/CD environments where the roles
+	// are already downloaded on the host, or if the roles are in private git repos.
+	ExtraRolesPath string
 
 	// The path to the requirements file relative to HostPath.
 	// Requirements will not attempt installation if the field

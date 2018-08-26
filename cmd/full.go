@@ -23,11 +23,12 @@ package cmd
 import (
 	"os"
 
+	"fmt"
+	"strings"
+
 	log "github.com/Sirupsen/logrus"
 	"github.com/fubarhouse/ansible-role-tester/util"
 	"github.com/spf13/cobra"
-	"fmt"
-	"strings"
 )
 
 // fullCmd represents the full command
@@ -51,11 +52,12 @@ required.
 			HostPath:         source,
 			Inventory:		  inventory,
 			RemotePath:       destination,
+			ExtraRolesPath:   extraRoles,
 			RequirementsFile: requirements,
 			PlaybookFile:     playbook,
 			Verbose:          verbose,
-			Remote:			  remote,
-			Quiet:			  quiet,
+			Remote:	    		  remote,
+			Quiet:            quiet,
 		}
 
 		var dist util.Distribution
@@ -119,6 +121,7 @@ func init() {
 	fullCmd.Flags().StringVarP(&source, "source", "s", pwd, "Location of the role to test")
 	fullCmd.Flags().StringVarP(&destination, "destination", "d", "/etc/ansible/roles/role_under_test", "Location which the role will be mounted to")
 	fullCmd.Flags().StringVarP(&requirements, "requirements", "r", "", "Path to requirements file.")
+	fullCmd.Flags().StringVarP(&extraRoles, "extra-roles", "e", "", "Path to roles folder with dependencies.")
 	fullCmd.Flags().StringVarP(&playbook, "playbook", "p", "playbook.yml", "The filename of the playbook")
 	fullCmd.Flags().BoolVarP(&noOutput, "no-output", "o", false, "Hide output from all Docker commands")
 	fullCmd.Flags().BoolVarP(&quiet, "quiet", "q", false, "Enable quiet mode")
