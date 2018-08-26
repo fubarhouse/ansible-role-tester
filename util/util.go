@@ -54,6 +54,10 @@ type AnsibleConfig struct {
 	// tests file relative to HostPath (ie HostPath/tests/playbook.yml)
 	PlaybookFile string
 
+	// Remote indicates the playbook will be run on a remote host
+	// likely which is inputted to the inventory field.
+	Remote bool
+
 	// verbose
 	Verbose bool
 
