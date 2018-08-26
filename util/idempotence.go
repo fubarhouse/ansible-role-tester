@@ -4,7 +4,6 @@ import (
 	"strings"
 
 	"errors"
-	"fmt"
 	log "github.com/Sirupsen/logrus"
 	"strconv"
 	"time"

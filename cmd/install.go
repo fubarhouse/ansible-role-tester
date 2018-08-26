@@ -24,8 +24,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/fubarhouse/ansible-role-tester/util"
 	"github.com/spf13/cobra"
-	"fmt"
-	"os"
+		"os"
 )
 
 // testCmd represents the test command

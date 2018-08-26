@@ -24,10 +24,8 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/fubarhouse/ansible-role-tester/util"
 	"github.com/spf13/cobra"
-	"fmt"
-	"os"
-	"strings"
-)
+		"os"
+	)
 
 // testCmd represents the test command
 var testCmd = &cobra.Command{
