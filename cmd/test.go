@@ -45,6 +45,7 @@ containers won't be removed after completion.`,
 			RequirementsFile: requirements,
 			PlaybookFile:     playbook,
 			Verbose:          verbose,
+			Remote:           remote,
 			Quiet:			  quiet,
 		}
 

@@ -41,6 +41,7 @@ var installCmd = &cobra.Command{
 			RequirementsFile: requirements,
 			PlaybookFile:     playbook,
 			Verbose:          verbose,
+			Remote:           remote,
 			Quiet:			  quiet,
 		}
 
