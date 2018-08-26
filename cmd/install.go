@@ -57,22 +57,11 @@ var installCmd = &cobra.Command{
 		}
 		if dist.DockerCheck() {
 
-			if inventory != "" {
-				invfile := fmt.Sprintf(source + "/" + inventory)
-				if _, err := os.Stat(invfile); os.IsNotExist(err) {
-					if !quiet {
-						log.Fatalf("Specified inventory file %v does not exist.", invfile)
-					}
-				}
-			}
+			util.MapInventory(dist.CID, &config)
+			util.MapRequirements(&config)
 
-			if requirements != "" {
-				fr := fmt.Sprintf(source + "/" + requirements)
-				if _, err := os.Stat(fr); os.IsNotExist(err) {
-					log.Fatalf("Specified requirements file %v does not exist.", fr)
-				}
-			}
 			dist.RoleInstall(&config)
+
 		} else {
 			if !quiet {
 				log.Warnf("Container %v is not currently running", dist.CID)

@@ -54,6 +54,7 @@ required.
 			RequirementsFile: requirements,
 			PlaybookFile:     playbook,
 			Verbose:          verbose,
+			Remote:			  remote,
 			Quiet:			  quiet,
 		}
 
@@ -88,55 +89,10 @@ required.
 			log.Fatalf("Path %v is not recognized as an Ansible role.", config.HostPath)
 		}
 
-		// Adjust playbook path
-		if remote {
-			// The playbook will be located on the host if the remote flag is enabled.
-			if strings.HasPrefix(config.PlaybookFile, "./") {
-				pwd, _ := os.Getwd()
-				config.PlaybookFile = fmt.Sprintf("%v/%v", pwd, config.PlaybookFile)
-			} else if strings.HasPrefix(config.PlaybookFile, "/") {
-				config.PlaybookFile = fmt.Sprintf("%v", config.PlaybookFile)
-			} else if !remote {
-				config.PlaybookFile = fmt.Sprintf("%v/tests/%v", source, config.PlaybookFile)
-			} else if remote {
-				config.PlaybookFile = fmt.Sprintf("%v/tests/%v", source, config.PlaybookFile)
-			}
-			fp := fmt.Sprintf(config.PlaybookFile)
-			if _, err := os.Stat(fp); os.IsNotExist(err) {
-				if !quiet {
-					log.Fatalf("Specified playbook file %v does not exist.", fp)
-				}
-			}
-		} else {
-			// The playbook will be located on the container (via mount) if the remote flag is enabled.
-			config.PlaybookFile = fmt.Sprintf("/etc/ansible/roles/role_under_test/%v", config.PlaybookFile)
-			pwd, _ := os.Getwd()
-			file := fmt.Sprintf("%v/%v", pwd, playbook)
-			fp := fmt.Sprintf(file)
-			if _, err := os.Stat(fp); os.IsNotExist(err) {
-				if !quiet {
-					log.Fatalf("Specified playbook file %v does not exist.", fp)
-				}
-			}
-		}
+		util.MapInventory(dist.CID, &config)
+		util.MapRequirements(&config)
+		util.MapPlaybook(&config)
 
-		if inventory != "" {
-			invfile := fmt.Sprintf(source + "/" + inventory)
-			if _, err := os.Stat(invfile); os.IsNotExist(err) {
-				if !quiet {
-					log.Fatalf("Specified inventory file %v does not exist.", invfile)
-				}
-			}
-		}
-
-		if requirements != "" {
-			fr := fmt.Sprintf(source + "/" + requirements)
-			if _, err := os.Stat(fr); os.IsNotExist(err) {
-				if !quiet {
-					log.Fatalf("Specified requirements file %v does not exist.", fr)
-				}
-			}
-		}
 		if !dist.DockerCheck() {
 			dist.DockerRun(&config)
 		}

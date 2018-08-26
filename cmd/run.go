@@ -81,14 +81,7 @@ Volume mount locations image and id are all configurable.
 			log.Fatalf("Path %v is not recognized as an Ansible role.", config.HostPath)
 		}
 
-		if inventory != "" {
-			invfile := fmt.Sprintf(source + "/" + inventory)
-			if _, err := os.Stat(invfile); os.IsNotExist(err) {
-				if !quiet {
-					log.Fatalf("Specified inventory file %v does not exist.", invfile)
-				}
-			}
-		}
+		util.MapInventory(dist.CID, &config)
 
 		if !dist.DockerCheck() {
 			dist.DockerRun(&config)
