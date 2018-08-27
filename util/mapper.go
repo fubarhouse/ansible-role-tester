@@ -93,6 +93,7 @@ func MapRequirements(config *AnsibleConfig) {
 		if _, err := os.Stat(fp); os.IsNotExist(err) {
 			if !Quiet {
 				log.Warnf("Specified requirements file %v does not exist.", fp)
+				config.RequirementsFile = ""
 			}
 		}
 	} else {
@@ -103,6 +104,7 @@ func MapRequirements(config *AnsibleConfig) {
 		if _, err := os.Stat(fp); os.IsNotExist(err) {
 			if !Quiet {
 				log.Warnf("Specified requirements file %v does not exist.", fp)
+				config.RequirementsFile = ""
 			}
 		}
 	}
