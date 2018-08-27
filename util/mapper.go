@@ -77,6 +77,10 @@ func MapRequirements(config *AnsibleConfig) {
 	Source := config.RemotePath
 	Requirements := config.RequirementsFile
 	Quiet := config.Quiet
+	// Requirements is optional:
+	if Requirements == "" {
+		return
+	}
 	// Adjust requirements path
 	if config.Remote {
 		// The requirements file will be located on the host if the remote flag is enabled.
