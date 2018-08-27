@@ -4,7 +4,7 @@ import (
 	"strings"
 	"os"
 	"fmt"
-	"log"
+	log "github.com/Sirupsen/logrus"
 )
 
 // MapPlaybook will adjust the playbook path for the appropriate
@@ -92,7 +92,7 @@ func MapRequirements(config *AnsibleConfig) {
 		fp := fmt.Sprintf(config.RequirementsFile)
 		if _, err := os.Stat(fp); os.IsNotExist(err) {
 			if !Quiet {
-				log.Fatalf("Specified requirements file %v does not exist.", fp)
+				log.Warnf("Specified requirements file %v does not exist.", fp)
 			}
 		}
 	} else {
@@ -102,7 +102,7 @@ func MapRequirements(config *AnsibleConfig) {
 		fp := fmt.Sprintf(file)
 		if _, err := os.Stat(fp); os.IsNotExist(err) {
 			if !Quiet {
-				log.Fatalf("Specified requirements file %v does not exist.", fp)
+				log.Warnf("Specified requirements file %v does not exist.", fp)
 			}
 		}
 	}
