@@ -35,6 +35,9 @@ env:
 
 before_install:
   - go get -v github.com/fubarhouse/ansible-role-tester
+  - rm -rf /root/go/src/github.com/fubarhouse/ansible-role-tester
+  - git clone https://github.com/fubarhouse/ansible-role-tester.git -b issue-23 /root/go/src/github.com/fubarhouse/ansible-role-tester
+  - cd /root/go/src/github.com/fubarhouse/ansible-role-tester && go build -a -o /usr/bin/ansible-role-tester
 
 script:
   - container_id=$(date +%s)
