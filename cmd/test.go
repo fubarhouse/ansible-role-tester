@@ -24,8 +24,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/fubarhouse/ansible-role-tester/util"
 	"github.com/spf13/cobra"
-		"os"
-	)
+)
 
 // testCmd represents the test command
 var testCmd = &cobra.Command{
@@ -38,13 +37,11 @@ containers won't be removed after completion.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		config := util.AnsibleConfig{
 			HostPath:         source,
-			Inventory:		  inventory,
 			RemotePath:       destination,
 			RequirementsFile: requirements,
 			PlaybookFile:     playbook,
 			Verbose:          verbose,
-			Remote:           remote,
-			Quiet:			      quiet,
+			Quiet:            quiet,
 		}
 
 		dist, _ := util.GetDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)
@@ -52,20 +49,9 @@ containers won't be removed after completion.`,
 		dist.CID = containerID
 
 		if dist.DockerCheck() {
-
-			util.MapPlaybook(&config)
-			util.MapInventory(dist.CID, &config)
-			util.MapRequirements(&config)
-
-			if !remote {
-				dist.RoleSyntaxCheck(&config)
-				dist.RoleTest(&config)
-				dist.IdempotenceTest(&config)
-			} else {
-				dist.RoleSyntaxCheckRemote(&config)
-				dist.RoleTestRemote(&config)
-				dist.IdempotenceTestRemote(&config)
-			}
+			dist.RoleSyntaxCheck(&config)
+			dist.RoleTest(&config)
+			dist.IdempotenceTest(&config)
 		} else {
 			if !quiet {
 				log.Warnf("Container %v is not currently running", dist.CID)
@@ -76,15 +62,11 @@ containers won't be removed after completion.`,
 
 func init() {
 	rootCmd.AddCommand(testCmd)
-	pwd, _ := os.Getwd()
 	testCmd.Flags().StringVarP(&containerID, "name", "n", containerID, "Container ID")
-	testCmd.Flags().StringVarP(&inventory, "inventory", "e", "", "Inventory file")
 	testCmd.Flags().StringVarP(&destination, "destination", "d", "/etc/ansible/roles/role_under_test", "Location which the role was mounted to")
 	testCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "Enable verbose mode for Ansible commands.")
 	testCmd.Flags().StringVarP(&playbook, "playbook", "p", "playbook.yml", "The filename of the playbook")
 	testCmd.Flags().BoolVarP(&quiet, "quiet", "q", false, "Enable quiet mode")
-	testCmd.Flags().StringVarP(&source, "source", "s", pwd, "Location of the role to test")
-	testCmd.Flags().BoolVarP(&remote, "remote", "m", false, "Run the test remotely to the container")
 
 	testCmd.MarkFlagRequired("name")
 }

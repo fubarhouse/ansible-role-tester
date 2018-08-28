@@ -24,7 +24,8 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/fubarhouse/ansible-role-tester/util"
 	"github.com/spf13/cobra"
-		"os"
+	"fmt"
+	"os"
 )
 
 // testCmd represents the test command
@@ -35,12 +36,10 @@ var installCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		config := util.AnsibleConfig{
 			HostPath:         source,
-			Inventory:		  inventory,
 			RemotePath:       destination,
 			RequirementsFile: requirements,
 			PlaybookFile:     playbook,
 			Verbose:          verbose,
-			Remote:           remote,
 			Quiet:			  quiet,
 		}
 
@@ -55,12 +54,13 @@ var installCmd = &cobra.Command{
 			log.Fatalf("Path %v is not recognized as an Ansible role.", config.HostPath)
 		}
 		if dist.DockerCheck() {
-
-			util.MapInventory(dist.CID, &config)
-			util.MapRequirements(&config)
-
+			if requirements != "" {
+				fr := fmt.Sprintf(source + "/" + requirements)
+				if _, err := os.Stat(fr); os.IsNotExist(err) {
+					log.Fatalf("Specified requirements file %v does not exist.", fr)
+				}
+			}
 			dist.RoleInstall(&config)
-
 		} else {
 			if !quiet {
 				log.Warnf("Container %v is not currently running", dist.CID)
@@ -71,11 +71,8 @@ var installCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(installCmd)
-	pwd, _ := os.Getwd()
 	installCmd.Flags().StringVarP(&containerID, "name", "n", containerID, "Container ID")
-	installCmd.Flags().StringVarP(&inventory, "inventory", "e", "", "Inventory file")
 	installCmd.Flags().StringVarP(&requirements, "requirements", "r", "", "Path to requirements file.")
 	installCmd.Flags().BoolVarP(&quiet, "quiet", "q", false, "Enable quiet mode")
-	installCmd.Flags().StringVarP(&source, "source", "s", pwd, "Location of the role to test")
 	installCmd.MarkFlagRequired("name")
 }
