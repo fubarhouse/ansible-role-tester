@@ -46,5 +46,5 @@ script:
   - cd ${directory} && travis_wait 30 ansible-role-tester test --name ${container_id} --playbook test-package.yml
   - cd ${directory} && ansible-role-tester destroy --name ${container_id}
   # Test the remote flag.
-  - cd ${directory} && ansible-role-tester full --name ${container_id} --user fubarhouse --distribution ${distro} --source ${HOME}/my_role --full
+  - cd ${directory} && ansible-role-tester full --name ${container_id} --user fubarhouse --distribution ${distro} --source ${HOME}/my_role --remote
 
