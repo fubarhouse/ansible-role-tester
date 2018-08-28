@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"errors"
+	"fmt"
 	log "github.com/Sirupsen/logrus"
 	"strconv"
 	"time"
@@ -24,7 +25,7 @@ func (dist *Distribution) IdempotenceTest(config *AnsibleConfig) {
 		"--tty",
 		dist.CID,
 		"ansible-playbook",
-		config.PlaybookFile,
+		fmt.Sprintf("%v/tests/%v", config.RemotePath, config.PlaybookFile),
 	}
 
 	// Add verbose if configured

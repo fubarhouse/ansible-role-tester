@@ -50,13 +50,11 @@ required.
 	Run: func(cmd *cobra.Command, args []string) {
 		config := util.AnsibleConfig{
 			HostPath:         source,
-			Inventory:		  inventory,
 			RemotePath:       destination,
 			ExtraRolesPath:   extraRoles,
 			RequirementsFile: requirements,
 			PlaybookFile:     playbook,
 			Verbose:          verbose,
-			Remote:	    		  remote,
 			Quiet:            quiet,
 		}
 
@@ -90,25 +88,28 @@ required.
 		if !config.IsAnsibleRole() && !quiet {
 			log.Fatalf("Path %v is not recognized as an Ansible role.", config.HostPath)
 		}
-
-		util.MapInventory(dist.CID, &config)
-		util.MapRequirements(&config)
-		util.MapPlaybook(&config)
-
+		fp := fmt.Sprintf(source + "/tests/" + playbook)
+		if _, err := os.Stat(fp); os.IsNotExist(err) {
+			if !quiet {
+				log.Fatalf("Specified playbook file %v does not exist.", fp)
+			}
+		}
+		if requirements != "" {
+			fr := fmt.Sprintf(source + "/" + requirements)
+			if _, err := os.Stat(fr); os.IsNotExist(err) {
+				if !quiet {
+					log.Fatalf("Specified requirements file %v does not exist.", fr)
+				}
+			}
+		}
 		if !dist.DockerCheck() {
 			dist.DockerRun(&config)
 		}
 
 		dist.RoleInstall(&config)
-		if !remote {
-			dist.RoleSyntaxCheck(&config)
-			dist.RoleTest(&config)
-			dist.IdempotenceTest(&config)
-		} else {
-			dist.RoleSyntaxCheckRemote(&config)
-			dist.RoleTestRemote(&config)
-			dist.IdempotenceTestRemote(&config)
-		}
+		dist.RoleSyntaxCheck(&config)
+		dist.RoleTest(&config)
+		dist.IdempotenceTest(&config)
 		dist.DockerKill(quiet)
 	},
 }
@@ -121,14 +122,12 @@ func init() {
 	fullCmd.Flags().StringVarP(&source, "source", "s", pwd, "Location of the role to test")
 	fullCmd.Flags().StringVarP(&destination, "destination", "d", "/etc/ansible/roles/role_under_test", "Location which the role will be mounted to")
 	fullCmd.Flags().StringVarP(&requirements, "requirements", "r", "", "Path to requirements file.")
-	fullCmd.Flags().StringVarP(&extraRoles, "extra-roles", "x", "", "Path to roles folder with dependencies.")
+	fullCmd.Flags().StringVarP(&extraRoles, "extra-roles", "e", "", "Path to roles folder with dependencies.")
 	fullCmd.Flags().StringVarP(&playbook, "playbook", "p", "playbook.yml", "The filename of the playbook")
 	fullCmd.Flags().BoolVarP(&noOutput, "no-output", "o", false, "Hide output from all Docker commands")
 	fullCmd.Flags().BoolVarP(&quiet, "quiet", "q", false, "Enable quiet mode")
 	fullCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "Enable verbose mode for Ansible commands.")
 	fullCmd.Flags().BoolVarP(&custom, "custom", "c", false, "Provide my own custom distribution.")
-	fullCmd.Flags().StringVarP(&inventory, "inventory", "e", "", "Inventory file")
-	fullCmd.Flags().BoolVarP(&remote, "remote", "m", false, "Run the test remotely to the container")
 
 	fullCmd.Flags().StringVarP(&initialise, "initialise", "a", "/bin/systemd", "The initialise command for the image")
 	fullCmd.Flags().StringVarP(&volume, "volume", "l", "/sys/fs/cgroup:/sys/fs/cgroup:ro", "The volume argument for the image")

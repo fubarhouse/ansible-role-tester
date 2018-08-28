@@ -9,12 +9,6 @@ import (
 
 var (
 
-	// ansibleplaybook is the path to ansible-playbook.
-	// this will only be used on targetted remotes which
-	// replaces the inventory path when calling
-	// ansible-playbook from the host machine.
-	ansibleplaybook string
-
 	// docker is simply the path to the Docker binary.
 	// this will be located using exec.LookPath().
 	// this must validate to a working binary named
@@ -37,11 +31,6 @@ type AnsibleConfig struct {
 	// on the host machine, which could be anywhere.
 	HostPath string
 
-	// Inventory is the inventory argument in Ansible commands.
-	// in this case we are focusing on inventory files or inline dicts.
-	// Example: 'container_name,' or './tests/inventory.
-	Inventory string
-
 	// RemotePath is the path to the roles folder on the container
 	// which should represent the roles folder (ie /etc/ansible/roles)
 	RemotePath string
@@ -60,10 +49,6 @@ type AnsibleConfig struct {
 	// PlaybookFile is the path to the playbook located in the
 	// tests file relative to HostPath (ie HostPath/tests/playbook.yml)
 	PlaybookFile string
-
-	// Remote indicates the playbook will be run on a remote host
-	// likely which is inputted to the inventory field.
-	Remote bool
 
 	// verbose
 	Verbose bool
@@ -91,11 +76,4 @@ func init() {
 	}
 	docker = d
 	dockerFound = true
-
-	a, e := exec.LookPath("ansible-playbook")
-	if e != nil {
-		log.Errorln("executable 'ansible-playbook' was not found in $PATH.")
-	}
-	ansibleplaybook = a
-
 }
