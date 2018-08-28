@@ -34,9 +34,10 @@ env:
   - distro: fedora28
 
 before_install:
-  - go get -u github.com/golang/dep/cmd/dep
-  - dep ensure
-  - rm -rf /root/go/src/github.com/fubarhouse/ansible-role-tester
+  # Install dependencies:
+  - go get -u github.com/Sirupsen/logrus
+  - go get -u github.com/spf13/cobra
+  # Build the binary
   - go build -a -o /usr/bin/ansible-role-tester
 
 script:
