@@ -36,24 +36,15 @@ env:
 before_install:
   - go get -v github.com/fubarhouse/ansible-role-tester
 
-jobs:
-  include:
-    - stage: Test Suite In-Docker
-      script:
-        - container_id=$(date +%s)
-        - directory=${HOME}/my_role
-        - git clone https://github.com/fubarhouse/ansible-role-curl.git ${directory}
-        - cd ${directory} && ansible-role-tester run --name ${container_id} --user fubarhouse --distribution ${distro} --source ${HOME}/my_role
-        - cd ${directory} && ansible-role-tester install --name ${container_id}
-        - cd ${directory} && travis_wait 30 ansible-role-tester test --name ${container_id} --playbook test-package.yml
-        - cd ${directory} && ansible-role-tester destroy --name ${container_id}
+script:
+  - container_id=$(date +%s)
+  - directory=${HOME}/my_role
+  - git clone https://github.com/fubarhouse/ansible-role-curl.git ${directory}
+  # Test in-docker execution (not using the remote flag)
+  - cd ${directory} && ansible-role-tester run --name ${container_id} --user fubarhouse --distribution ${distro} --source ${HOME}/my_role
+  - cd ${directory} && ansible-role-tester install --name ${container_id}
+  - cd ${directory} && travis_wait 30 ansible-role-tester test --name ${container_id} --playbook test-package.yml
+  - cd ${directory} && ansible-role-tester destroy --name ${container_id}
+  # Test the remote flag.
+  - cd ${directory} && ansible-role-tester full --name ${container_id} --user fubarhouse --distribution ${distro} --source ${HOME}/my_role --full
 
-    - stage: Test Suite Out-Docker
-      script:
-        - container_id=$(date +%s)
-        - directory=${HOME}/my_role
-        - git clone https://github.com/fubarhouse/ansible-role-curl.git ${directory}
-        - cd ${directory} && ansible-role-tester run --name ${container_id} --user fubarhouse --distribution ${distro} --source ${HOME}/my_role --remote
-        - cd ${directory} && ansible-role-tester install --name ${container_id}
-        - cd ${directory} && travis_wait 30 ansible-role-tester test --name ${container_id} --playbook test-package.yml --remote
-        - cd ${directory} && ansible-role-tester destroy --name ${container_id}
