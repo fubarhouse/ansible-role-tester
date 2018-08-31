@@ -117,16 +117,7 @@ func (dist *Distribution) RoleTest(config *AnsibleConfig) {
 		"--tty",
 		dist.CID,
 		"ansible-playbook",
-		config.PlaybookFile,
-	}
-
-	// Add playbook path
-	if strings.HasPrefix(config.PlaybookFile, "./") {
-		args = append(args, fmt.Sprintf("./%v", config.PlaybookFile))
-	} else if strings.HasPrefix(config.PlaybookFile, "/") {
-		args = append(args, fmt.Sprintf("%v", config.PlaybookFile))
-	} else {
-		args = append(args, fmt.Sprintf("%v/tests/%v", config.RemotePath, config.PlaybookFile))
+		fmt.Sprintf("%v/%v", config.RemotePath, config.PlaybookFile),
 	}
 
 	// Add inventory file if configured

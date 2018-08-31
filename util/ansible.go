@@ -82,7 +82,7 @@ func (dist *Distribution) RoleTestRemote(config *AnsibleConfig) {
 	}
 
 	args := []string{
-		config.PlaybookFile,
+		fmt.Sprintf("%v/%v", config.RemotePath, config.PlaybookFile),
 		"-i",
 		dist.CID + ",",
 		"--connection",

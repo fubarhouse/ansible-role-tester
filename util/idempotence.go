@@ -24,7 +24,7 @@ func (dist *Distribution) IdempotenceTest(config *AnsibleConfig) {
 		"--tty",
 		dist.CID,
 		"ansible-playbook",
-		config.PlaybookFile,
+		fmt.Sprintf("%v/%v", config.RemotePath, config.PlaybookFile),
 	}
 
 	// Add verbose if configured
