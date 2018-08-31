@@ -49,7 +49,7 @@ script:
   # Test the role from inside the container using the segmented commands.
   - cd /home/travis/my_role && ansible-role-tester run --name travis_test --user fubarhouse --distribution ${distro}
   - cd /home/travis/my_role && ansible-role-tester install --name travis_test
-  - cd /home/travis/my_role && travis_wait 30 ansible-role-tester test --name travis_test --playbook ./tests/test-package.yml
+  - cd /home/travis/my_role && ansible-role-tester test --name travis_test --playbook ./tests/test-package.yml
   - cd /home/travis/my_role && ansible-role-tester destroy --name travis_test
   - sleep 10
   # Change the test playbook to work with remote hosts (inventory)
