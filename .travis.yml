@@ -46,14 +46,15 @@ before_install:
   - git clone https://github.com/fubarhouse/ansible-role-curl.git /home/travis/my_role
 
 script:
-  - container_id=$(date +%s)
-  - directory=${HOME}/my_role
-  - git clone https://github.com/fubarhouse/ansible-role-curl.git ${directory}
-  # Test in-docker execution (not using the remote flag)
-  - cd ${directory} && ansible-role-tester run --name ${container_id} --user fubarhouse --distribution ${distro} --source ${HOME}/my_role
-  - cd ${directory} && ansible-role-tester install --name ${container_id}
-  - cd ${directory} && travis_wait 30 ansible-role-tester test --name ${container_id} --playbook test-package.yml
-  - cd ${directory} && ansible-role-tester destroy --name ${container_id}
-  # Test the remote flag.
-  - cd ${directory} && ansible-role-tester full --name ${container_id} --user fubarhouse --distribution ${distro} --source ${HOME}/my_role --playbook test-package.yml --remote
-
+  # Test the role from inside the container using the segmented commands.
+  - cd /home/travis/my_role && ansible-role-tester-dupe run --name travis_test --user fubarhouse --distribution ${distro}
+  - cd /home/travis/my_role && ansible-role-tester-dupe install --name travis_test
+  - cd /home/travis/my_role && travis_wait 30 ansible-role-tester-dupe test --name travis_test --playbook ./tests/test-package.yml
+  - cd /home/travis/my_role && ansible-role-tester-dupe destroy --name travis_test
+  - sleep 10
+  # Change the test playbook to work with remote hosts (inventory)
+  - sed -i -e 's/- hosts:\ localhost/- hosts:\ all/g' /home/travis/my_role/tests/test-package.yml
+  # Change the test playbook to refer to the correct path for the role.
+  - sed -i -e 's/role_under_test/\/home\/travis\/my_role\//g' /home/travis/my_role/tests/test-package.yml
+  # Test the role from outside the container using the one standard pipeline command.
+  - cd /home/travis/my_role && ansible-role-tester-dupe full --name travis_test --user fubarhouse --distribution ${distro} --playbook tests/test-package.yml --remote
