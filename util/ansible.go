@@ -33,7 +33,7 @@ func (dist *Distribution) IdempotenceTestRemote(config *AnsibleConfig) {
 		config.PlaybookFile,
 		"-i",
 		dist.CID + ",",
-		"--connection",
+		"-c",
 		"docker",
 	}
 
@@ -85,7 +85,7 @@ func (dist *Distribution) RoleTestRemote(config *AnsibleConfig) {
 		fmt.Sprintf("%v/%v", config.RemotePath, config.PlaybookFile),
 		"-i",
 		dist.CID + ",",
-		"--connection",
+		"-c",
 		"docker",
 	}
 
@@ -170,7 +170,8 @@ func (dist *Distribution) RoleSyntaxCheckRemote(config *AnsibleConfig) {
 
 	args := []string{
 		fmt.Sprintf("-i '%v,'", dist.CID),
-		"-c docker",
+		"-c",
+		"docker",
 		"--syntax-check",
 	}
 
