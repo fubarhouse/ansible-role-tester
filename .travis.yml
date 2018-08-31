@@ -35,10 +35,15 @@ env:
 
 before_install:
   # Install dependencies:
-  - go get -u github.com/Sirupsen/logrus
-  - go get -u github.com/spf13/cobra
-  # Build the binary
-  - go build -a -o /usr/bin/ansible-role-tester
+  - sudo pip install --upgrade pip
+  - sudo pip install ansible
+  # Install ansible-role-tester
+  - go get -v github.com/fubarhouse/ansible-role-tester
+  # We need, in this case to install the copy in branch issue-23, let's do that.
+  - cd $GOPATH/src/github.com/fubarhouse/ansible-role-tester && git status
+  - cd $GOPATH/src/github.com/fubarhouse/ansible-role-tester && git checkout issue-23
+  - cd $GOPATH/src/github.com/fubarhouse/ansible-role-tester && go install ./...
+  - git clone https://github.com/fubarhouse/ansible-role-curl.git /home/travis/my_role
 
 script:
   - container_id=$(date +%s)
