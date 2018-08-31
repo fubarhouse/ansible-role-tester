@@ -175,16 +175,6 @@ func (dist *Distribution) RoleSyntaxCheckRemote(config *AnsibleConfig) {
 		"--syntax-check",
 	}
 
-	// Add playbook path
-	if strings.HasPrefix(config.PlaybookFile, "./") {
-		pwd, _ := os.Getwd()
-		config.PlaybookFile = strings.Replace(config.PlaybookFile, "./", "", -1)
-		args = append(args, fmt.Sprintf("%v/%v", pwd, config.PlaybookFile))
-	} else if strings.HasPrefix(config.PlaybookFile, "/") {
-		args = append(args, fmt.Sprintf("%v", config.PlaybookFile))
-	} else {
-		args = append(args, fmt.Sprintf("%v/tests/%v", config.RemotePath, config.PlaybookFile))
-	}
 
 	// Add verbose if configured
 	if config.Verbose {
