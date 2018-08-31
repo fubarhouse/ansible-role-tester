@@ -79,7 +79,7 @@ func init() {
 	pwd, _ := os.Getwd()
 	testCmd.Flags().StringVarP(&containerID, "name", "n", containerID, "Container ID")
 	testCmd.Flags().StringVarP(&inventory, "inventory", "e", "", "Inventory file")
-	testCmd.Flags().StringVarP(&destination, "destination", "d", "/etc/ansible/roles/role_under_test", "Location which the role was mounted to")
+	testCmd.Flags().StringVarP(&destination, "destination", "d", "", "Location which the role was mounted to")
 	testCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "Enable verbose mode for Ansible commands.")
 	testCmd.Flags().StringVarP(&playbook, "playbook", "p", "playbook.yml", "The filename of the playbook")
 	testCmd.Flags().BoolVarP(&quiet, "quiet", "q", false, "Enable quiet mode")

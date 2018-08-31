@@ -119,7 +119,7 @@ func init() {
 	pwd, _ := os.Getwd()
 	fullCmd.Flags().StringVarP(&containerID, "name", "n", containerID, "Name of the container")
 	fullCmd.Flags().StringVarP(&source, "source", "s", pwd, "Location of the role to test")
-	fullCmd.Flags().StringVarP(&destination, "destination", "d", "/etc/ansible/roles/role_under_test", "Location which the role will be mounted to")
+	fullCmd.Flags().StringVarP(&destination, "destination", "d", "", "Location which the role will be mounted to")
 	fullCmd.Flags().StringVarP(&requirements, "requirements", "r", "", "Path to requirements file.")
 	fullCmd.Flags().StringVarP(&extraRoles, "extra-roles", "x", "", "Path to roles folder with dependencies.")
 	fullCmd.Flags().StringVarP(&playbook, "playbook", "p", "playbook.yml", "The filename of the playbook")
