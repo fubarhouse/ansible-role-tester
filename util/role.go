@@ -82,7 +82,7 @@ func (dist *Distribution) RoleSyntaxCheck(config *AnsibleConfig) {
 		dist.CID,
 		"ansible-playbook",
 		"--syntax-check",
-		config.PlaybookFile,
+		fmt.Sprintf("%v/%v", config.RemotePath, config.PlaybookFile),
 	}
 
 	// Add inventory file if configured
