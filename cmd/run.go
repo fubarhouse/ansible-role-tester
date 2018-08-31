@@ -83,6 +83,15 @@ Volume mount locations image and id are all configurable.
 			log.Fatalf("Path %v is not recognized as an Ansible role.", config.HostPath)
 		}
 
+		if config.RemotePath == "" {
+			if config.Remote {
+				pwd, _ := os.Getwd()
+				config.RemotePath = pwd
+			} else {
+				config.RemotePath = "/etc/ansible/roles/role_under_test"
+			}
+		}
+
 		util.MapInventory(dist.CID, &config)
 
 		if !dist.DockerCheck() {
