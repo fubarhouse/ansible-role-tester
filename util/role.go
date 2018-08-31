@@ -6,7 +6,6 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"os"
 	"time"
-	"strings"
 )
 
 // IsAnsibleRole will identify if the mounted directory is an Ansible role.
@@ -34,6 +33,11 @@ func (dist *Distribution) RoleInstall(config *AnsibleConfig) {
 			"install",
 			"-r",
 			req,
+		}
+
+		// Add inventory file if configured
+		if config.Inventory != "" {
+			args = append(args, fmt.Sprintf("-i=%v", config.Inventory))
 		}
 
 		// Add verbose if configured
@@ -81,6 +85,11 @@ func (dist *Distribution) RoleSyntaxCheck(config *AnsibleConfig) {
 		config.PlaybookFile,
 	}
 
+	// Add inventory file if configured
+	if config.Inventory != "" {
+		args = append(args, fmt.Sprintf("-i=%v", config.Inventory))
+	}
+
 	// Add verbose if configured
 	if config.Verbose {
 		args = append(args, "-vvvv")
@@ -122,7 +131,7 @@ func (dist *Distribution) RoleTest(config *AnsibleConfig) {
 
 	// Add inventory file if configured
 	if config.Inventory != "" {
-		args = append(args, fmt.Sprintf("-i=%v/%v", config.RemotePath, config.Inventory))
+		args = append(args, fmt.Sprintf("-i=%v", config.Inventory))
 	}
 
 	// Add verbose if configured
