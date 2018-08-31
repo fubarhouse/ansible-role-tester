@@ -169,7 +169,9 @@ func (dist *Distribution) RoleSyntaxCheckRemote(config *AnsibleConfig) {
 	}
 
 	args := []string{
-		fmt.Sprintf("-i '%v,'", dist.CID),
+		config.PlaybookFile,
+		"-i",
+		dist.CID + ",",
 		"-c",
 		"docker",
 		"--syntax-check",
