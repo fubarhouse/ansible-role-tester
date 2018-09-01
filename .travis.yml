@@ -35,20 +35,26 @@ env:
 
 before_install:
   # Install dependencies:
-  - go get -u github.com/Sirupsen/logrus
-  - go get -u github.com/spf13/cobra
-  # Build the binary
-  - go build -a -o /usr/bin/ansible-role-tester
+  - sudo pip install --upgrade pip
+  - sudo pip install ansible
+  # Install ansible-role-tester
+  - go get -v github.com/fubarhouse/ansible-role-tester
+  # We need, in this case to install the copy in branch issue-23, let's do that.
+  - cd $GOPATH/src/github.com/fubarhouse/ansible-role-tester && git status
+  - cd $GOPATH/src/github.com/fubarhouse/ansible-role-tester && git checkout $TRAVIS_COMMIT
+  - cd $GOPATH/src/github.com/fubarhouse/ansible-role-tester && go install ./...
+  - git clone https://github.com/fubarhouse/ansible-role-curl.git /home/travis/my_role
 
 script:
-  - container_id=$(date +%s)
-  - directory=${HOME}/my_role
-  - git clone https://github.com/fubarhouse/ansible-role-curl.git ${directory}
-  # Test in-docker execution (not using the remote flag)
-  - cd ${directory} && ansible-role-tester run --name ${container_id} --user fubarhouse --distribution ${distro} --source ${HOME}/my_role
-  - cd ${directory} && ansible-role-tester install --name ${container_id}
-  - cd ${directory} && travis_wait 30 ansible-role-tester test --name ${container_id} --playbook test-package.yml
-  - cd ${directory} && ansible-role-tester destroy --name ${container_id}
-  # Test the remote flag.
-  - cd ${directory} && ansible-role-tester full --name ${container_id} --user fubarhouse --distribution ${distro} --source ${HOME}/my_role --playbook test-package.yml --remote
-
+  # Test the role from inside the container using the segmented commands.
+  - cd /home/travis/my_role && ansible-role-tester run --name travis_test --user fubarhouse --distribution ${distro}
+  - cd /home/travis/my_role && ansible-role-tester install --name travis_test
+  - cd /home/travis/my_role && ansible-role-tester test --name travis_test --playbook ./tests/test-package.yml
+  - cd /home/travis/my_role && ansible-role-tester destroy --name travis_test
+  - sleep 10
+  # Change the test playbook to work with remote hosts (inventory)
+  - sed -i -e 's/- hosts:\ localhost/- hosts:\ all/g' /home/travis/my_role/tests/test-package.yml
+  # Change the test playbook to refer to the correct path for the role.
+  - sed -i -e 's/role_under_test/\/home\/travis\/my_role\//g' /home/travis/my_role/tests/test-package.yml
+  # Test the role from outside the container using the one standard pipeline command.
+  - cd /home/travis/my_role && ansible-role-tester full --name travis_test --user fubarhouse --distribution ${distro} --playbook tests/test-package.yml --remote
