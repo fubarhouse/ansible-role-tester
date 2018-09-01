@@ -41,7 +41,7 @@ before_install:
   - go get -v github.com/fubarhouse/ansible-role-tester
   # We need, in this case to install the copy in branch issue-23, let's do that.
   - cd $GOPATH/src/github.com/fubarhouse/ansible-role-tester && git status
-  - cd $GOPATH/src/github.com/fubarhouse/ansible-role-tester && git checkout $TRAVIS_COMMIT
+  - cd $GOPATH/src/github.com/fubarhouse/ansible-role-tester && git checkout isse-23-pre-pr
   - cd $GOPATH/src/github.com/fubarhouse/ansible-role-tester && go install ./...
   - git clone https://github.com/fubarhouse/ansible-role-curl.git /home/travis/my_role
 
