@@ -83,6 +83,15 @@ Volume mount locations image and id are all configurable.
 			log.Fatalf("Path %v is not recognized as an Ansible role.", config.HostPath)
 		}
 
+		if config.RemotePath == "" {
+			if config.Remote {
+				pwd, _ := os.Getwd()
+				config.RemotePath = pwd
+			} else {
+				config.RemotePath = "/etc/ansible/roles/role_under_test"
+			}
+		}
+
 		util.MapInventory(dist.CID, &config)
 
 		if !dist.DockerCheck() {
@@ -101,7 +110,7 @@ func init() {
 	pwd, _ := os.Getwd()
 	runCmd.Flags().StringVarP(&containerID, "name", "n", containerID, "Container ID")
 	runCmd.Flags().StringVarP(&source, "source", "s", pwd, "Location of the role to test")
-	runCmd.Flags().StringVarP(&destination, "destination", "d", "/etc/ansible/roles/role_under_test", "Location which the role will be mounted to")
+	runCmd.Flags().StringVarP(&destination, "destination", "d", "", "Location which the role will be mounted to")
 	runCmd.Flags().StringVarP(&inventory, "inventory", "e", "", "Inventory file")
 	runCmd.Flags().StringVarP(&extraRoles, "extra-roles", "x", "", "Path to roles folder with dependencies.")
 	runCmd.Flags().BoolVarP(&custom, "custom", "c", false, "Provide my own custom distribution.")

@@ -1,49 +1,76 @@
 package util
 
 import (
-	"strings"
-	"os"
+	"errors"
 	"fmt"
 	log "github.com/Sirupsen/logrus"
+	"os"
+	"strings"
 )
+
+// GenericFileAssignment will take a path and parse check it for specific
+// matches for file paths, and then find the given paths.
+// - Absolute paths are inputs starting with / and remain unmodified.
+// - Relative paths are inputs starting with ./ and append the source or pwd.
+// - Empty paths are unmodified.
+// Results are checked against os.Stat and the results are returned with an error or nil.
+func GenericFileAssignment(input, path string, check bool) (string, error) {
+
+	// The playbook will be located on the host if the remote flag is enabled.
+	if input != "" {
+		if strings.HasPrefix(input, "/") {
+			input = fmt.Sprintf("%v", input)
+		}
+		if strings.HasPrefix(input, "./") {
+			input = strings.Replace(input, "./", "", 1)
+		}
+		pwd, _ := os.Getwd()
+		if path == "" {
+			input = fmt.Sprintf("%v/%v", pwd, input)
+		} else {
+			input = fmt.Sprintf("%v", input)
+		}
+
+		if check {
+			_, err := os.Stat(input);
+			os.IsNotExist(err)
+			if err != nil {
+				return input, errors.New("Specified file " + input + " does not exist")
+			}
+		}
+	}
+
+	return input, nil
+}
 
 // MapPlaybook will adjust the playbook path for the appropriate
 // path based on the configuration. ie remote or not, and
 // guesswork based upon input. For example, paths starting with
 // /, ./ or otherwise.
 func MapPlaybook(config *AnsibleConfig) {
-	Source := config.RemotePath
-	Playbook := config.PlaybookFile
-	Quiet := config.Quiet
-	// Adjust playbook path
-	if config.Remote {
-		// The playbook will be located on the host if the remote flag is enabled.
-		if strings.HasPrefix(config.PlaybookFile, "./") {
-			config.PlaybookFile = fmt.Sprintf("%v/%v", Source, Playbook)
-		} else if strings.HasPrefix(config.PlaybookFile, "/") {
-			config.PlaybookFile = fmt.Sprintf("%v", config.PlaybookFile)
-		} else if !config.Remote {
-			config.PlaybookFile = fmt.Sprintf("%v/tests/%v", Source, config.PlaybookFile)
-		} else if config.Remote {
-			config.PlaybookFile = fmt.Sprintf("%v/tests/%v", Source, config.PlaybookFile)
-		}
-		fp := fmt.Sprintf(config.PlaybookFile)
-		if _, err := os.Stat(fp); os.IsNotExist(err) {
-			if !Quiet {
-				log.Fatalf("Specified playbook file %v does not exist.", fp)
-			}
-		}
-	} else {
-		// The playbook will be located on the container (via mount) if the remote flag is not enabled.
-		config.PlaybookFile = fmt.Sprintf("/etc/ansible/roles/role_under_test/%v", Playbook)
-		file := fmt.Sprintf("%v/%v", Source, Playbook)
-		fp := fmt.Sprintf(file)
-		if _, err := os.Stat(fp); os.IsNotExist(err) {
-			if !Quiet {
-				log.Fatalf("Specified playbook file %v does not exist.", fp)
-			}
+
+	playbook, err := GenericFileAssignment(config.PlaybookFile, config.HostPath, true)
+	config.PlaybookFile = playbook
+
+	if err != nil {
+		log.Fatalf("Specified playbook file %v does not exist.", config.PlaybookFile)
+	}
+
+	if !config.Remote && config.PlaybookFile != "" {
+		pwd, _ := os.Getwd()
+		config.PlaybookFile = strings.Replace(config.PlaybookFile, pwd, config.RemotePath, -1)
+		config.PlaybookFile = fmt.Sprintf("%v/%v", config.RemotePath, config.PlaybookFile)
+	}
+
+	if err == nil {
+		if config.Remote && config.RemotePath == "" {
+			pwd, _ := os.Getwd()
+			config.RemotePath = pwd
+		} else if !config.Remote && config.RemotePath == "" {
+			config.RemotePath = "/etc/ansible/roles/role_under_test"
 		}
 	}
+
 }
 
 // MapInventory will adjust the inventory path for the appropriate
@@ -51,22 +78,20 @@ func MapPlaybook(config *AnsibleConfig) {
 // guesswork based upon input. For example, paths starting with
 // /, ./ or otherwise.
 func MapInventory(CID string, config *AnsibleConfig) {
-	Source := config.RemotePath
-	Inventory := config.Inventory
-	// Adjust playbook path
-	if config.Remote {
-		// The inventory will be overriden if the remote flag is enabled.
-		config.Inventory = fmt.Sprintf("%v,", CID)
-	} else {
-		// The inventory will be located on the container (via mount) if the remote flag is not enabled.
-		config.Inventory = fmt.Sprintf("/etc/ansible/roles/role_under_test/%v", Inventory)
-		file := fmt.Sprintf("%v/%v", Source, Inventory)
-		fp := fmt.Sprintf(file)
-		if _, err := os.Stat(fp); os.IsNotExist(err) {
-			// The file does not exist, we should assume the user inputted a value, not a path.
-			config.Inventory = Inventory
-		}
+
+	inventory, err := GenericFileAssignment(config.Inventory, config.HostPath, false)
+	config.Inventory = inventory
+
+	if err != nil {
+		log.Fatalf("Specified inventory file %v does not exist.", config.Inventory)
 	}
+
+	if !config.Remote && config.Inventory != "" {
+		pwd, _ := os.Getwd()
+		config.Inventory = strings.Replace(config.Inventory, pwd, config.RemotePath, -1)
+		config.Inventory = fmt.Sprintf("%v/%v", config.RemotePath, config.Inventory)
+	}
+
 }
 
 // MapRequirements will adjust the requirements path for the appropriate
@@ -74,42 +99,18 @@ func MapInventory(CID string, config *AnsibleConfig) {
 // guesswork based upon input. For example, paths starting with
 // /, ./ or otherwise.
 func MapRequirements(config *AnsibleConfig) {
-	Source := config.RemotePath
-	Requirements := config.RequirementsFile
-	Quiet := config.Quiet
-	// Requirements is optional:
-	if Requirements == "" {
-		return
+
+	requirements, err := GenericFileAssignment(config.RequirementsFile, config.HostPath, true)
+	config.RequirementsFile = requirements
+
+	if err != nil {
+		log.Fatalf("Specified requirements file %v does not exist.", config.RequirementsFile)
 	}
-	// Adjust requirements path
-	if config.Remote {
-		// The requirements file will be located on the host if the remote flag is enabled.
-		if strings.HasPrefix(config.RequirementsFile, "./") {
-			config.RequirementsFile = fmt.Sprintf("%v/%v", Source, Requirements)
-		} else if strings.HasPrefix(config.RequirementsFile, "/") {
-			config.RequirementsFile = fmt.Sprintf("%v", Requirements)
-		} else if !config.Remote {
-			config.RequirementsFile = fmt.Sprintf("%v/tests/%v", Source, Requirements)
-		} else if config.Remote {
-			config.RequirementsFile = fmt.Sprintf("%v/tests/%v", Source, Requirements)
-		}
-		fp := fmt.Sprintf(config.RequirementsFile)
-		if _, err := os.Stat(fp); os.IsNotExist(err) {
-			if !Quiet {
-				log.Warnf("Specified requirements file %v does not exist.", fp)
-				config.RequirementsFile = ""
-			}
-		}
-	} else {
-		// The requirements will be located on the container (via mount) if the remote flag is not enabled.
-		config.RequirementsFile = fmt.Sprintf("/etc/ansible/roles/role_under_test/%v", Requirements)
-		file := fmt.Sprintf("%v/%v", Source, Requirements)
-		fp := fmt.Sprintf(file)
-		if _, err := os.Stat(fp); os.IsNotExist(err) {
-			if !Quiet {
-				log.Warnf("Specified requirements file %v does not exist.", fp)
-				config.RequirementsFile = ""
-			}
-		}
+
+	if !config.Remote && config.RequirementsFile != "" {
+		pwd, _ := os.Getwd()
+		config.RequirementsFile = strings.Replace(config.RequirementsFile, pwd, config.RemotePath, -1)
+		config.RequirementsFile = fmt.Sprintf("%v/%v", config.RemotePath, config.RequirementsFile)
 	}
+
 }

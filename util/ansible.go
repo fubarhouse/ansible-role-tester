@@ -33,7 +33,7 @@ func (dist *Distribution) IdempotenceTestRemote(config *AnsibleConfig) {
 		config.PlaybookFile,
 		"-i",
 		dist.CID + ",",
-		"--connection",
+		"-c",
 		"docker",
 	}
 
@@ -82,10 +82,10 @@ func (dist *Distribution) RoleTestRemote(config *AnsibleConfig) {
 	}
 
 	args := []string{
-		config.PlaybookFile,
+		fmt.Sprintf("%v/%v", config.RemotePath, config.PlaybookFile),
 		"-i",
 		dist.CID + ",",
-		"--connection",
+		"-c",
 		"docker",
 	}
 
@@ -169,21 +169,14 @@ func (dist *Distribution) RoleSyntaxCheckRemote(config *AnsibleConfig) {
 	}
 
 	args := []string{
-		fmt.Sprintf("-i '%v,'", dist.CID),
-		"-c docker",
+		config.PlaybookFile,
+		"-i",
+		dist.CID + ",",
+		"-c",
+		"docker",
 		"--syntax-check",
 	}
 
-	// Add playbook path
-	if strings.HasPrefix(config.PlaybookFile, "./") {
-		pwd, _ := os.Getwd()
-		config.PlaybookFile = strings.Replace(config.PlaybookFile, "./", "", -1)
-		args = append(args, fmt.Sprintf("%v/%v", pwd, config.PlaybookFile))
-	} else if strings.HasPrefix(config.PlaybookFile, "/") {
-		args = append(args, fmt.Sprintf("%v", config.PlaybookFile))
-	} else {
-		args = append(args, fmt.Sprintf("%v/tests/%v", config.RemotePath, config.PlaybookFile))
-	}
 
 	// Add verbose if configured
 	if config.Verbose {

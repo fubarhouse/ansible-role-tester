@@ -6,7 +6,6 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"os"
 	"time"
-	"strings"
 )
 
 // IsAnsibleRole will identify if the mounted directory is an Ansible role.
@@ -34,6 +33,11 @@ func (dist *Distribution) RoleInstall(config *AnsibleConfig) {
 			"install",
 			"-r",
 			req,
+		}
+
+		// Add inventory file if configured
+		if config.Inventory != "" {
+			args = append(args, fmt.Sprintf("-i=%v", config.Inventory))
 		}
 
 		// Add verbose if configured
@@ -78,7 +82,12 @@ func (dist *Distribution) RoleSyntaxCheck(config *AnsibleConfig) {
 		dist.CID,
 		"ansible-playbook",
 		"--syntax-check",
-		config.PlaybookFile,
+		fmt.Sprintf("%v/%v", config.RemotePath, config.PlaybookFile),
+	}
+
+	// Add inventory file if configured
+	if config.Inventory != "" {
+		args = append(args, fmt.Sprintf("-i=%v", config.Inventory))
 	}
 
 	// Add verbose if configured
@@ -117,21 +126,12 @@ func (dist *Distribution) RoleTest(config *AnsibleConfig) {
 		"--tty",
 		dist.CID,
 		"ansible-playbook",
-		config.PlaybookFile,
-	}
-
-	// Add playbook path
-	if strings.HasPrefix(config.PlaybookFile, "./") {
-		args = append(args, fmt.Sprintf("./%v", config.PlaybookFile))
-	} else if strings.HasPrefix(config.PlaybookFile, "/") {
-		args = append(args, fmt.Sprintf("%v", config.PlaybookFile))
-	} else {
-		args = append(args, fmt.Sprintf("%v/tests/%v", config.RemotePath, config.PlaybookFile))
+		fmt.Sprintf("%v/%v", config.RemotePath, config.PlaybookFile),
 	}
 
 	// Add inventory file if configured
 	if config.Inventory != "" {
-		args = append(args, fmt.Sprintf("-i=%v/%v", config.RemotePath, config.Inventory))
+		args = append(args, fmt.Sprintf("-i=%v", config.Inventory))
 	}
 
 	// Add verbose if configured

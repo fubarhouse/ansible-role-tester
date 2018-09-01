@@ -1,6 +1,7 @@
 package util
 
 import (
+	"fmt"
 	"strings"
 
 	"errors"
@@ -24,7 +25,12 @@ func (dist *Distribution) IdempotenceTest(config *AnsibleConfig) {
 		"--tty",
 		dist.CID,
 		"ansible-playbook",
-		config.PlaybookFile,
+		fmt.Sprintf("%v/%v", config.RemotePath, config.PlaybookFile),
+	}
+
+	// Add inventory file if configured
+	if config.Inventory != "" {
+		args = append(args, fmt.Sprintf("-i=%v", config.Inventory))
 	}
 
 	// Add verbose if configured
