@@ -39,6 +39,8 @@ before_install:
   - sudo pip install ansible
   # Install ansible-role-tester
   - go get -v github.com/fubarhouse/ansible-role-tester
+  # Remove contents of the installed package
+  - rm -rf $GOPATH/src/github.com/fubarhouse/ansible-role-tester/*
   # We need, in this case to install the copy in branch issue-23, let's do that.
   - cp -rf $TRAVIS_BUILD_DIR/* $GOPATH/src/github.com/fubarhouse/ansible-role-tester/
   - cd $GOPATH/src/github.com/fubarhouse/ansible-role-tester/ && go install ./...
