@@ -53,6 +53,12 @@ ansible-role-tester full --custom --image $IMAGE --initialise $INIT --volume $VO
 ansible-role-tester full --custom --image webdevops/ansible:latest --initialise /bin/systemd --volume /sys/fs/cgroup:/sys/fs/cgroup:ro
 ````
 
+### Running Ansible role remotely
+
+By specifying to run the task remotely with `--remote`, the test playbooks will run directly from the host to the guest using an inventory and the docker connector.
+
+This allows you to only have the nessisary software on the host, in the event you need to test a role against any unsupported image.
+
 ### Available distributions
 
 | user        | distro     | image                                        |
