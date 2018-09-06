@@ -35,6 +35,11 @@ func (dist *Distribution) RoleInstall(config *AnsibleConfig) {
 			req,
 		}
 
+		// Add inventory file if configured
+		if config.Inventory != "" {
+			args = append(args, fmt.Sprintf("-i=%v", config.Inventory))
+		}
+
 		// Add verbose if configured
 		if config.Verbose {
 			args = append(args, "-vvvv")
@@ -76,8 +81,13 @@ func (dist *Distribution) RoleSyntaxCheck(config *AnsibleConfig) {
 		"--tty",
 		dist.CID,
 		"ansible-playbook",
-		fmt.Sprintf("%v/tests/%v", config.RemotePath, config.PlaybookFile),
 		"--syntax-check",
+		fmt.Sprintf("%v/%v", config.RemotePath, config.PlaybookFile),
+	}
+
+	// Add inventory file if configured
+	if config.Inventory != "" {
+		args = append(args, fmt.Sprintf("-i=%v", config.Inventory))
 	}
 
 	// Add verbose if configured
@@ -116,7 +126,12 @@ func (dist *Distribution) RoleTest(config *AnsibleConfig) {
 		"--tty",
 		dist.CID,
 		"ansible-playbook",
-		fmt.Sprintf("%v/tests/%v", config.RemotePath, config.PlaybookFile),
+		fmt.Sprintf("%v/%v", config.RemotePath, config.PlaybookFile),
+	}
+
+	// Add inventory file if configured
+	if config.Inventory != "" {
+		args = append(args, fmt.Sprintf("-i=%v", config.Inventory))
 	}
 
 	// Add verbose if configured

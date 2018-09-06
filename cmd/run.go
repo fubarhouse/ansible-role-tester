@@ -42,12 +42,14 @@ Volume mount locations image and id are all configurable.
 	Run: func(cmd *cobra.Command, args []string) {
 		config := util.AnsibleConfig{
 			HostPath:         source,
+			Inventory:		  inventory,
 			RemotePath:       destination,
 			ExtraRolesPath:   extraRoles,
-			RequirementsFile: "",
-			PlaybookFile:     "",
+      RequirementsFile: requirements,
+			PlaybookFile:     playbook,
 			Verbose:          verbose,
-			Quiet:            quiet,
+			Remote:           remote,
+			Quiet:			  quiet,
 		}
 
 		var dist util.Distribution
@@ -80,6 +82,18 @@ Volume mount locations image and id are all configurable.
 		if !config.IsAnsibleRole() && !quiet {
 			log.Fatalf("Path %v is not recognized as an Ansible role.", config.HostPath)
 		}
+
+		if config.RemotePath == "" {
+			if config.Remote {
+				pwd, _ := os.Getwd()
+				config.RemotePath = pwd
+			} else {
+				config.RemotePath = "/etc/ansible/roles/role_under_test"
+			}
+		}
+
+		util.MapInventory(dist.CID, &config)
+
 		if !dist.DockerCheck() {
 			dist.DockerRun(&config)
 		} else {
@@ -96,10 +110,12 @@ func init() {
 	pwd, _ := os.Getwd()
 	runCmd.Flags().StringVarP(&containerID, "name", "n", containerID, "Container ID")
 	runCmd.Flags().StringVarP(&source, "source", "s", pwd, "Location of the role to test")
-	runCmd.Flags().StringVarP(&destination, "destination", "d", "/etc/ansible/roles/role_under_test", "Location which the role will be mounted to")
-	runCmd.Flags().StringVarP(&extraRoles, "extra-roles", "e", "", "Path to roles folder with dependencies.")
+	runCmd.Flags().StringVarP(&destination, "destination", "d", "", "Location which the role will be mounted to")
+	runCmd.Flags().StringVarP(&inventory, "inventory", "e", "", "Inventory file")
+	runCmd.Flags().StringVarP(&extraRoles, "extra-roles", "x", "", "Path to roles folder with dependencies.")
 	runCmd.Flags().BoolVarP(&custom, "custom", "c", false, "Provide my own custom distribution.")
 	runCmd.Flags().BoolVarP(&quiet, "quiet", "q", false, "Enable quiet mode")
+	runCmd.Flags().BoolVarP(&remote, "remote", "m", false, "Run the test remotely to the container")
 
 	runCmd.Flags().StringVarP(&initialise, "initialise", "a", "/bin/systemd", "The initialise command for the image")
 	runCmd.Flags().StringVarP(&volume, "volume", "l", "/sys/fs/cgroup:/sys/fs/cgroup:ro", "The volume argument for the image")
