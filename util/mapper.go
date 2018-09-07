@@ -32,7 +32,7 @@ func GenericFileAssignment(input, path string, check bool) (string, error) {
 		}
 
 		if check {
-			_, err := os.Stat(input);
+			_, err := os.Stat(input)
 			os.IsNotExist(err)
 			if err != nil {
 				return input, errors.New("Specified file " + input + " does not exist")

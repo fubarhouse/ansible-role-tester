@@ -1,13 +1,13 @@
 package util
 
 import (
+	"bytes"
 	"fmt"
-	"time"
+	"io"
 	"os"
 	"os/exec"
-	"bytes"
-	"io"
 	"sync"
+	"time"
 
 	log "github.com/Sirupsen/logrus"
 	"strings"
@@ -111,7 +111,6 @@ func (dist *Distribution) RoleTestRemote(config *AnsibleConfig) {
 	}
 }
 
-
 // AnsiblePlaybook will execute a command to the ansible-playbook
 // binary and use the input args as arguments for that process.
 // You can request output be printed using the bool stdout.
@@ -176,7 +175,6 @@ func (dist *Distribution) RoleSyntaxCheckRemote(config *AnsibleConfig) {
 		"docker",
 		"--syntax-check",
 	}
-
 
 	// Add verbose if configured
 	if config.Verbose {

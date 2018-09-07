@@ -6,9 +6,9 @@ import (
 
 	"errors"
 	log "github.com/Sirupsen/logrus"
+	"os"
 	"strconv"
 	"time"
-	"os"
 )
 
 // IdempotenceTest will run an Ansible playbook once and check the
@@ -39,7 +39,7 @@ func (dist *Distribution) IdempotenceTest(config *AnsibleConfig) {
 	}
 
 	now := time.Now()
-	var idempotence = false
+	idempotence := false
 	if !config.Quiet {
 		out, _ := DockerExec(args, true)
 		idempotence = IdempotenceResult(out)

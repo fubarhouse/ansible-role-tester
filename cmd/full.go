@@ -50,13 +50,13 @@ required.
 	Run: func(cmd *cobra.Command, args []string) {
 		config := util.AnsibleConfig{
 			HostPath:         source,
-			Inventory:		  inventory,
+			Inventory:        inventory,
 			RemotePath:       destination,
 			ExtraRolesPath:   extraRoles,
 			RequirementsFile: requirements,
 			PlaybookFile:     playbook,
 			Verbose:          verbose,
-			Remote:	    		  remote,
+			Remote:           remote,
 			Quiet:            quiet,
 		}
 
@@ -70,7 +70,7 @@ required.
 			}
 		} else {
 			dist = *util.NewCustomDistribution()
-			user := strings.Split(image, "/")[0]
+			user = strings.Split(image, "/")[0]
 			container := strings.Split(image, ":")[0]
 			container = strings.Split(container, "/")[1]
 			tag := strings.Split(image, ":")[1]
