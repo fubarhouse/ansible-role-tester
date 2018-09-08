@@ -58,7 +58,7 @@ func GenericPlaybookAssignment(input, path string) (string, error) {
 
 	for _, file := range files {
 		if strings.Contains(file, ".yml") {
-			if strings.Contains(file, "playbook.yml") {
+			if strings.HasSuffix(file, "playbook.yml") {
 				return strings.Replace(file, path + string(os.PathSeparator), "", -1), nil
 			}
 		}
