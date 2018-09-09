@@ -1,10 +1,9 @@
 # Ansible Role Tester
 
-[![Build Status](https://img.shields.io/travis/fubarhouse/ansible-role-tester/master.svg?style=for-the-badge)](https://travis-ci.org/fubarhouse/ansible-role-tester)
-![stability-experimental](https://img.shields.io/badge/stability-experimental-orange.svg?style=for-the-badge)
-[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge)](https://raw.githubusercontent.com/fubarhouse/ansible-role-tester/master/LICENSE)
-
+[![Build Status](https://img.shields.io/travis/fubarhouse/ansible-role-tester/master.svg)](https://travis-ci.org/fubarhouse/ansible-role-tester)
+![stability-experimental](https://img.shields.io/badge/stability-experimental-orange.svg)
 [![Go Report Card](https://goreportcard.com/badge/fubarhouse/ansible-role-tester)](https://goreportcard.com/report/fubarhouse/ansible-role-tester)
+[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/fubarhouse/ansible-role-tester/master/LICENSE)
 
 This program will allow users to mount [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html) roles into isolated Docker images for testing typically achieved using CI tools such as Travis CI.
 
