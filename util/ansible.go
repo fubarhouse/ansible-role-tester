@@ -9,8 +9,9 @@ import (
 	"sync"
 	"time"
 
-	log "github.com/Sirupsen/logrus"
 	"strings"
+
+	log "github.com/Sirupsen/logrus"
 )
 
 // IdempotenceTestRemote will run an Ansible playbook once and check the
@@ -42,7 +43,6 @@ func (dist *Distribution) IdempotenceTestRemote(config *AnsibleConfig) {
 		args = append(args, "-vvvv")
 	}
 
-	now := time.Now()
 	var idempotence = false
 	if !config.Quiet {
 		out, _ := AnsiblePlaybook(args, true)
@@ -53,13 +53,10 @@ func (dist *Distribution) IdempotenceTestRemote(config *AnsibleConfig) {
 	}
 
 	if !config.Quiet {
-		log.Infof("Idempotence was checked in %v", time.Since(now))
-		if idempotence {
-			log.Infoln("Idempotence test: PASS")
-		} else {
-			log.Errorln("Idempotence test: FAIL")
-			os.Exit(1)
-		}
+		PrintIdempotenceResult(idempotence)
+	}
+	if !idempotence {
+		os.Exit(1)
 	}
 }
 

@@ -1,14 +1,14 @@
 package util
 
 import (
-	"fmt"
-	"strings"
-
 	"errors"
-	log "github.com/Sirupsen/logrus"
+	"fmt"
 	"os"
 	"strconv"
+	"strings"
 	"time"
+
+	log "github.com/Sirupsen/logrus"
 )
 
 // IdempotenceTest will run an Ansible playbook once and check the
@@ -38,8 +38,7 @@ func (dist *Distribution) IdempotenceTest(config *AnsibleConfig) {
 		args = append(args, "-vvvv")
 	}
 
-	now := time.Now()
-	idempotence := false
+	var idempotence = false
 	if !config.Quiet {
 		out, _ := DockerExec(args, true)
 		idempotence = IdempotenceResult(out)
@@ -49,13 +48,20 @@ func (dist *Distribution) IdempotenceTest(config *AnsibleConfig) {
 	}
 
 	if !config.Quiet {
-		log.Infof("Idempotence was checked in %v", time.Since(now))
-		if idempotence {
-			log.Infoln("Idempotence test: PASS")
-		} else {
-			log.Errorln("Idempotence test: FAIL")
-			os.Exit(1)
-		}
+		PrintIdempotenceResult(idempotence)
+	}
+	if !idempotence {
+		os.Exit(1)
+	}
+}
+
+func PrintIdempotenceResult(idempotence bool) {
+	now := time.Now()
+	log.Infof("Idempotence was checked in %v", time.Since(now))
+	if idempotence {
+		log.Infoln("Idempotence test: PASS")
+	} else {
+		log.Errorln("Idempotence test: FAIL")
 	}
 }
 
