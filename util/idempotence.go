@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"errors"
-	"os"
 	"strconv"
 	"time"
 
@@ -14,7 +13,7 @@ import (
 
 // IdempotenceTest will run an Ansible playbook once and check the
 // output for any changed or failed tasks as reported by Ansible.
-func (dist *Distribution) IdempotenceTest(config *AnsibleConfig) {
+func (dist *Distribution) IdempotenceTest(config *AnsibleConfig) (bool, time.Duration) {
 
 	// Test role idempotence.
 	if !config.Quiet {
@@ -40,6 +39,7 @@ func (dist *Distribution) IdempotenceTest(config *AnsibleConfig) {
 	}
 
 	var idempotence = false
+	now := time.Now()
 	if !config.Quiet {
 		out, _ := DockerExec(args, true)
 		idempotence = IdempotenceResult(out)
@@ -51,9 +51,9 @@ func (dist *Distribution) IdempotenceTest(config *AnsibleConfig) {
 	if !config.Quiet {
 		PrintIdempotenceResult(idempotence)
 	}
-	if !idempotence {
-		os.Exit(1)
-	}
+
+	return idempotence, time.Since(now)
+
 }
 
 func PrintIdempotenceResult(idempotence bool) {
@@ -93,17 +93,14 @@ func IdempotenceResult(output string) bool {
 	if error != nil {
 		log.Errorln(error)
 		return false
-		os.Exit(1)
 	}
 
 	if failed > 0 {
 		return false
-		os.Exit(1)
 	}
 
 	if changed > 0 {
 		return false
-		os.Exit(1)
 	}
 
 	return true

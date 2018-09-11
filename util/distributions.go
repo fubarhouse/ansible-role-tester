@@ -2,12 +2,11 @@ package util
 
 import (
 	"errors"
-	"os"
 	"strings"
 
+	"fmt"
 	log "github.com/Sirupsen/logrus"
 	"reflect"
-	"fmt"
 )
 
 // A Distribution declares the options to
@@ -577,7 +576,6 @@ func GetDistribution(container, target, init, volume, user, distro string) (Dist
 
 	if !strings.Contains(c, container) {
 		log.Errorf("no valid image was found for '%v'\n", container)
-		os.Exit(1)
 	}
 
 	return Distribution{},
