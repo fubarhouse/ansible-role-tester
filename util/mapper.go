@@ -5,6 +5,7 @@ import (
 	"fmt"
 	log "github.com/Sirupsen/logrus"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -43,6 +44,29 @@ func GenericFileAssignment(input, path string, check bool) (string, error) {
 	return input, nil
 }
 
+// GenericPlaybookAssignment will return the path of the only available playbook file under
+// the roles tests directory, to be used when the default playbook path is invalid.
+func GenericPlaybookAssignment(input, path string) (string, error) {
+	var files []string
+	err := filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
+		files = append(files, path)
+		return nil
+	})
+	if err != nil {
+		return input, errors.New("no playbook.yml file was found, please provide path to playbook.")
+	}
+
+	for _, file := range files {
+		if strings.Contains(file, ".yml") {
+			if strings.HasSuffix(file, "playbook.yml") {
+				return strings.Replace(file, path + string(os.PathSeparator), "", -1), nil
+			}
+		}
+	}
+
+	return input, nil
+}
+
 // MapPlaybook will adjust the playbook path for the appropriate
 // path based on the configuration. ie remote or not, and
 // guesswork based upon input. For example, paths starting with
@@ -50,6 +74,8 @@ func GenericFileAssignment(input, path string, check bool) (string, error) {
 func MapPlaybook(config *AnsibleConfig) {
 
 	playbook, err := GenericFileAssignment(config.PlaybookFile, config.HostPath, true)
+	playbook, err = GenericPlaybookAssignment(config.PlaybookFile, config.HostPath)
+
 	config.PlaybookFile = playbook
 
 	if err != nil {
