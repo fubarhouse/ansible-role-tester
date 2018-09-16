@@ -94,6 +94,17 @@ func buildDockerArgs(dist *Distribution, config *AnsibleConfig) []string {
 		fmt.Sprintf("--volume=%v", dist.Family.Volume),
 		fmt.Sprintf("--volume=%v:%v", config.HostPath, config.RemotePath),
 	}
+
+	// If we're dealing with commands inside the container directly,
+	// it would be practical to mount into the proper namespace
+	// so we can call the roles by name in the playbook, rather
+	// than the role_under_test convention.
+	if !config.Remote {
+		pwd, _ := os.Getwd()
+		pwds := strings.Split(pwd, string(os.PathSeparator))
+		dockerArgs = append(dockerArgs, fmt.Sprintf("--volume=%s:/etc/ansible/roles/%v", config.HostPath, pwds[len(pwds)-1]))
+	}
+
 	if config.ExtraRolesPath != "" {
 		dockerArgs = append(dockerArgs, fmt.Sprintf("--volume=%s:%v", config.ExtraRolesPath, "/root/.ansible/roles"))
 	}
