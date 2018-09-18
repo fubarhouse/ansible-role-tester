@@ -6,8 +6,9 @@ import (
 	"strings"
 
 	"fmt"
-	log "github.com/Sirupsen/logrus"
 	"reflect"
+
+	log "github.com/Sirupsen/logrus"
 )
 
 // A Distribution declares the options to
@@ -512,6 +513,7 @@ func CustomDistributionValueSet(dist *Distribution, key, value string) error {
 		return nil
 	}
 	return errors.New("invalid key/value pair was specified")
+
 }
 
 // CustomFamilyValueSet will set a field to a given value from a Family.
@@ -522,6 +524,7 @@ func CustomFamilyValueSet(family *Family, key, value string) error {
 		return nil
 	}
 	return errors.New("invalid key/value pair was specified")
+
 }
 
 // CustomDistributionValueGet will get a field value from a Distribution.
@@ -538,16 +541,16 @@ func CustomDistributionValueGet(dist *Distribution, key string) (string, error) 
 }
 
 // CustomFamilyValueGet will get a field value from a Family.
-func CustomFamilyValueGet(family *Family, key string) (error, string) {
+func CustomFamilyValueGet(family *Family, key string) (string, error) {
 	s := reflect.ValueOf(family).Elem()
 	typeOfT := s.Type()
 	for i := 0; i < s.NumField(); i++ {
 		if typeOfT.Field(i).Name == key {
 			f := s.Field(i)
-			return nil, fmt.Sprintf("%s", f.Interface())
+			return fmt.Sprintf("%s", f.Interface()), nil
 		}
 	}
-	return errors.New("could not find the specified field"), ""
+	return "", errors.New("could not find the specified field")
 }
 
 // GetDistribution will get the distribution object to allow dynamic

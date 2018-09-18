@@ -1,2 +1,11 @@
-// Ignore vendors.
+# Ignore vendors.
 vendor/*
+
+# Goland IDE
+.idea/*
+
+# vim
+*.swp
+
+# OSX
+._*
