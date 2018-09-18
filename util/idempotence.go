@@ -93,17 +93,14 @@ func IdempotenceResult(output string) bool {
 	if error != nil {
 		log.Errorln(error)
 		return false
-		os.Exit(1)
 	}
 
 	if failed > 0 {
 		return false
-		os.Exit(1)
 	}
 
 	if changed > 0 {
 		return false
-		os.Exit(1)
 	}
 
 	return true
