@@ -42,14 +42,14 @@ Volume mount locations image and id are all configurable.
 	Run: func(cmd *cobra.Command, args []string) {
 		config := util.AnsibleConfig{
 			HostPath:         source,
-			Inventory:		  inventory,
+			Inventory:        inventory,
 			RemotePath:       destination,
 			ExtraRolesPath:   extraRoles,
-      RequirementsFile: requirements,
+			RequirementsFile: requirements,
 			PlaybookFile:     playbook,
 			Verbose:          verbose,
 			Remote:           remote,
-			Quiet:			  quiet,
+			Quiet:            quiet,
 		}
 
 		var dist util.Distribution

@@ -5,9 +5,9 @@ import (
 	"os"
 	"strings"
 
+	"fmt"
 	log "github.com/Sirupsen/logrus"
 	"reflect"
-	"fmt"
 )
 
 // A Distribution declares the options to
