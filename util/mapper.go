@@ -3,10 +3,11 @@ package util
 import (
 	"errors"
 	"fmt"
-	log "github.com/Sirupsen/logrus"
 	"os"
 	"path/filepath"
 	"strings"
+
+	log "github.com/Sirupsen/logrus"
 )
 
 // GenericFileAssignment will take a path and parse check it for specific
@@ -33,7 +34,7 @@ func GenericFileAssignment(input, path string, check bool) (string, error) {
 		}
 
 		if check {
-			_, err := os.Stat(input);
+			_, err := os.Stat(input)
 			os.IsNotExist(err)
 			if err != nil {
 				return input, errors.New("Specified file " + input + " does not exist")
@@ -59,7 +60,7 @@ func GenericPlaybookAssignment(input, path string) (string, error) {
 	for _, file := range files {
 		if strings.Contains(file, ".yml") {
 			if strings.HasSuffix(file, "playbook.yml") {
-				return strings.Replace(file, path + string(os.PathSeparator), "", -1), nil
+				return strings.Replace(file, path+string(os.PathSeparator), "", -1), nil
 			}
 		}
 	}
