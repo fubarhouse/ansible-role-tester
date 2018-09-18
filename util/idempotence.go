@@ -56,6 +56,7 @@ func (dist *Distribution) IdempotenceTest(config *AnsibleConfig) {
 	}
 }
 
+// PrintIdempotenceResult will log the results of the idempotence checks.
 func PrintIdempotenceResult(idempotence bool) {
 	now := time.Now()
 	log.Infof("Idempotence was checked in %v", time.Since(now))
