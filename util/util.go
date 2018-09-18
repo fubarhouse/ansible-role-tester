@@ -9,7 +9,7 @@ import (
 var (
 
 	// ansibleplaybook is the path to ansible-playbook.
-	// this will only be used on targetted remotes which
+	// this will only be used on targeted remotes which
 	// replaces the inventory path when calling
 	// ansible-playbook from the host machine.
 	ansibleplaybook string
