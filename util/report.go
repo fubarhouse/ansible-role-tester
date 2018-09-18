@@ -3,13 +3,17 @@ package util
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
+	"io/ioutil"
+	"os"
 	"os/exec"
 	"strings"
 	"sync"
 	"time"
 
+	yaml "gopkg.in/yaml.v2"
 	log "github.com/Sirupsen/logrus"
 )
 
@@ -20,6 +24,7 @@ type AnsibleReport struct {
 		Repository string
 		CommitHash string
 		LocalChanges bool
+		ReportFile string
 	}
 	Ansible struct {
 		Config AnsibleConfig
@@ -169,25 +174,84 @@ func (report *AnsibleReport) GetJSON(data interface{}) ([]byte, error) {
 
 }
 
+// GetYAML will return an unmarhaled object as YAML.
+func (report *AnsibleReport) GetYAML(data interface{}) ([]byte, error) {
+
+	// Marshal as JSON
+	result, err := yaml.Marshal(data)
+	if err != nil {
+		log.Errorln(err)
+		return []byte{}, err
+	}
+
+	// Return the []bytes as a string
+	return result, nil
+
+}
+
+// printFile will output the input data to the given filename.
+// Intended for exclusive use by GetJSON and GetYAML.
+func (report *AnsibleReport) printFile(data []byte) error {
+
+	identifiedError := false
+	errorObject := errors.New("")
+	filename := report.Meta.ReportFile
+
+	// If the file already exists, we should delete it.
+	if _, err := os.Stat(filename); err == nil {
+		// The file exists.
+		if err = os.Remove(filename); err != nil {
+			// The file could not be deleted
+			log.Errorf("failed to delete %v\n", filename)
+			identifiedError = true
+			errorObject = err
+		}
+	}
+
+	// Assume no file is available.
+	if _, err := os.Stat(filename); err != nil {
+		if file, fe := os.Create(filename); fe != nil {
+			// File could not be created.
+			log.Errorf("could not create file %v\n", filename)
+			identifiedError = true
+			errorObject = fe
+		} else {
+			// File was created, attempt to write to it
+			if we := ioutil.WriteFile(filename, data, 0644); we != nil {
+				// Could not write to file.
+				log.Errorf("could not write data to %v\n", filename)
+				identifiedError = true
+				errorObject = we
+			} else {
+				// Wrote to file successfully.
+				log.Infof("Report data has been written to %v\n", filename)
+			}
+			// Close the file.
+			file.Sync()
+			defer file.Close()
+		}
+	}
+	if identifiedError {
+		return errorObject
+	} else {
+		return nil
+	}
+}
+
 // Printf will print the report in a formatted way.
 func (report *AnsibleReport) Printf() {
-
-	jsonDataConfig, _ := report.GetJSON(report.Ansible.Config)
-	jsonDataDistribution, _ := report.GetJSON(report.Ansible.Distribution)
 
 	fmt.Println()
 	fmt.Println("----------------------------------------------------------")
 	fmt.Println("Ansible Role Tester Report")
 	fmt.Println("----------------------------------------------------------")
 	fmt.Printf("Timestamp: \t\t\t%v\n", report.Meta.Timestamp)
-	fmt.Printf("Distribution: \t\t\t%v\n", string(jsonDataDistribution))
 	if report.IsGit() {
 		fmt.Printf("Repository URL: \t\t%v\n", report.Meta.Repository)
 		fmt.Printf("Repository commit: \t\t%v\n", report.Meta.CommitHash)
 		fmt.Printf("Local changes: \t\t\t%v\n", report.Meta.LocalChanges)
 	}
 	fmt.Println("----------------------------------------------------------")
-	fmt.Printf("Configuration: \t\t\t%v\n", string(jsonDataConfig))
 	fmt.Printf("Syntax check: \t\t\t%v\n", report.Ansible.Syntax)
 	fmt.Printf("Requirements installed: \t%v\n", report.Ansible.Requirements)
 	fmt.Printf("Run result: \t\t\t%v\n", report.Ansible.Run.Result)
@@ -199,5 +263,18 @@ func (report *AnsibleReport) Printf() {
 	fmt.Printf("Docker kill: \t\t\t%v\n", report.Docker.Kill)
 	fmt.Println("----------------------------------------------------------")
 	fmt.Println()
+
+	if strings.HasSuffix(report.Meta.ReportFile, ".yaml") {
+		yamlReport, _ := report.GetYAML(report)
+		report.printFile(yamlReport)
+	}
+	if strings.HasSuffix(report.Meta.ReportFile, ".yml") {
+		yamlReport, _ := report.GetYAML(report)
+		report.printFile(yamlReport)
+	}
+	if strings.HasSuffix(report.Meta.ReportFile, ".json") {
+		jsonReport, _ := report.GetJSON(report)
+		report.printFile(jsonReport)
+	}
 
 }

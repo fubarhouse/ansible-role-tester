@@ -88,6 +88,11 @@ var (
 	// completion of all tasks being run.
 	reportProvided = false
 
+	// reportFilename is the relative path of a file in the working directory
+	// to write a file to. The file extension should match json|yml|yaml or else
+	// will not work, but will automatically handle as necessary.
+	reportFilename string
+
 	// verbose is a boolean indicating all Ansible commands should
 	// be dockerRun with the --verbose flag.
 	verbose = false

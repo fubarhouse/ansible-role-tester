@@ -96,6 +96,7 @@ required.
 		util.MapPlaybook(&config)
 
 		report := util.NewReport(&config)
+		report.Meta.ReportFile = reportFilename
 		report.Ansible.Distribution = dist
 
 		if !dist.DockerCheck() {
@@ -143,6 +144,7 @@ func init() {
 	fullCmd.Flags().StringVarP(&inventory, "inventory", "e", "", "Inventory file")
 	fullCmd.Flags().BoolVarP(&remote, "remote", "m", false, "Run the test remotely to the container")
 	fullCmd.Flags().BoolVarP(&reportProvided, "report", "f", false, "Provide a report after completion")
+	fullCmd.Flags().StringVarP(&reportFilename, "report-output", "b", "report.yml", "Filename in current working directory to write a report to")
 
 	fullCmd.Flags().StringVarP(&initialise, "initialise", "a", "/bin/systemd", "The initialise command for the image")
 	fullCmd.Flags().StringVarP(&volume, "volume", "l", "/sys/fs/cgroup:/sys/fs/cgroup:ro", "The volume argument for the image")
