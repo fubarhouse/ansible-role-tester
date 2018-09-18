@@ -50,13 +50,13 @@ required.
 	Run: func(cmd *cobra.Command, args []string) {
 		config := util.AnsibleConfig{
 			HostPath:         source,
-			Inventory:		  inventory,
+			Inventory:        inventory,
 			RemotePath:       destination,
 			ExtraRolesPath:   extraRoles,
 			RequirementsFile: requirements,
 			PlaybookFile:     playbook,
 			Verbose:          verbose,
-			Remote:	    		  remote,
+			Remote:           remote,
 			Quiet:            quiet,
 		}
 
