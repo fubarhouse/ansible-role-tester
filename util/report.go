@@ -193,8 +193,6 @@ func (report *AnsibleReport) GetYAML(data interface{}) ([]byte, error) {
 // Intended for exclusive use by GetJSON and GetYAML.
 func (report *AnsibleReport) printFile(data []byte) error {
 
-	identifiedError := false
-	errorObject := errors.New("")
 	filename := report.Meta.ReportFile
 
 	// If the file already exists, we should delete it.
@@ -203,8 +201,7 @@ func (report *AnsibleReport) printFile(data []byte) error {
 		if err = os.Remove(filename); err != nil {
 			// The file could not be deleted
 			log.Errorf("failed to delete %v\n", filename)
-			identifiedError = true
-			errorObject = err
+			return err
 		}
 	}
 
@@ -213,15 +210,13 @@ func (report *AnsibleReport) printFile(data []byte) error {
 		if file, fe := os.Create(filename); fe != nil {
 			// File could not be created.
 			log.Errorf("could not create file %v\n", filename)
-			identifiedError = true
-			errorObject = fe
+			return fe
 		} else {
 			// File was created, attempt to write to it
 			if we := ioutil.WriteFile(filename, data, 0644); we != nil {
 				// Could not write to file.
 				log.Errorf("could not write data to %v\n", filename)
-				identifiedError = true
-				errorObject = we
+				return we
 			} else {
 				// Wrote to file successfully.
 				log.Infof("Report data has been written to %v\n", filename)
@@ -231,11 +226,7 @@ func (report *AnsibleReport) printFile(data []byte) error {
 			defer file.Close()
 		}
 	}
-	if identifiedError {
-		return errorObject
-	} else {
-		return nil
-	}
+
 }
 
 // Printf will print the report in a formatted way.
