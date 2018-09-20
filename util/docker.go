@@ -91,10 +91,9 @@ func buildDockerArgs(dist *Distribution, config *AnsibleConfig, report *AnsibleR
 		"run",
 		"--detach",
 		fmt.Sprintf("--name=%v", dist.CID),
-		fmt.Sprintf("--volume=%v", dist.Family.Volume),
-		fmt.Sprintf("--volume=%v:%v", config.HostPath, config.RemotePath),
 	}
 
+	// Basic volumes, assumed default.
 	report.Docker.Volumes = append(report.Docker.Volumes, dist.Family.Volume)
 	report.Docker.Volumes = append(report.Docker.Volumes, fmt.Sprintf("%v:%v", config.HostPath, config.RemotePath))
 
@@ -105,14 +104,18 @@ func buildDockerArgs(dist *Distribution, config *AnsibleConfig, report *AnsibleR
 	if !config.Remote {
 		pwd, _ := os.Getwd()
 		pwds := strings.Split(pwd, string(os.PathSeparator))
-		dockerArgs = append(dockerArgs, fmt.Sprintf("--volume=%s:/etc/ansible/roles/%v", config.HostPath, pwds[len(pwds)-1]))
 		report.Docker.Volumes = append(report.Docker.Volumes, fmt.Sprintf("%s:/etc/ansible/roles/%v", config.HostPath, pwds[len(pwds)-1]))
 	}
 
 	if config.ExtraRolesPath != "" {
-		dockerArgs = append(dockerArgs, fmt.Sprintf("--volume=%s:%v", config.ExtraRolesPath, "/root/.ansible/roles"))
 		report.Docker.Volumes = append(report.Docker.Volumes, fmt.Sprintf("%s:%v", config.ExtraRolesPath, "/root/.ansible/roles"))
 	}
+
+	// Mount the volumes!
+	for _, Volume := range report.Docker.Volumes {
+		dockerArgs = append(dockerArgs, fmt.Sprintf("--volume=%v", Volume))
+	}
+
 	if dist.Privileged {
 		dockerArgs = append(dockerArgs, fmt.Sprint("--privileged"))
 	}
