@@ -92,10 +92,4 @@ func init() {
 	docker = d
 	dockerFound = true
 
-	a, e := exec.LookPath("ansible-playbook")
-	if e != nil {
-		log.Errorln("executable 'ansible-playbook' was not found in $PATH.")
-	}
-	ansibleplaybook = a
-
 }
