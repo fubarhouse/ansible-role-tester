@@ -93,9 +93,11 @@ Volume mount locations image and id are all configurable.
 		}
 
 		util.MapInventory(dist.CID, &config)
+		// Our report variable is needed, but unused.
+		report := util.AnsibleReport{}
 
 		if !dist.DockerCheck() {
-			dist.DockerRun(&config)
+			dist.DockerRun(&config, &report)
 		} else {
 			if !quiet {
 				log.Warnf("Container %v is already running", dist.CID)

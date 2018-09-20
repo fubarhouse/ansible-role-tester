@@ -100,7 +100,7 @@ required.
 		report.Ansible.Distribution = dist
 
 		if !dist.DockerCheck() {
-			dist.DockerRun(&config)
+			dist.DockerRun(&config, &report)
 			report.Docker.Run = dist.DockerCheck()
 		}
 
