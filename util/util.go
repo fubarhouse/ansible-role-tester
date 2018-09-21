@@ -94,12 +94,10 @@ func init() {
 	docker = d
 	dockerFound = true
 
-	if dockerFound {
-		c, err := net.Dial("unix", "/var/run/docker.sock")
-		if err != nil {
-			log.Fatalf("unable to connect to docker: %v", err)
-		}
-		defer c.Close()
+	c, err := net.Dial("unix", "/var/run/docker.sock")
+	if err != nil {
+		log.Fatalf("unable to connect to docker: %v", err)
 	}
+	defer c.Close()
 
 }
