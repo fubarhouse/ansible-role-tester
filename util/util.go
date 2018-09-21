@@ -1,6 +1,7 @@
 package util
 
 import (
+	"net"
 	"os"
 	"os/exec"
 
@@ -89,7 +90,14 @@ func init() {
 		log.Errorln("executable 'docker' was not found in $PATH.")
 		os.Exit(1)
 	}
+
 	docker = d
 	dockerFound = true
+
+	c, err := net.Dial("unix", "/var/run/docker.sock")
+	if err != nil {
+		log.Fatalf("unable to connect to docker: %v", err)
+	}
+	defer c.Close()
 
 }
