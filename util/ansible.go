@@ -114,7 +114,7 @@ func (dist *Distribution) RoleTestRemote(config *AnsibleConfig) {
 func AnsiblePlaybook(args []string, stdout bool) (string, error) {
 
 	// If we haven't found Ansible yet, we should look for it.
-	if ansibleplaybook != "" {
+	if ansibleplaybook == "" {
 		a, e := exec.LookPath("ansible-playbook")
 		if e != nil {
 			log.Errorln("executable 'ansible-playbook' was not found in $PATH.")
