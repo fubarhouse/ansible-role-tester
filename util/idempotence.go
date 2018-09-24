@@ -40,6 +40,7 @@ func (dist *Distribution) IdempotenceTest(config *AnsibleConfig) {
 	}
 
 	var idempotence = false
+	now := time.Now()
 	if !config.Quiet {
 		out, _ := DockerExec(args, true)
 		idempotence = IdempotenceResult(out)
@@ -49,7 +50,7 @@ func (dist *Distribution) IdempotenceTest(config *AnsibleConfig) {
 	}
 
 	if !config.Quiet {
-		PrintIdempotenceResult(idempotence)
+		PrintIdempotenceResult(now, idempotence)
 	}
 	if !idempotence {
 		os.Exit(1)
@@ -57,9 +58,8 @@ func (dist *Distribution) IdempotenceTest(config *AnsibleConfig) {
 }
 
 // PrintIdempotenceResult will log the results of the idempotence checks.
-func PrintIdempotenceResult(idempotence bool) {
-	now := time.Now()
-	log.Infof("Idempotence was checked in %v", time.Since(now))
+func PrintIdempotenceResult(start time.Time, idempotence bool) {
+	log.Infof("Idempotence was checked in %v", time.Since(start))
 	if idempotence {
 		log.Infoln("Idempotence test: PASS")
 	} else {
