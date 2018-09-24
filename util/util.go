@@ -2,7 +2,6 @@ package util
 
 import (
 	"net"
-	"os"
 	"os/exec"
 
 	log "github.com/Sirupsen/logrus"
