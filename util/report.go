@@ -225,7 +225,7 @@ func (report *AnsibleReport) printFile(data []byte) (err error) {
 			defer file.Close()
 		}
 	}
-	return nil
+	return
 
 }
 
