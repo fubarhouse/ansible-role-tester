@@ -115,6 +115,15 @@ func (dist *Distribution) RoleTestRemote(config *AnsibleConfig) (bool, time.Dura
 // You can request output be printed using the bool stdout.
 func AnsiblePlaybook(args []string, stdout bool) (string, error) {
 
+	// If we haven't found Ansible yet, we should look for it.
+	if ansibleplaybook == "" {
+		a, e := exec.LookPath("ansible-playbook")
+		if e != nil {
+			log.Errorln("executable 'ansible-playbook' was not found in $PATH.")
+		}
+		ansibleplaybook = a
+	}
+
 	// Generate the command, based on input.
 	cmd := exec.Cmd{}
 	cmd.Path = ansibleplaybook

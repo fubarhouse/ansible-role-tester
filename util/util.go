@@ -1,6 +1,8 @@
 package util
 
 import (
+	"net"
+	"os"
 	"os/exec"
 
 	log "github.com/Sirupsen/logrus"
@@ -87,13 +89,16 @@ func init() {
 	if e != nil {
 		log.Errorln("executable 'docker' was not found in $PATH.")
 	}
+
 	docker = d
 	dockerFound = true
 
-	a, e := exec.LookPath("ansible-playbook")
-	if e != nil {
-		log.Errorln("executable 'ansible-playbook' was not found in $PATH.")
+	if dockerFound {
+		c, err := net.Dial("unix", "/var/run/docker.sock")
+		if err != nil {
+			log.Fatalf("unable to connect to docker: %v", err)
+		}
+		defer c.Close()
 	}
-	ansibleplaybook = a
 
 }
