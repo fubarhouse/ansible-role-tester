@@ -44,6 +44,7 @@ func (dist *Distribution) IdempotenceTestRemote(config *AnsibleConfig) {
 	}
 
 	var idempotence = false
+	now := time.Now()
 	if !config.Quiet {
 		out, _ := AnsiblePlaybook(args, true)
 		idempotence = IdempotenceResult(out)
@@ -53,7 +54,7 @@ func (dist *Distribution) IdempotenceTestRemote(config *AnsibleConfig) {
 	}
 
 	if !config.Quiet {
-		PrintIdempotenceResult(idempotence)
+		PrintIdempotenceResult(now, idempotence)
 	}
 	if !idempotence {
 		os.Exit(1)
