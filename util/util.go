@@ -2,7 +2,6 @@ package util
 
 import (
 	"net"
-	"os"
 	"os/exec"
 
 	log "github.com/Sirupsen/logrus"
@@ -88,7 +87,6 @@ func init() {
 	d, e := exec.LookPath("docker")
 	if e != nil {
 		log.Errorln("executable 'docker' was not found in $PATH.")
-		os.Exit(1)
 	}
 
 	docker = d

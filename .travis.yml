@@ -38,6 +38,7 @@ before_install:
   - sudo pip install --upgrade pip
   - sudo pip install ansible
   # Install ansible-role-tester
+  - go get -v gopkg.in/yaml.v2
   - go get -v github.com/fubarhouse/ansible-role-tester
   # Remove contents of the installed package
   - rm -rf $GOPATH/src/github.com/fubarhouse/ansible-role-tester/*

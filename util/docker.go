@@ -51,7 +51,6 @@ func DockerExec(args []string, stdout bool) (string, error) {
 	wg.Add(1)
 	if err := cmd.Run(); err != nil {
 		log.Errorln(err)
-		os.Exit(1)
 		return out.String(), err
 	}
 	wg.Done()
@@ -121,7 +120,7 @@ func buildDockerArgs(dist *Distribution, config *AnsibleConfig) []string {
 
 // DockerRun will launch a new container (containerID) using
 // the fields in a AnsibleConfig struct.
-func (dist *Distribution) DockerRun(config *AnsibleConfig) {
+func (dist *Distribution) DockerRun(config *AnsibleConfig) bool {
 
 	if dist.CID == "" {
 		dist.CID = fmt.Sprint(time.Now().Unix())
@@ -134,7 +133,6 @@ func (dist *Distribution) DockerRun(config *AnsibleConfig) {
 
 		if _, err := DockerExec(buildDockerArgs(dist, config), true); err != nil {
 			log.Errorln(err)
-			os.Exit(1)
 		}
 
 	} else {
@@ -142,10 +140,13 @@ func (dist *Distribution) DockerRun(config *AnsibleConfig) {
 			log.Warnf("container %v is already running, skipping the dockerRun stage", dist.CID)
 		}
 	}
+
+	return dist.DockerCheck()
+
 }
 
 // DockerKill will stop the container and remove it.
-func (dist *Distribution) DockerKill(quiet bool) {
+func (dist *Distribution) DockerKill(quiet bool) bool {
 
 	if dist.CID != "" {
 
@@ -181,5 +182,7 @@ func (dist *Distribution) DockerKill(quiet bool) {
 			log.Errorln("container name was not specified")
 		}
 	}
+
+	return dist.DockerCheck()
 
 }

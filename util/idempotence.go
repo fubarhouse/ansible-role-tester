@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"errors"
-	"os"
 	"strconv"
 	"time"
 
@@ -14,7 +13,7 @@ import (
 
 // IdempotenceTest will run an Ansible playbook once and check the
 // output for any changed or failed tasks as reported by Ansible.
-func (dist *Distribution) IdempotenceTest(config *AnsibleConfig) {
+func (dist *Distribution) IdempotenceTest(config *AnsibleConfig) (bool, time.Duration) {
 
 	// Test role idempotence.
 	if !config.Quiet {
@@ -52,9 +51,9 @@ func (dist *Distribution) IdempotenceTest(config *AnsibleConfig) {
 	if !config.Quiet {
 		PrintIdempotenceResult(now, idempotence)
 	}
-	if !idempotence {
-		os.Exit(1)
-	}
+
+	return idempotence, time.Since(now)
+
 }
 
 // PrintIdempotenceResult will log the results of the idempotence checks.

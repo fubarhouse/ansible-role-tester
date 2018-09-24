@@ -2,7 +2,6 @@ package util
 
 import (
 	"errors"
-	"os"
 	"strings"
 
 	"fmt"
@@ -578,7 +577,6 @@ func GetDistribution(container, target, init, volume, user, distro string) (Dist
 
 	if !strings.Contains(c, container) {
 		log.Errorf("no valid image was found for '%v'\n", container)
-		os.Exit(1)
 	}
 
 	return Distribution{},

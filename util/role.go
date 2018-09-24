@@ -20,7 +20,7 @@ func (config *AnsibleConfig) IsAnsibleRole() bool {
 }
 
 // RoleInstall will install the requirements if the file is configured.
-func (dist *Distribution) RoleInstall(config *AnsibleConfig) {
+func (dist *Distribution) RoleInstall(config *AnsibleConfig) bool {
 
 	if config.RequirementsFile != "" {
 		req := fmt.Sprintf("%v/%v", config.RemotePath, config.RequirementsFile)
@@ -49,27 +49,29 @@ func (dist *Distribution) RoleInstall(config *AnsibleConfig) {
 			_, err := DockerExec(args, true)
 			if err != nil {
 				log.Errorln(err)
-				os.Exit(1)
+				return false
 			}
 		} else {
 			_, err := DockerExec(args, false)
 			if err != nil {
 				log.Errorln(err)
-				os.Exit(1)
+				return false
 			}
 		}
 
 	} else {
 		if !config.Quiet {
 			log.Warnln("Requirements file is not configured (empty/null), skipping...")
+			return false
 		}
 	}
+	return true
 }
 
 // RoleSyntaxCheck will run a syntax check of the mounted volume inside
 // of the active container. This helps with pure isolation of the syntax
 // to separate it from other potential Ansible versions.
-func (dist *Distribution) RoleSyntaxCheck(config *AnsibleConfig) {
+func (dist *Distribution) RoleSyntaxCheck(config *AnsibleConfig) bool {
 
 	// Ansible syntax check.
 	if !config.Quiet {
@@ -99,22 +101,25 @@ func (dist *Distribution) RoleSyntaxCheck(config *AnsibleConfig) {
 		_, err := DockerExec(args, true)
 		if err != nil {
 			log.Errorln("Syntax check: FAIL")
-			os.Exit(1)
+			return false
 		} else {
 			log.Infoln("Syntax check: PASS")
+			return true
 		}
 	} else {
 		_, err := DockerExec(args, false)
 		if err != nil {
-			os.Exit(1)
+			log.Errorln(err)
+			return false
 		}
 	}
+	return true
 }
 
 // RoleTest will execute the specified playbook inside
 // the container once. It will assemble a request to
 // pass into the Docker execution function DockerRun.
-func (dist *Distribution) RoleTest(config *AnsibleConfig) {
+func (dist *Distribution) RoleTest(config *AnsibleConfig) (bool, time.Duration) {
 
 	// Test role.
 	if !config.Quiet {
@@ -143,15 +148,16 @@ func (dist *Distribution) RoleTest(config *AnsibleConfig) {
 	if !config.Quiet {
 		if _, err := DockerExec(args, true); err != nil {
 			log.Errorln(err)
-			os.Exit(1)
+			return false, time.Since(now)
 		}
 	} else {
 		if _, err := DockerExec(args, false); err != nil {
 			log.Errorln(err)
-			os.Exit(1)
+			return false, time.Since(now)
 		}
 	}
 	if !config.Quiet {
 		log.Infof("Role ran in %v", time.Since(now))
 	}
+	return true, time.Since(now)
 }
