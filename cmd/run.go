@@ -62,7 +62,7 @@ Volume mount locations image and id are all configurable.
 			}
 		} else {
 			dist = *util.NewCustomDistribution()
-			user := strings.Split(image, "/")[0]
+			user = strings.Split(image, "/")[0]
 			container := strings.Split(image, ":")[0]
 			container = strings.Split(container, "/")[1]
 			tag := strings.Split(image, ":")[1]

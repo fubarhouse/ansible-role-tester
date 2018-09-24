@@ -1,12 +1,11 @@
 package util
 
 import (
-	"fmt"
-	"strings"
-
 	"errors"
+	"fmt"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	log "github.com/Sirupsen/logrus"
