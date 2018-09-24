@@ -190,7 +190,7 @@ func (report *AnsibleReport) GetYAML(data interface{}) ([]byte, error) {
 
 // printFile will output the input data to the given filename.
 // Intended for exclusive use by GetJSON and GetYAML.
-func (report *AnsibleReport) printFile(data []byte) error {
+func (report *AnsibleReport) printFile(data []byte) (err error) {
 
 	filename := report.Meta.ReportFile
 
@@ -206,16 +206,16 @@ func (report *AnsibleReport) printFile(data []byte) error {
 
 	// Assume no file is available.
 	if _, err := os.Stat(filename); err != nil {
-		if file, fe := os.Create(filename); fe != nil {
+		if file, err := os.Create(filename); err != nil {
 			// File could not be created.
 			log.Errorf("could not create file %v\n", filename)
-			return fe
+			return err
 		} else {
 			// File was created, attempt to write to it
-			if we := ioutil.WriteFile(filename, data, 0644); we != nil {
+			if err = ioutil.WriteFile(filename, data, 0644); err != nil {
 				// Could not write to file.
 				log.Errorf("could not write data to %v\n", filename)
-				return we
+				return err
 			} else {
 				// Wrote to file successfully.
 				log.Infof("Report data has been written to %v\n", filename)
