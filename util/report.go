@@ -12,25 +12,25 @@ import (
 	"sync"
 	"time"
 
-	yaml "gopkg.in/yaml.v2"
 	log "github.com/Sirupsen/logrus"
+	yaml "gopkg.in/yaml.v2"
 )
 
 // AnsibleReport will contain metadata about the run which will be, is and has executed.
 type AnsibleReport struct {
 	Meta struct {
-		Timestamp  time.Time
-		Repository string
-		CommitHash string
+		Timestamp    time.Time
+		Repository   string
+		CommitHash   string
 		LocalChanges bool
-		ReportFile string
+		ReportFile   string
 	}
 	Ansible struct {
-		Config AnsibleConfig
+		Config       AnsibleConfig
 		Distribution Distribution
-		Syntax bool
+		Syntax       bool
 		Requirements bool
-		Run    struct {
+		Run          struct {
 			Result bool
 			Time   time.Duration
 		}
@@ -40,8 +40,8 @@ type AnsibleReport struct {
 		}
 	}
 	Docker struct {
-		Run  bool
-		Kill bool
+		Run     bool
+		Kill    bool
 		Volumes []string
 	}
 }
@@ -201,6 +201,7 @@ func (report *AnsibleReport) printFile(data []byte) (err error) {
 		if err = os.Remove(filename); err != nil {
 			// The file could not be deleted
 			log.Errorf("failed to delete %v\n", filename)
+			return err
 		}
 	}
 
@@ -209,11 +210,13 @@ func (report *AnsibleReport) printFile(data []byte) (err error) {
 		if file, err := os.Create(filename); err != nil {
 			// File could not be created.
 			log.Errorf("could not create file %v\n", filename)
+			return err
 		} else {
 			// File was created, attempt to write to it
-			if err := ioutil.WriteFile(filename, data, 0644); err != nil {
+			if err = ioutil.WriteFile(filename, data, 0644); err != nil {
 				// Could not write to file.
 				log.Errorf("could not write data to %v\n", filename)
+				return err
 			} else {
 				// Wrote to file successfully.
 				log.Infof("Report data has been written to %v\n", filename)

@@ -49,7 +49,7 @@ func (dist *Distribution) IdempotenceTest(config *AnsibleConfig) (bool, time.Dur
 	}
 
 	if !config.Quiet {
-		PrintIdempotenceResult(idempotence)
+		PrintIdempotenceResult(now, idempotence)
 	}
 
 	return idempotence, time.Since(now)
@@ -57,9 +57,8 @@ func (dist *Distribution) IdempotenceTest(config *AnsibleConfig) (bool, time.Dur
 }
 
 // PrintIdempotenceResult will log the results of the idempotence checks.
-func PrintIdempotenceResult(idempotence bool) {
-	now := time.Now()
-	log.Infof("Idempotence was checked in %v", time.Since(now))
+func PrintIdempotenceResult(start time.Time, idempotence bool) {
+	log.Infof("Idempotence was checked in %v", time.Since(start))
 	if idempotence {
 		log.Infoln("Idempotence test: PASS")
 	} else {
