@@ -53,6 +53,7 @@ required.
 			Inventory:        inventory,
 			RemotePath:       destination,
 			ExtraRolesPath:   extraRoles,
+			LibraryPath:      libraryPath,
 			RequirementsFile: requirements,
 			PlaybookFile:     playbook,
 			Verbose:          verbose,
@@ -145,6 +146,7 @@ func init() {
 	fullCmd.Flags().BoolVarP(&remote, "remote", "m", false, "Run the test remotely to the container")
 	fullCmd.Flags().BoolVarP(&reportProvided, "report", "f", false, "Provide a report after completion")
 	fullCmd.Flags().StringVarP(&reportFilename, "report-output", "b", "report.yml", "Filename in current working directory to write a report to")
+	fullCmd.Flags().StringVarP(&libraryPath, "library", "", "", "Path to library folder with modules.")
 
 	fullCmd.Flags().StringVarP(&initialise, "initialise", "a", "/bin/systemd", "The initialise command for the image")
 	fullCmd.Flags().StringVarP(&volume, "volume", "l", "/sys/fs/cgroup:/sys/fs/cgroup:ro", "The volume argument for the image")

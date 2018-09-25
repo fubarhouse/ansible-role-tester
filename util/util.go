@@ -52,6 +52,10 @@ type AnsibleConfig struct {
 	// are already downloaded on the host, or if the roles are in private git repos.
 	ExtraRolesPath string
 
+	// LibraryPath is the path to the library folder on the host which will
+	// be mounted on the container to "/root/.ansible/library".
+	LibraryPath string
+
 	// The path to the requirements file relative to HostPath.
 	// Requirements will not attempt installation if the field
 	// does not have a value (when value == "")

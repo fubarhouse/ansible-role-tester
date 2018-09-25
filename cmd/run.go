@@ -45,6 +45,7 @@ Volume mount locations image and id are all configurable.
 			Inventory:        inventory,
 			RemotePath:       destination,
 			ExtraRolesPath:   extraRoles,
+			LibraryPath:      libraryPath,
 			RequirementsFile: requirements,
 			PlaybookFile:     playbook,
 			Verbose:          verbose,
@@ -118,6 +119,7 @@ func init() {
 	runCmd.Flags().BoolVarP(&custom, "custom", "c", false, "Provide my own custom distribution.")
 	runCmd.Flags().BoolVarP(&quiet, "quiet", "q", false, "Enable quiet mode")
 	runCmd.Flags().BoolVarP(&remote, "remote", "m", false, "Run the test remotely to the container")
+	runCmd.Flags().StringVarP(&libraryPath, "library", "", "", "Path to library folder with modules.")
 
 	runCmd.Flags().StringVarP(&initialise, "initialise", "a", "/bin/systemd", "The initialise command for the image")
 	runCmd.Flags().StringVarP(&volume, "volume", "l", "/sys/fs/cgroup:/sys/fs/cgroup:ro", "The volume argument for the image")
