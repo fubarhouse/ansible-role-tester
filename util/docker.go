@@ -111,13 +111,13 @@ func buildDockerArgs(dist *Distribution, config *AnsibleConfig, report *AnsibleR
 		report.Docker.Volumes = append(report.Docker.Volumes, fmt.Sprintf("%s:%v", config.ExtraRolesPath, "/root/.ansible/roles"))
 	}
 
+	if config.LibraryPath != "" {
+		report.Docker.Volumes = append(report.Docker.Volumes, fmt.Sprintf("%s:%v", config.LibraryPath, "/root/.ansible/plugins/modules"))
+	}
+
 	// Mount the volumes!
 	for _, Volume := range report.Docker.Volumes {
 		dockerArgs = append(dockerArgs, fmt.Sprintf("--volume=%v", Volume))
-	}
-
-  if config.LibraryPath != "" {
-		dockerArgs = append(dockerArgs, fmt.Sprintf("--volume=%s:%v", config.LibraryPath, "/root/.ansible/plugins/modules"))
 	}
 
 	if dist.Privileged {
