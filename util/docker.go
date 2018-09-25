@@ -116,8 +116,18 @@ func buildDockerArgs(dist *Distribution, config *AnsibleConfig, report *AnsibleR
 	}
 
 	// Mount the volumes!
-	for _, Volume := range report.Docker.Volumes {
-		dockerArgs = append(dockerArgs, fmt.Sprintf("--volume=%v", Volume))
+	VolumeMap := map[string]string{}
+	for i, Volume := range report.Docker.Volumes {
+		if VolumeMap[Volume] != Volume {
+			// The Volume entry was not found in the map.
+			VolumeMap[Volume] = Volume
+			fmt.Printf("%v == %v\n", Volume, VolumeMap[Volume])
+			dockerArgs = append(dockerArgs, fmt.Sprintf("--volume=%v", Volume))
+		} else {
+			// The volume entry was found in the map.
+			// We need to update our slice to reflect this duplication.
+			report.Docker.Volumes = append(report.Docker.Volumes[:i], report.Docker.Volumes[i+1:]...)
+		}
 	}
 
 	if dist.Privileged {
