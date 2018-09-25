@@ -121,7 +121,6 @@ func buildDockerArgs(dist *Distribution, config *AnsibleConfig, report *AnsibleR
 		if VolumeMap[Volume] != Volume {
 			// The Volume entry was not found in the map.
 			VolumeMap[Volume] = Volume
-			fmt.Printf("%v == %v\n", Volume, VolumeMap[Volume])
 			dockerArgs = append(dockerArgs, fmt.Sprintf("--volume=%v", Volume))
 		} else {
 			// The volume entry was found in the map.
