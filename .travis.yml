@@ -46,6 +46,7 @@ before_install:
   - cp -rf $TRAVIS_BUILD_DIR/* $GOPATH/src/github.com/fubarhouse/ansible-role-tester/
   - cd $GOPATH/src/github.com/fubarhouse/ansible-role-tester/ && go install ./...
   - git clone https://github.com/fubarhouse/ansible-role-curl.git /home/travis/my_role
+  - git clone https://github.com/issmirnov/ansible-role-art-tester.git /home/travis/ansible-role-art-tester
 
 script:
   # Test the role from inside the container using the segmented commands.
@@ -60,3 +61,5 @@ script:
   - sed -i -e 's/role_under_test/\/home\/travis\/my_role\//g' /home/travis/my_role/tests/test-package.yml
   # Test the role from outside the container using the one standard pipeline command.
   - cd /home/travis/my_role && ansible-role-tester full --name travis_test --user fubarhouse --distribution ${distro} --playbook tests/test-package.yml --remote
+  # Phase 2: test other flags
+  - cd /home/travis/ansible-role-art-tester &&  ansible-role-tester full --playbook tests/playbook-library.yml --library "$(pwd)/tests/library"

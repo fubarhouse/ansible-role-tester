@@ -61,6 +61,10 @@ var (
 	// the 'tests' folder.
 	playbook string
 
+	// libraryPath is an optional argument for binding a
+	// host folder with ansible modules into the container
+	libraryPath string
+
 	// user is the optional argument which specifies the
 	// user associated to the selected distribution, which
 	// will be used to locate a Distribution with the same user.
