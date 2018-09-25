@@ -108,6 +108,9 @@ func buildDockerArgs(dist *Distribution, config *AnsibleConfig) []string {
 	if config.ExtraRolesPath != "" {
 		dockerArgs = append(dockerArgs, fmt.Sprintf("--volume=%s:%v", config.ExtraRolesPath, "/root/.ansible/roles"))
 	}
+	if config.LibraryPath != "" {
+		dockerArgs = append(dockerArgs, fmt.Sprintf("--volume=%s:%v", config.LibraryPath, "/root/.ansible/plugins/modules"))
+	}
 	if dist.Privileged {
 		dockerArgs = append(dockerArgs, fmt.Sprint("--privileged"))
 	}
