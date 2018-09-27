@@ -1,7 +1,7 @@
 module github.com/fubarhouse/ansible-role-tester
 
 require (
-	github.com/Sirupsen/logrus v1.0.5
+	github.com/Sirupsen/logrus v1.1.0
 	github.com/inconshreveable/mousetrap v0.0.0-20141017200713-76626ae9c91c
 	github.com/spf13/cobra v0.0.3
 	github.com/spf13/pflag v1.0.1
