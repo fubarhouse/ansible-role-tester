@@ -105,6 +105,7 @@ required.
 			report.Docker.Run = dist.DockerCheck()
 		}
 		hosts, _ := dist.AnsibleHosts(&config, &report)
+		report.Ansible.Hosts = hosts
 		if remote {
 			for _, host := range hosts {
 				if host == "localhost" {

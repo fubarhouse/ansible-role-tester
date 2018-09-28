@@ -28,7 +28,8 @@ type AnsibleReport struct {
 	Ansible struct {
 		Config AnsibleConfig
 		Distribution Distribution
-		Syntax bool
+		Hosts        []string
+		Syntax       bool
 		Requirements bool
 		Run    struct {
 			Result bool
