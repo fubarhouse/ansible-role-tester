@@ -103,6 +103,7 @@ required.
 		if !dist.DockerCheck() {
 			dist.DockerRun(&config)
 			report.Docker.Run = dist.DockerCheck()
+		}
 		hosts, _ := dist.AnsibleHosts(&config, &report)
 		if remote {
 			for _, host := range hosts {
