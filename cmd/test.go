@@ -48,6 +48,7 @@ containers won't be removed after completion.`,
 		}
 
 		dist, _ := util.GetDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)
+		report := util.NewReport(&config)
 
 		dist.CID = containerID
 
@@ -65,6 +66,13 @@ containers won't be removed after completion.`,
 				dist.RoleSyntaxCheckRemote(&config)
 				dist.RoleTestRemote(&config)
 				dist.IdempotenceTestRemote(&config)
+				hosts, _ := dist.AnsibleHosts(&config, &report)
+				for _, host := range hosts {
+					if host == "localhost" {
+						log.Errorln("remote runs should be run directly, not through this tool")
+						os.Exit(1)
+					}
+				}
 			}
 		} else {
 			if !quiet {
