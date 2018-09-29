@@ -12,25 +12,25 @@ import (
 	"sync"
 	"time"
 
-	yaml "gopkg.in/yaml.v2"
 	log "github.com/Sirupsen/logrus"
+	yaml "gopkg.in/yaml.v2"
 )
 
 // AnsibleReport will contain metadata about the run which will be, is and has executed.
 type AnsibleReport struct {
 	Meta struct {
-		Timestamp  time.Time
-		Repository string
-		CommitHash string
+		Timestamp    time.Time
+		Repository   string
+		CommitHash   string
 		LocalChanges bool
-		ReportFile string
+		ReportFile   string
 	}
 	Ansible struct {
-		Config AnsibleConfig
+		Config       AnsibleConfig
 		Distribution Distribution
-		Syntax bool
+		Syntax       bool
 		Requirements bool
-		Run    struct {
+		Run          struct {
 			Result bool
 			Time   time.Duration
 		}
@@ -40,8 +40,9 @@ type AnsibleReport struct {
 		}
 	}
 	Docker struct {
-		Run  bool
-		Kill bool
+		Run     bool
+		Kill    bool
+		Volumes []string
 	}
 }
 
