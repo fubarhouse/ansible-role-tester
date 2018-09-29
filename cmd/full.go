@@ -70,16 +70,31 @@ required.
 				log.Fatalln("Incompatible distribution was inputted.")
 			}
 		} else {
+			if image == "" {
+				log.Errorln("custom image specified without image flag, please re-run with image flag")
+				os.Exit(1)
+			}
 			dist = *util.NewCustomDistribution()
-			user := strings.Split(image, "/")[0]
+			// User may not be provided:
+			user = ""
+			if strings.Contains(image, "/") {
+				user = strings.Split(image, "/")[0]
+			}
 			container := strings.Split(image, ":")[0]
-			container = strings.Split(container, "/")[1]
+			if strings.Contains(container, "/") {
+				container = strings.Split(container, "/")[1]
+			}
 			tag := strings.Split(image, ":")[1]
 
 			dist.Privileged = true
 			util.CustomDistributionValueSet(&dist, "Name", containerID)
 			//util.CustomValueSet(&dist, "Privileged", "true")
-			util.CustomDistributionValueSet(&dist, "Container", fmt.Sprintf("%s/%s:%s", user, container, tag))
+			// If user isn't available
+			if user != "" {
+				util.CustomDistributionValueSet(&dist, "Container", fmt.Sprintf("%s/%s:%s", user, container, tag))
+			} else {
+				util.CustomDistributionValueSet(&dist, "Container", fmt.Sprintf("%s:%s", container, tag))
+			}
 			util.CustomDistributionValueSet(&dist, "User", user)
 			util.CustomDistributionValueSet(&dist, "Distro", image)
 			util.CustomFamilyValueSet(&dist.Family, "Initialise", initialise)
