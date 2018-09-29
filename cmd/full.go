@@ -53,6 +53,7 @@ required.
 			Inventory:        inventory,
 			RemotePath:       destination,
 			ExtraRolesPath:   extraRoles,
+			LibraryPath:      libraryPath,
 			RequirementsFile: requirements,
 			PlaybookFile:     playbook,
 			Verbose:          verbose,
@@ -95,21 +96,35 @@ required.
 		util.MapRequirements(&config)
 		util.MapPlaybook(&config)
 
+		report := util.NewReport(&config)
+		report.Meta.ReportFile = reportFilename
+		report.Ansible.Distribution = dist
+
 		if !dist.DockerCheck() {
-			dist.DockerRun(&config)
+			dist.DockerRun(&config, &report)
+			report.Docker.Run = dist.DockerCheck()
 		}
 
-		dist.RoleInstall(&config)
+		report.Ansible.Requirements = dist.RoleInstall(&config)
 		if !remote {
-			dist.RoleSyntaxCheck(&config)
-			dist.RoleTest(&config)
-			dist.IdempotenceTest(&config)
+			report.Ansible.Syntax = dist.RoleSyntaxCheck(&config)
+			report.Ansible.Run.Result, report.Ansible.Run.Time = dist.RoleTest(&config)
+			report.Ansible.Idempotence.Result, report.Ansible.Idempotence.Time = dist.IdempotenceTest(&config)
 		} else {
-			dist.RoleSyntaxCheckRemote(&config)
-			dist.RoleTestRemote(&config)
-			dist.IdempotenceTestRemote(&config)
+			report.Ansible.Syntax = dist.RoleSyntaxCheckRemote(&config)
+			report.Ansible.Run.Result, report.Ansible.Run.Time = dist.RoleTestRemote(&config)
+			report.Ansible.Idempotence.Result, report.Ansible.Idempotence.Time = dist.IdempotenceTestRemote(&config)
 		}
+
 		dist.DockerKill(quiet)
+		if !dist.DockerCheck() {
+			report.Docker.Kill = true
+		}
+
+		if reportProvided {
+			report.Ansible.Config = config
+			report.Printf()
+		}
 	},
 }
 
@@ -129,6 +144,9 @@ func init() {
 	fullCmd.Flags().BoolVarP(&custom, "custom", "c", false, "Provide my own custom distribution.")
 	fullCmd.Flags().StringVarP(&inventory, "inventory", "e", "", "Inventory file")
 	fullCmd.Flags().BoolVarP(&remote, "remote", "m", false, "Run the test remotely to the container")
+	fullCmd.Flags().BoolVarP(&reportProvided, "report", "f", false, "Provide a report after completion")
+	fullCmd.Flags().StringVarP(&reportFilename, "report-output", "b", "report.yml", "Filename in current working directory to write a report to")
+	fullCmd.Flags().StringVarP(&libraryPath, "library", "", "", "Path to library folder with modules.")
 
 	fullCmd.Flags().StringVarP(&initialise, "initialise", "a", "/bin/systemd", "The initialise command for the image")
 	fullCmd.Flags().StringVarP(&volume, "volume", "l", "/sys/fs/cgroup:/sys/fs/cgroup:ro", "The volume argument for the image")
