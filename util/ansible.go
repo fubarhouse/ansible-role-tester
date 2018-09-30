@@ -16,7 +16,7 @@ import (
 
 // IdempotenceTestRemote will run an Ansible playbook once and check the
 // output for any changed or failed tasks as reported by Ansible.
-func (dist *Distribution) IdempotenceTestRemote(config *AnsibleConfig) {
+func (dist *Distribution) IdempotenceTestRemote(config *AnsibleConfig) (bool, time.Duration) {
 
 	// Test role idempotence.
 	if !config.Quiet {
@@ -44,6 +44,7 @@ func (dist *Distribution) IdempotenceTestRemote(config *AnsibleConfig) {
 	}
 
 	var idempotence = false
+	now := time.Now()
 	if !config.Quiet {
 		out, _ := AnsiblePlaybook(args, true)
 		idempotence = IdempotenceResult(out)
@@ -53,17 +54,17 @@ func (dist *Distribution) IdempotenceTestRemote(config *AnsibleConfig) {
 	}
 
 	if !config.Quiet {
-		PrintIdempotenceResult(idempotence)
+		PrintIdempotenceResult(now, idempotence)
 	}
-	if !idempotence {
-		os.Exit(1)
-	}
+
+	return idempotence, time.Since(now)
+	
 }
 
 // RoleTestRemote will execute the specified playbook outside the
 // container once. It will assemble a request to  pass into the
 // Docker execution function DockerRun.
-func (dist *Distribution) RoleTestRemote(config *AnsibleConfig) {
+func (dist *Distribution) RoleTestRemote(config *AnsibleConfig) (bool, time.Duration) {
 
 	// Test role.
 	if !config.Quiet {
@@ -95,23 +96,33 @@ func (dist *Distribution) RoleTestRemote(config *AnsibleConfig) {
 	if !config.Quiet {
 		if _, err := AnsiblePlaybook(args, true); err != nil {
 			log.Errorln(err)
-			os.Exit(1)
+			return false, time.Since(now)
 		}
 	} else {
 		if _, err := AnsiblePlaybook(args, false); err != nil {
 			log.Errorln(err)
-			os.Exit(1)
+			return false, time.Since(now)
 		}
 	}
 	if !config.Quiet {
 		log.Infof("Role ran in %v", time.Since(now))
 	}
+	return true, time.Since(now)
 }
 
 // AnsiblePlaybook will execute a command to the ansible-playbook
 // binary and use the input args as arguments for that process.
 // You can request output be printed using the bool stdout.
 func AnsiblePlaybook(args []string, stdout bool) (string, error) {
+
+	// If we haven't found Ansible yet, we should look for it.
+	if ansibleplaybook == "" {
+		a, e := exec.LookPath("ansible-playbook")
+		if e != nil {
+			log.Errorln("executable 'ansible-playbook' was not found in $PATH.")
+		}
+		ansibleplaybook = a
+	}
 
 	// Generate the command, based on input.
 	cmd := exec.Cmd{}
@@ -145,7 +156,6 @@ func AnsiblePlaybook(args []string, stdout bool) (string, error) {
 	wg.Add(1)
 	if err := cmd.Run(); err != nil {
 		log.Errorln(err)
-		os.Exit(1)
 		return out.String(), err
 	}
 	wg.Done()
@@ -157,7 +167,7 @@ func AnsiblePlaybook(args []string, stdout bool) (string, error) {
 // RoleSyntaxCheckRemote will run a syntax check of the specified container.
 // This helps with pure isolation of the syntax to separate it from other
 // potential Ansible versions.
-func (dist *Distribution) RoleSyntaxCheckRemote(config *AnsibleConfig) {
+func (dist *Distribution) RoleSyntaxCheckRemote(config *AnsibleConfig) bool {
 
 	// Ansible syntax check.
 	if !config.Quiet {
@@ -182,14 +192,17 @@ func (dist *Distribution) RoleSyntaxCheckRemote(config *AnsibleConfig) {
 		_, err := AnsiblePlaybook(args, true)
 		if err != nil {
 			log.Errorln("Syntax check: FAIL")
-			os.Exit(1)
+			return false
 		} else {
 			log.Infoln("Syntax check: PASS")
+			return true
 		}
 	} else {
 		_, err := AnsiblePlaybook(args, false)
 		if err != nil {
-			os.Exit(1)
+			log.Errorln(err)
+			return false
 		}
 	}
+	return true
 }

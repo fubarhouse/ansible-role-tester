@@ -22,7 +22,6 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -62,6 +61,10 @@ var (
 	// the 'tests' folder.
 	playbook string
 
+	// libraryPath is an optional argument for binding a
+	// host folder with ansible modules into the container
+	libraryPath string
+
 	// user is the optional argument which specifies the
 	// user associated to the selected distribution, which
 	// will be used to locate a Distribution with the same user.
@@ -84,6 +87,15 @@ var (
 	// happen from the localhost to a remote destination - namely
 	// the name parameter which should refer to the container name being tested.
 	remote = false
+
+	// reportProvided indicates a report should be provided on the
+	// completion of all tasks being run.
+	reportProvided = false
+
+	// reportFilename is the relative path of a file in the working directory
+	// to write a file to. The file extension should match json|yml|yaml or else
+	// will not work, but will automatically handle as necessary.
+	reportFilename string
 
 	// verbose is a boolean indicating all Ansible commands should
 	// be dockerRun with the --verbose flag.
@@ -108,6 +120,5 @@ var (
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
-		os.Exit(1)
 	}
 }

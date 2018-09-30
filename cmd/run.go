@@ -45,6 +45,7 @@ Volume mount locations image and id are all configurable.
 			Inventory:        inventory,
 			RemotePath:       destination,
 			ExtraRolesPath:   extraRoles,
+			LibraryPath:      libraryPath,
 			RequirementsFile: requirements,
 			PlaybookFile:     playbook,
 			Verbose:          verbose,
@@ -93,9 +94,11 @@ Volume mount locations image and id are all configurable.
 		}
 
 		util.MapInventory(dist.CID, &config)
+		// Our report variable is needed, but unused.
+		report := util.AnsibleReport{}
 
 		if !dist.DockerCheck() {
-			dist.DockerRun(&config)
+			dist.DockerRun(&config, &report)
 		} else {
 			if !quiet {
 				log.Warnf("Container %v is already running", dist.CID)
@@ -116,6 +119,7 @@ func init() {
 	runCmd.Flags().BoolVarP(&custom, "custom", "c", false, "Provide my own custom distribution.")
 	runCmd.Flags().BoolVarP(&quiet, "quiet", "q", false, "Enable quiet mode")
 	runCmd.Flags().BoolVarP(&remote, "remote", "m", false, "Run the test remotely to the container")
+	runCmd.Flags().StringVarP(&libraryPath, "library", "", "", "Path to library folder with modules.")
 
 	runCmd.Flags().StringVarP(&initialise, "initialise", "a", "/bin/systemd", "The initialise command for the image")
 	runCmd.Flags().StringVarP(&volume, "volume", "l", "/sys/fs/cgroup:/sys/fs/cgroup:ro", "The volume argument for the image")
