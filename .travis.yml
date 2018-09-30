@@ -1,67 +1,76 @@
 ---
-
+language: go
 go:
-  - 1.10
+  - "1.10"
+
 python:
   - 2.7
 
 services: docker
 
 env:
-  - distro: ubuntu1204
-  - distro: ubuntu1210
-  - distro: ubuntu1304
-  - distro: ubuntu1310
-  - distro: ubuntu1404
-  - distro: ubuntu1410
-  - distro: ubuntu1504
-  - distro: ubuntu1510
-  - distro: ubuntu1604
-  - distro: ubuntu1610
-  - distro: ubuntu1704
-  - distro: ubuntu1710
+  # - distro: ubuntu1204
+  # - distro: ubuntu1210
+  # - distro: ubuntu1304
+  # - distro: ubuntu1310
+  # - distro: ubuntu1404
+  # - distro: ubuntu1410
+  # - distro: ubuntu1504
+  # - distro: ubuntu1510
+  # - distro: ubuntu1604
+  # - distro: ubuntu1610
+  # - distro: ubuntu1704
+  # - distro: ubuntu1710
   - distro: ubuntu1804
-  - distro: ubuntu1810
-  - distro: centos6
+  # - distro: ubuntu1810
+  # - distro: centos6
   - distro: centos7
   - distro: debian8
-  - distro: debian9
-  - distro: debian10
-  - distro: fedora24
-  - distro: fedora25
-  - distro: fedora26
-  - distro: fedora27
-  - distro: fedora28
+  # - distro: debian9
+  # - distro: debian10
+  # - distro: fedora24
+  # - distro: fedora25
+  # - distro: fedora26
+  # - distro: fedora27
+  # - distro: fedora28
 
 before_install:
+  - go version
+  # - gimme 1.11
+  # - go version
   # Install dependencies:
   - sudo pip install --upgrade pip
   - sudo pip install ansible
   # Install ansible-role-tester
   - go get -v gopkg.in/yaml.v2
-  - go get -v github.com/fubarhouse/ansible-role-tester
+  - curl -L -s https://github.com/golang/dep/releases/download/v0.5.0/dep-linux-amd64 -o $GOPATH/bin/dep && chmod +x $GOPATH/bin/dep 
+  - go get -v -t github.com/fubarhouse/ansible-role-tester
   # Remove contents of the installed package
   - rm -rf $GOPATH/src/github.com/fubarhouse/ansible-role-tester/*
   # We need, in this case to install the copy in branch issue-23, let's do that.
   - cp -rf $TRAVIS_BUILD_DIR/* $GOPATH/src/github.com/fubarhouse/ansible-role-tester/
+  - cd $GOPATH/src/github.com/fubarhouse/ansible-role-tester/ && dep ensure
   - cd $GOPATH/src/github.com/fubarhouse/ansible-role-tester/ && go install ./...
-  - cd $GOPATH/src/github.com/fubarhouse/ansible-role-tester/ && diff -u <(echo -n) <(gofmt -d .)
+  - cd $GOPATH/src/github.com/fubarhouse/ansible-role-tester/ && diff -u <(echo -n) <(gofmt -d $(find . -not -path "./vendor/*" -name "*.go"))
   - cd $GOPATH/src/github.com/fubarhouse/ansible-role-tester/ && go vet $(go list ./... | grep -v /vendor/)
   - git clone https://github.com/fubarhouse/ansible-role-curl.git /home/travis/my_role
   - git clone https://github.com/issmirnov/ansible-role-art-tester.git /home/travis/ansible-role-art-tester
 
 script:
-  # Test the role from inside the container using the segmented commands.
-  - cd /home/travis/my_role && ansible-role-tester run --name travis_test --user fubarhouse --distribution ${distro}
-  - cd /home/travis/my_role && ansible-role-tester install --name travis_test
-  - cd /home/travis/my_role && ansible-role-tester test --name travis_test --playbook ./tests/test-package.yml
-  - cd /home/travis/my_role && ansible-role-tester destroy --name travis_test
-  - sleep 10
-  # Change the test playbook to work with remote hosts (inventory)
-  - sed -i -e 's/- hosts:\ localhost/- hosts:\ all/g' /home/travis/my_role/tests/test-package.yml
-  # Change the test playbook to refer to the correct path for the role.
-  - sed -i -e 's/role_under_test/\/home\/travis\/my_role\//g' /home/travis/my_role/tests/test-package.yml
-  # Test the role from outside the container using the one standard pipeline command.
-  - cd /home/travis/my_role && ansible-role-tester full --name travis_test --user fubarhouse --distribution ${distro} --playbook tests/test-package.yml --remote
-  # Phase 2: test other flags
-  - cd /home/travis/ansible-role-art-tester &&  ansible-role-tester full --playbook tests/playbook-library.yml --library "$(pwd)/tests/library"
+  # # Test the role from inside the container using the segmented commands.
+  # - cd /home/travis/my_role && ansible-role-tester run --name travis_test --user fubarhouse --distribution ${distro}
+  # - cd /home/travis/my_role && ansible-role-tester install --name travis_test
+  # - cd /home/travis/my_role && ansible-role-tester test --name travis_test --playbook ./tests/test-package.yml
+  # - cd /home/travis/my_role && ansible-role-tester destroy --name travis_test
+  # - sleep 10
+  # # Change the test playbook to work with remote hosts (inventory)
+  # - sed -i -e 's/- hosts:\ localhost/- hosts:\ all/g' /home/travis/my_role/tests/test-package.yml
+  # # Change the test playbook to refer to the correct path for the role.
+  # - sed -i -e 's/role_under_test/\/home\/travis\/my_role\//g' /home/travis/my_role/tests/test-package.yml
+  # # Test the role from outside the container using the one standard pipeline command.
+  # - cd /home/travis/my_role && ansible-role-tester full --name travis_test --user fubarhouse --distribution ${distro} --playbook tests/test-package.yml --remote
+  # # Phase 2: test other flags
+  # - cd /home/travis/ansible-role-art-tester &&  ansible-role-tester full --playbook tests/playbook-library.yml --library "$(pwd)/tests/library"
+  # Phase 3: run goconvey tests
+  - cd $GOPATH/src/github.com/fubarhouse/ansible-role-tester/ && go test -short -v ./... 
+  # cd /home/travis/ansible-role-art-tester &&  (ansible-role-tester full --playbook tests/playbook-syntax-fail.yml || export EXIT_CODE=$?; echo $EXIT_CODE;[[ "$EXIT_CODE" != "10" ]] )
