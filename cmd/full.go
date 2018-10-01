@@ -104,6 +104,16 @@ required.
 			dist.DockerRun(&config, &report)
 			report.Docker.Run = dist.DockerCheck()
 		}
+		hosts, _ := dist.AnsibleHosts(&config, &report)
+		report.Ansible.Hosts = hosts
+		if remote {
+			for _, host := range hosts {
+				if host == "localhost" {
+					log.Errorln("remote runs should be run directly, not through this tool")
+					dist.DockerKill(quiet)
+				}
+			}
+		}
 
 		report.Ansible.Requirements = dist.RoleInstall(&config)
 		if !remote {
