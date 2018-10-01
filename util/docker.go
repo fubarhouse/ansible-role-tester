@@ -86,14 +86,16 @@ func (dist *Distribution) DockerCheck() bool {
 
 // buildDockerArgs returns a list of arguments for the docker daemon. Note that the order
 // matters here, and beware of trailing whitespaces.
-func buildDockerArgs(dist *Distribution, config *AnsibleConfig) []string {
+func buildDockerArgs(dist *Distribution, config *AnsibleConfig, report *AnsibleReport) []string {
 	dockerArgs := []string{
 		"run",
 		"--detach",
 		fmt.Sprintf("--name=%v", dist.CID),
-		fmt.Sprintf("--volume=%v", dist.Family.Volume),
-		fmt.Sprintf("--volume=%v:%v", config.HostPath, config.RemotePath),
 	}
+
+	// Basic volumes, assumed default.
+	report.Docker.Volumes = append(report.Docker.Volumes, dist.Family.Volume)
+	report.Docker.Volumes = append(report.Docker.Volumes, fmt.Sprintf("%v:%v", config.HostPath, config.RemotePath))
 
 	// If we're dealing with commands inside the container directly,
 	// it would be practical to mount into the proper namespace
@@ -102,15 +104,31 @@ func buildDockerArgs(dist *Distribution, config *AnsibleConfig) []string {
 	if !config.Remote {
 		pwd, _ := os.Getwd()
 		pwds := strings.Split(pwd, string(os.PathSeparator))
-		dockerArgs = append(dockerArgs, fmt.Sprintf("--volume=%s:/etc/ansible/roles/%v", config.HostPath, pwds[len(pwds)-1]))
+		report.Docker.Volumes = append(report.Docker.Volumes, fmt.Sprintf("%s:/etc/ansible/roles/%v", config.HostPath, pwds[len(pwds)-1]))
 	}
 
 	if config.ExtraRolesPath != "" {
-		dockerArgs = append(dockerArgs, fmt.Sprintf("--volume=%s:%v", config.ExtraRolesPath, "/root/.ansible/roles"))
+		report.Docker.Volumes = append(report.Docker.Volumes, fmt.Sprintf("%s:%v", config.ExtraRolesPath, "/root/.ansible/roles"))
 	}
+
 	if config.LibraryPath != "" {
-		dockerArgs = append(dockerArgs, fmt.Sprintf("--volume=%s:%v", config.LibraryPath, "/root/.ansible/plugins/modules"))
+		report.Docker.Volumes = append(report.Docker.Volumes, fmt.Sprintf("%s:%v", config.LibraryPath, "/root/.ansible/plugins/modules"))
 	}
+
+	// Mount the volumes!
+	VolumeMap := map[string]string{}
+	for i, Volume := range report.Docker.Volumes {
+		if VolumeMap[Volume] != Volume {
+			// The Volume entry was not found in the map.
+			VolumeMap[Volume] = Volume
+			dockerArgs = append(dockerArgs, fmt.Sprintf("--volume=%v", Volume))
+		} else {
+			// The volume entry was found in the map.
+			// We need to update our slice to reflect this duplication.
+			report.Docker.Volumes = append(report.Docker.Volumes[:i], report.Docker.Volumes[i+1:]...)
+		}
+	}
+
 	if dist.Privileged {
 		dockerArgs = append(dockerArgs, fmt.Sprint("--privileged"))
 	}
@@ -123,7 +141,7 @@ func buildDockerArgs(dist *Distribution, config *AnsibleConfig) []string {
 
 // DockerRun will launch a new container (containerID) using
 // the fields in a AnsibleConfig struct.
-func (dist *Distribution) DockerRun(config *AnsibleConfig) bool {
+func (dist *Distribution) DockerRun(config *AnsibleConfig, report *AnsibleReport) bool {
 
 	if dist.CID == "" {
 		dist.CID = fmt.Sprint(time.Now().Unix())
@@ -134,7 +152,7 @@ func (dist *Distribution) DockerRun(config *AnsibleConfig) bool {
 			log.Printf("Running %v", dist.CID)
 		}
 
-		if _, err := DockerExec(buildDockerArgs(dist, config), true); err != nil {
+		if _, err := DockerExec(buildDockerArgs(dist, config, report), true); err != nil {
 			log.Errorln(err)
 		}
 
