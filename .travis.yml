@@ -45,6 +45,8 @@ before_install:
   # We need, in this case to install the copy in branch issue-23, let's do that.
   - cp -rf $TRAVIS_BUILD_DIR/* $GOPATH/src/github.com/fubarhouse/ansible-role-tester/
   - cd $GOPATH/src/github.com/fubarhouse/ansible-role-tester/ && go install ./...
+  - cd $GOPATH/src/github.com/fubarhouse/ansible-role-tester/ && diff -u <(echo -n) <(gofmt -d .)
+  - cd $GOPATH/src/github.com/fubarhouse/ansible-role-tester/ && go vet $(go list ./... | grep -v /vendor/)
   - git clone https://github.com/fubarhouse/ansible-role-curl.git /home/travis/my_role
   - git clone https://github.com/issmirnov/ansible-role-art-tester.git /home/travis/ansible-role-art-tester
 

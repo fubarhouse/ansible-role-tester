@@ -86,7 +86,6 @@ func MapPlaybook(config *AnsibleConfig) {
 	if !config.Remote && config.PlaybookFile != "" {
 		pwd, _ := os.Getwd()
 		config.PlaybookFile = strings.Replace(config.PlaybookFile, pwd, config.RemotePath, -1)
-		config.PlaybookFile = fmt.Sprintf("%v/%v", config.RemotePath, config.PlaybookFile)
 	}
 
 	if err == nil {

@@ -14,6 +14,47 @@ import (
 	log "github.com/Sirupsen/logrus"
 )
 
+func (dist *Distribution) AnsibleHosts(config *AnsibleConfig, report *AnsibleReport) ([]string, error) {
+
+	// Ansible syntax check.
+	if !config.Quiet {
+		log.Infoln("Checking role hosts...")
+	}
+
+	args := []string{
+		config.PlaybookFile,
+		"--list-hosts",
+	}
+
+	out, err := AnsiblePlaybook(args, false)
+
+	if err != nil {
+		log.Errorln(err)
+		return []string{}, err
+	}
+
+	hosts := []string{}
+
+	// Iterate over each line out output
+	for _, line := range strings.Split(string(out), "\n") {
+		// We're looking for something like "pattern: [u'all']"
+		// This is actually stupid, but we have no alternative - yet.
+		if strings.Contains(line, "pattern: [") {
+			line = strings.Replace(line, "pattern: [", "", -1)
+			line = strings.Replace(line, "]", "", -1)
+			line = strings.TrimLeft(line, " ")
+			line = strings.Replace(line, "u'", "'", -1)
+			for _, host := range strings.Split(line, ",") {
+				host = strings.Replace(host, "'", "", -1)
+				host = strings.Trim(host, " ")
+				hosts = append(hosts, host)
+			}
+		}
+	}
+
+	return hosts, nil
+}
+
 // IdempotenceTestRemote will run an Ansible playbook once and check the
 // output for any changed or failed tasks as reported by Ansible.
 func (dist *Distribution) IdempotenceTestRemote(config *AnsibleConfig) (bool, time.Duration) {
@@ -58,7 +99,7 @@ func (dist *Distribution) IdempotenceTestRemote(config *AnsibleConfig) (bool, ti
 	}
 
 	return idempotence, time.Since(now)
-	
+
 }
 
 // RoleTestRemote will execute the specified playbook outside the
