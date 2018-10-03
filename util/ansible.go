@@ -99,7 +99,7 @@ func (dist *Distribution) IdempotenceTestRemote(config *AnsibleConfig) (bool, ti
 	}
 
 	return idempotence, time.Since(now)
-	
+
 }
 
 // RoleTestRemote will execute the specified playbook outside the
