@@ -31,11 +31,15 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// fullCmd represents the full command
-var fullCmd = &cobra.Command{
-	Use:   "full",
-	Short: "Complete end-to-end test process.",
-	Long: `Runs a complete end-to-end process which performs the following:
+func newFullCmd() *cobra.Command {
+	// Shared state between Run and PostRun
+	var config util.AnsibleConfig
+	var report util.AnsibleReport
+
+	return &cobra.Command{
+		Use:   "full",
+		Short: "Complete end-to-end test process.",
+		Long: `Runs a complete end-to-end process which performs the following:
   - creates a container
   - installs a requirements file
   - test the role syntax
@@ -47,98 +51,114 @@ the local file system. If you encounter errors, there's a lot
 of flexibility in configuration, just change the defaults as
 required.
 `,
-	Run: func(cmd *cobra.Command, args []string) {
-		config := util.AnsibleConfig{
-			HostPath:         source,
-			Inventory:        inventory,
-			RemotePath:       destination,
-			ExtraRolesPath:   extraRoles,
-			LibraryPath:      libraryPath,
-			RequirementsFile: requirements,
-			PlaybookFile:     playbook,
-			Verbose:          verbose,
-			Remote:           remote,
-			Quiet:            quiet,
-		}
-
-		var dist util.Distribution
-
-		if !custom {
-			var e error
-			dist, e = util.GetDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)
-			if e != nil && !quiet {
-				log.Fatalln("Incompatible distribution was inputted.")
+		Run: func(cmd *cobra.Command, args []string) {
+			config = util.AnsibleConfig{
+				HostPath:         source,
+				Inventory:        inventory,
+				RemotePath:       destination,
+				ExtraRolesPath:   extraRoles,
+				LibraryPath:      libraryPath,
+				RequirementsFile: requirements,
+				PlaybookFile:     playbook,
+				Verbose:          verbose,
+				Remote:           remote,
+				Quiet:            quiet,
 			}
-		} else {
-			dist = *util.NewCustomDistribution()
-			user := strings.Split(image, "/")[0]
-			container := strings.Split(image, ":")[0]
-			container = strings.Split(container, "/")[1]
-			tag := strings.Split(image, ":")[1]
 
-			dist.Privileged = true
-			util.CustomDistributionValueSet(&dist, "Name", containerID)
-			//util.CustomValueSet(&dist, "Privileged", "true")
-			util.CustomDistributionValueSet(&dist, "Container", fmt.Sprintf("%s/%s:%s", user, container, tag))
-			util.CustomDistributionValueSet(&dist, "User", user)
-			util.CustomDistributionValueSet(&dist, "Distro", image)
-			util.CustomFamilyValueSet(&dist.Family, "Initialise", initialise)
-			util.CustomFamilyValueSet(&dist.Family, "Volume", volume)
-		}
+			var dist util.Distribution
 
-		dist.CID = containerID
+			if !custom {
+				var e error
+				dist, e = util.GetDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)
+				if e != nil && !quiet {
+					log.Fatalln("Incompatible distribution was inputted.")
+				}
+			} else {
+				dist = *util.NewCustomDistribution()
+				user := strings.Split(image, "/")[0]
+				container := strings.Split(image, ":")[0]
+				container = strings.Split(container, "/")[1]
+				tag := strings.Split(image, ":")[1]
 
-		if !config.IsAnsibleRole() && !quiet {
-			log.Fatalf("Path %v is not recognized as an Ansible role.", config.HostPath)
-		}
+				dist.Privileged = true
+				util.CustomDistributionValueSet(&dist, "Name", containerID)
+				//util.CustomValueSet(&dist, "Privileged", "true")
+				util.CustomDistributionValueSet(&dist, "Container", fmt.Sprintf("%s/%s:%s", user, container, tag))
+				util.CustomDistributionValueSet(&dist, "User", user)
+				util.CustomDistributionValueSet(&dist, "Distro", image)
+				util.CustomFamilyValueSet(&dist.Family, "Initialise", initialise)
+				util.CustomFamilyValueSet(&dist.Family, "Volume", volume)
+			}
 
-		util.MapInventory(dist.CID, &config)
-		util.MapRequirements(&config)
-		util.MapPlaybook(&config)
+			dist.CID = containerID
 
-		report := util.NewReport(&config)
-		report.Meta.ReportFile = reportFilename
-		report.Ansible.Distribution = dist
+			if !config.IsAnsibleRole() && !quiet {
+				log.Fatalf("Path %v is not recognized as an Ansible role.", config.HostPath)
+			}
 
-		if !dist.DockerCheck() {
-			dist.DockerRun(&config, &report)
-			report.Docker.Run = dist.DockerCheck()
-		}
-		hosts, _ := dist.AnsibleHosts(&config, &report)
-		report.Ansible.Hosts = hosts
-		if remote {
-			for _, host := range hosts {
-				if host == "localhost" {
-					log.Errorln("remote runs should be run directly, not through this tool")
-					dist.DockerKill(quiet)
+			util.MapInventory(dist.CID, &config)
+			util.MapRequirements(&config)
+			util.MapPlaybook(&config)
+
+			report = util.NewReport(&config)
+			report.Meta.ReportFile = reportFilename
+			report.Ansible.Distribution = dist
+
+			if !dist.DockerCheck() {
+				dist.DockerRun(&config, &report)
+				report.Docker.Run = dist.DockerCheck()
+			}
+			hosts, _ := dist.AnsibleHosts(&config, &report)
+			report.Ansible.Hosts = hosts
+			if remote {
+				for _, host := range hosts {
+					if host == "localhost" {
+						log.Errorln("remote runs should be run directly, not through this tool")
+						dist.DockerKill(quiet)
+					}
 				}
 			}
-		}
 
-		report.Ansible.Requirements = dist.RoleInstall(&config)
-		if !remote {
-			report.Ansible.Syntax = dist.RoleSyntaxCheck(&config)
-			report.Ansible.Run.Result, report.Ansible.Run.Time = dist.RoleTest(&config)
-			report.Ansible.Idempotence.Result, report.Ansible.Idempotence.Time = dist.IdempotenceTest(&config)
-		} else {
-			report.Ansible.Syntax = dist.RoleSyntaxCheckRemote(&config)
-			report.Ansible.Run.Result, report.Ansible.Run.Time = dist.RoleTestRemote(&config)
-			report.Ansible.Idempotence.Result, report.Ansible.Idempotence.Time = dist.IdempotenceTestRemote(&config)
-		}
+			report.Ansible.Requirements = dist.RoleInstall(&config)
+			if !remote {
+				report.Ansible.Syntax = dist.RoleSyntaxCheck(&config)
+				report.Ansible.Run.Result, report.Ansible.Run.Time = dist.RoleTest(&config)
+				report.Ansible.Idempotence.Result, report.Ansible.Idempotence.Time = dist.IdempotenceTest(&config)
+			} else {
+				report.Ansible.Syntax = dist.RoleSyntaxCheckRemote(&config)
+				report.Ansible.Run.Result, report.Ansible.Run.Time = dist.RoleTestRemote(&config)
+				report.Ansible.Idempotence.Result, report.Ansible.Idempotence.Time = dist.IdempotenceTestRemote(&config)
+			}
 
-		dist.DockerKill(quiet)
-		if !dist.DockerCheck() {
-			report.Docker.Kill = true
-		}
+			dist.DockerKill(quiet)
+			if !dist.DockerCheck() {
+				report.Docker.Kill = true
+			}
 
-		if reportProvided {
-			report.Ansible.Config = config
-			report.Printf()
-		}
-	},
+			if reportProvided {
+				report.Ansible.Config = config
+				report.Printf()
+			}
+		},
+		// Analyze report and return the proper exit code.
+		PostRun: func(cmd *cobra.Command, args []string) {
+			if !report.Docker.Run {
+				os.Exit(2)
+			} else if !report.Ansible.Syntax {
+				os.Exit(10)
+			} else if !report.Ansible.Run.Result {
+				os.Exit(11)
+			} else if !report.Ansible.Idempotence.Result {
+				os.Exit(12)
+			} else {
+				os.Exit(0)
+			}
+		},
+	}
 }
 
 func init() {
+	fullCmd := newFullCmd()
 	rootCmd.AddCommand(fullCmd)
 
 	pwd, _ := os.Getwd()

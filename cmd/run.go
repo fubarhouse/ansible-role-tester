@@ -32,83 +32,99 @@ import (
 )
 
 // runCmd represents the dockerRun command
-var runCmd = &cobra.Command{
-	Use:   "run",
-	Short: "Starts a container",
-	Long: `Start a container from a specified image.
+func newRunCmd() *cobra.Command {
+	// Shared state between Run and PostRun
+	var config util.AnsibleConfig
+	var report util.AnsibleReport
+
+	return &cobra.Command{
+		Use:   "run",
+		Short: "Starts a container",
+		Long: `Start a container from a specified image.
 
 Volume mount locations image and id are all configurable.
 `,
-	Run: func(cmd *cobra.Command, args []string) {
-		config := util.AnsibleConfig{
-			HostPath:         source,
-			Inventory:        inventory,
-			RemotePath:       destination,
-			ExtraRolesPath:   extraRoles,
-			LibraryPath:      libraryPath,
-			RequirementsFile: requirements,
-			PlaybookFile:     playbook,
-			Verbose:          verbose,
-			Remote:           remote,
-			Quiet:            quiet,
-		}
-
-		var dist util.Distribution
-
-		if !custom {
-			var e error
-			dist, e = util.GetDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)
-			if e != nil {
-				log.Fatalln("Incompatible distribution was inputted.")
+		Run: func(cmd *cobra.Command, args []string) {
+			config = util.AnsibleConfig{
+				HostPath:         source,
+				Inventory:        inventory,
+				RemotePath:       destination,
+				ExtraRolesPath:   extraRoles,
+				LibraryPath:      libraryPath,
+				RequirementsFile: requirements,
+				PlaybookFile:     playbook,
+				Verbose:          verbose,
+				Remote:           remote,
+				Quiet:            quiet,
 			}
-		} else {
-			dist = *util.NewCustomDistribution()
-			user := strings.Split(image, "/")[0]
-			container := strings.Split(image, ":")[0]
-			container = strings.Split(container, "/")[1]
-			tag := strings.Split(image, ":")[1]
 
-			dist.Privileged = true
-			util.CustomDistributionValueSet(&dist, "Name", containerID)
-			//util.CustomValueSet(&dist, "Privileged", "true")
-			util.CustomDistributionValueSet(&dist, "Container", fmt.Sprintf("%s/%s:%s", user, container, tag))
-			util.CustomDistributionValueSet(&dist, "User", user)
-			util.CustomDistributionValueSet(&dist, "Distro", image)
-			util.CustomFamilyValueSet(&dist.Family, "Initialise", initialise)
-			util.CustomFamilyValueSet(&dist.Family, "Volume", volume)
-		}
+			var dist util.Distribution
 
-		dist.CID = containerID
-
-		if !config.IsAnsibleRole() && !quiet {
-			log.Fatalf("Path %v is not recognized as an Ansible role.", config.HostPath)
-		}
-
-		if config.RemotePath == "" {
-			if config.Remote {
-				pwd, _ := os.Getwd()
-				config.RemotePath = pwd
+			if !custom {
+				var e error
+				dist, e = util.GetDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)
+				if e != nil {
+					log.Fatalln("Incompatible distribution was inputted.")
+				}
 			} else {
-				config.RemotePath = "/etc/ansible/roles/role_under_test"
+				dist = *util.NewCustomDistribution()
+				user := strings.Split(image, "/")[0]
+				container := strings.Split(image, ":")[0]
+				container = strings.Split(container, "/")[1]
+				tag := strings.Split(image, ":")[1]
+
+				dist.Privileged = true
+				util.CustomDistributionValueSet(&dist, "Name", containerID)
+				//util.CustomValueSet(&dist, "Privileged", "true")
+				util.CustomDistributionValueSet(&dist, "Container", fmt.Sprintf("%s/%s:%s", user, container, tag))
+				util.CustomDistributionValueSet(&dist, "User", user)
+				util.CustomDistributionValueSet(&dist, "Distro", image)
+				util.CustomFamilyValueSet(&dist.Family, "Initialise", initialise)
+				util.CustomFamilyValueSet(&dist.Family, "Volume", volume)
 			}
-		}
 
-		util.MapInventory(dist.CID, &config)
-		// Our report variable is needed, but unused.
-		report := util.AnsibleReport{}
+			dist.CID = containerID
 
-		if !dist.DockerCheck() {
-			dist.DockerRun(&config, &report)
-		} else {
-			if !quiet {
-				log.Warnf("Container %v is already running", dist.CID)
+			if !config.IsAnsibleRole() && !quiet {
+				log.Fatalf("Path %v is not recognized as an Ansible role.", config.HostPath)
 			}
-		}
 
-	},
+			if config.RemotePath == "" {
+				if config.Remote {
+					pwd, _ := os.Getwd()
+					config.RemotePath = pwd
+				} else {
+					config.RemotePath = "/etc/ansible/roles/role_under_test"
+				}
+			}
+
+			util.MapInventory(dist.CID, &config)
+			// Our report variable is needed, but unused.
+			report = util.AnsibleReport{}
+
+			if !dist.DockerCheck() {
+				dist.DockerRun(&config, &report)
+			} else {
+				if !quiet {
+					log.Warnf("Container %v is already running", dist.CID)
+				}
+			}
+
+		},
+		// Analyze report and return the proper exit code.
+		PostRun: func(cmd *cobra.Command, args []string) {
+			if !report.Docker.Run {
+				os.Exit(2)
+			} else {
+				os.Exit(0)
+			}
+		},
+	}
 }
 
 func init() {
+	runCmd := newRunCmd()
+
 	rootCmd.AddCommand(runCmd)
 	pwd, _ := os.Getwd()
 	runCmd.Flags().StringVarP(&containerID, "name", "n", containerID, "Container ID")
