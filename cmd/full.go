@@ -92,8 +92,11 @@ required.
 
 			dist.CID = containerID
 
-			if !config.IsAnsibleRole() && !quiet {
-				log.Fatalf("Path %v is not recognized as an Ansible role.", config.HostPath)
+			if !config.IsAnsibleRole() {
+				if !quiet {
+					log.Fatalf("Path %v is not recognized as an Ansible role.", config.HostPath)
+				}
+				os.Exit(util.NotARoleCode)
 			}
 
 			util.MapInventory(dist.CID, &config)
@@ -142,28 +145,25 @@ required.
 		},
 		// Analyze report and return the proper exit code.
 		PostRun: func(cmd *cobra.Command, args []string) {
+			// fmt.Println("PostRun called")
 			if !report.Docker.Run {
-				os.Exit(2)
+				os.Exit(util.DockerRunCode)
 			} else if !report.Ansible.Syntax {
-				os.Exit(10)
+				os.Exit(util.AnsibleSyntaxCode)
 			} else if !report.Ansible.Run.Result {
-				os.Exit(11)
+				os.Exit(util.AnsibleRunCode)
 			} else if !report.Ansible.Idempotence.Result {
-				os.Exit(12)
+				os.Exit(util.AnsibleIdempotenceCode)
 			} else {
-				os.Exit(0)
+				os.Exit(util.OKCode)
 			}
 		},
 	}
 }
 
-func init() {
-	fullCmd := newFullCmd()
-	rootCmd.AddCommand(fullCmd)
-
-	pwd, _ := os.Getwd()
+func addFullFlags(fullCmd *cobra.Command, dir string) {
 	fullCmd.Flags().StringVarP(&containerID, "name", "n", containerID, "Name of the container")
-	fullCmd.Flags().StringVarP(&source, "source", "s", pwd, "Location of the role to test")
+	fullCmd.Flags().StringVarP(&source, "source", "s", dir, "Location of the role to test")
 	fullCmd.Flags().StringVarP(&destination, "destination", "d", "", "Location which the role will be mounted to")
 	fullCmd.Flags().StringVarP(&requirements, "requirements", "r", "", "Path to requirements file.")
 	fullCmd.Flags().StringVarP(&extraRoles, "extra-roles", "x", "", "Path to roles folder with dependencies.")
@@ -184,4 +184,17 @@ func init() {
 	fullCmd.Flags().StringVarP(&image, "image", "i", "", "The image reference to use.")
 	fullCmd.Flags().StringVarP(&user, "user", "u", "fubarhouse", "Selectively choose a compatible docker image from a specified user.")
 	fullCmd.Flags().StringVarP(&distro, "distribution", "t", "ubuntu1804", "Selectively choose a compatible docker image of a specified distribution.")
+}
+
+func init() {
+	fullCmd := newFullCmd()
+	pwd, _ := os.Getwd()
+	addFullFlags(fullCmd, pwd)
+	rootCmd.AddCommand(fullCmd)
+}
+
+func InitFullCmdForTest(dir string) *cobra.Command {
+	fullCmd := newFullCmd()
+	addFullFlags(fullCmd, dir)
+	return fullCmd
 }

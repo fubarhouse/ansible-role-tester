@@ -103,7 +103,7 @@ Volume mount locations image and id are all configurable.
 			report = util.AnsibleReport{}
 
 			if !dist.DockerCheck() {
-				dist.DockerRun(&config, &report)
+				report.Docker.Run = dist.DockerRun(&config, &report)
 			} else {
 				if !quiet {
 					log.Warnf("Container %v is already running", dist.CID)
@@ -114,21 +114,17 @@ Volume mount locations image and id are all configurable.
 		// Analyze report and return the proper exit code.
 		PostRun: func(cmd *cobra.Command, args []string) {
 			if !report.Docker.Run {
-				os.Exit(2)
+				os.Exit(util.DockerRunCode)
 			} else {
-				os.Exit(0)
+				os.Exit(util.OKCode)
 			}
 		},
 	}
 }
 
-func init() {
-	runCmd := newRunCmd()
-
-	rootCmd.AddCommand(runCmd)
-	pwd, _ := os.Getwd()
+func addRunFlags(runCmd *cobra.Command, dir string) {
 	runCmd.Flags().StringVarP(&containerID, "name", "n", containerID, "Container ID")
-	runCmd.Flags().StringVarP(&source, "source", "s", pwd, "Location of the role to test")
+	runCmd.Flags().StringVarP(&source, "source", "s", dir, "Location of the role to test")
 	runCmd.Flags().StringVarP(&destination, "destination", "d", "", "Location which the role will be mounted to")
 	runCmd.Flags().StringVarP(&inventory, "inventory", "e", "", "Inventory file")
 	runCmd.Flags().StringVarP(&extraRoles, "extra-roles", "x", "", "Path to roles folder with dependencies.")
@@ -145,4 +141,16 @@ func init() {
 	runCmd.Flags().StringVarP(&distro, "distribution", "t", "ubuntu1804", "Selectively choose a compatible docker image of a specified distribution.")
 
 	runCmd.MarkFlagRequired("name")
+}
+func init() {
+	runCmd := newRunCmd()
+	pwd, _ := os.Getwd()
+	addRunFlags(runCmd, pwd)
+	rootCmd.AddCommand(runCmd)
+}
+
+func InitRunCmdForTest(dir string) *cobra.Command {
+	runCmd := newRunCmd()
+	addRunFlags(runCmd, dir)
+	return runCmd
 }

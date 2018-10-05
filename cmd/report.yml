@@ -1,0 +1,45 @@
+meta:
+  timestamp: 2018-10-05T15:43:40.296348969-07:00
+  repository: https://github.com/issmirnov/ansible-role-art-tester.git
+  commithash: c4f4504d38b52287c5bc6ac2227d4fc4cb39cbda
+  localchanges: false
+  reportfile: report.yml
+ansible:
+  config:
+    hostpath: /tmp/ansible-role-tester262042681
+    inventory: ""
+    remotepath: /etc/ansible/roles/ansible-role-art-tester
+    extrarolespath: ""
+    librarypath: ""
+    requirementsfile: ""
+    playbookfile: tests/playbook-idempotency-fail.yml
+    remote: false
+    verbose: false
+    quiet: false
+  distribution:
+    cid: ""
+    name: ubuntu1804
+    privileged: true
+    container: fubarhouse/docker-ansible:bionic
+    user: fubarhouse
+    distro: ubuntu1804
+    family:
+      name: Ubuntu
+      initialise: /sbin/init
+      volume: /sys/fs/cgroup:/sys/fs/cgroup:ro
+  hosts: []
+  syntax: true
+  requirements: false
+  run:
+    result: true
+    time: 1.593550344s
+  idempotence:
+    result: false
+    time: 1.569968641s
+docker:
+  run: true
+  kill: true
+  volumes:
+  - /sys/fs/cgroup:/sys/fs/cgroup:ro
+  - /tmp/ansible-role-tester262042681:/etc/ansible/roles/ansible-role-art-tester
+  - /tmp/ansible-role-tester262042681:/etc/ansible/roles/cmd
