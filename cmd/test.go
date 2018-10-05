@@ -59,13 +59,21 @@ containers won't be removed after completion.`,
 			util.MapRequirements(&config)
 
 			if !remote {
-				dist.RoleSyntaxCheck(&config)
-				dist.RoleTest(&config)
-				dist.IdempotenceTest(&config)
+				report.Ansible.Syntax = dist.RoleSyntaxCheck(&config)
+				if !report.Ansible.Syntax {
+					report.Ansible.Run.Result, report.Ansible.Run.Time = dist.RoleTest(&config)
+				}
+				if !report.Ansible.Idempotence.Result {
+					report.Ansible.Idempotence.Result, report.Ansible.Idempotence.Time = dist.IdempotenceTest(&config)
+				}
 			} else {
-				dist.RoleSyntaxCheckRemote(&config)
-				dist.RoleTestRemote(&config)
-				dist.IdempotenceTestRemote(&config)
+				report.Ansible.Syntax = dist.RoleSyntaxCheckRemote(&config)
+				if !report.Ansible.Syntax {
+					report.Ansible.Run.Result, report.Ansible.Run.Time = dist.RoleTestRemote(&config)
+				}
+				if !report.Ansible.Idempotence.Result {
+					report.Ansible.Idempotence.Result, report.Ansible.Idempotence.Time = dist.IdempotenceTestRemote(&config)
+				}
 				hosts, _ := dist.AnsibleHosts(&config, &report)
 				for _, host := range hosts {
 					if host == "localhost" {
