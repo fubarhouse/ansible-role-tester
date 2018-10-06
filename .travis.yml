@@ -39,14 +39,9 @@ before_install:
   - sudo pip install --upgrade pip
   - sudo pip install ansible
   - curl -L -s https://github.com/golang/dep/releases/download/v0.5.0/dep-linux-amd64 -o $GOPATH/bin/dep && chmod +x $GOPATH/bin/dep 
-  # Install ansible-role-tester
-  - go get -v -t github.com/fubarhouse/ansible-role-tester
-  # Remove contents of the installed package
-  - rm -rf $GOPATH/src/github.com/fubarhouse/ansible-role-tester/*
-  - cp -rf $TRAVIS_BUILD_DIR/* $GOPATH/src/github.com/fubarhouse/ansible-role-tester/
   # Install golang deps
-  - cd $GOPATH/src/github.com/fubarhouse/ansible-role-tester/ && dep ensure
-  - cd $GOPATH/src/github.com/fubarhouse/ansible-role-tester/ && go install ./...
+  - cd ${TRAVIS_BUILD_DIR} && dep ensure
+  - cd ${TRAVIS_BUILD_DIR} && go install ./...
   # Style checks
   - cd $GOPATH/src/github.com/fubarhouse/ansible-role-tester/ && diff -u <(echo -n) <(gofmt -d $(find . -not -path "./vendor/*" -name "*.go"))
   - cd $GOPATH/src/github.com/fubarhouse/ansible-role-tester/ && go vet $(go list ./... | grep -v /vendor/)
