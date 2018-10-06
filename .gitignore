@@ -9,3 +9,6 @@ vendor/*
 
 # OSX
 ._*
+
+# reports
+**/report.yml
