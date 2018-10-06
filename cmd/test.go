@@ -63,7 +63,7 @@ containers won't be removed after completion.`,
 				if !report.Ansible.Syntax {
 					report.Ansible.Run.Result, report.Ansible.Run.Time = dist.RoleTest(&config)
 				}
-				if !report.Ansible.Idempotence.Result {
+				if !report.Ansible.Run.Result {
 					report.Ansible.Idempotence.Result, report.Ansible.Idempotence.Time = dist.IdempotenceTest(&config)
 				}
 			} else {
@@ -71,7 +71,7 @@ containers won't be removed after completion.`,
 				if !report.Ansible.Syntax {
 					report.Ansible.Run.Result, report.Ansible.Run.Time = dist.RoleTestRemote(&config)
 				}
-				if !report.Ansible.Idempotence.Result {
+				if !report.Ansible.Run.Result {
 					report.Ansible.Idempotence.Result, report.Ansible.Idempotence.Time = dist.IdempotenceTestRemote(&config)
 				}
 				hosts, _ := dist.AnsibleHosts(&config, &report)

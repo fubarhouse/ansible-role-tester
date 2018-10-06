@@ -121,7 +121,7 @@ required.
 			if !report.Ansible.Syntax {
 				report.Ansible.Run.Result, report.Ansible.Run.Time = dist.RoleTest(&config)
 			}
-			if !report.Ansible.Idempotence.Result {
+			if !report.Ansible.Run.Result {
 				report.Ansible.Idempotence.Result, report.Ansible.Idempotence.Time = dist.IdempotenceTest(&config)
 			}
 		} else {
