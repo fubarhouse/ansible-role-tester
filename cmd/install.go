@@ -21,13 +21,14 @@
 package cmd
 
 import (
+	"os"
+
 	log "github.com/Sirupsen/logrus"
 	"github.com/fubarhouse/ansible-role-tester/util"
 	"github.com/spf13/cobra"
-	"os"
 )
 
-// testCmd represents the test command
+// installCmd represents the test command
 var installCmd = &cobra.Command{
 	Use:   "install",
 	Short: "Run installation tasks for the mounted role",

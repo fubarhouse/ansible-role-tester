@@ -153,7 +153,7 @@ func (dist *Distribution) DockerRun(config *AnsibleConfig, report *AnsibleReport
 			log.Printf("Running %v", dist.CID)
 		}
 
-		if _, err := DockerExec(buildDockerArgs(dist, config, report), true); err != nil {
+		if _, err := DockerExec(buildDockerArgs(dist, config, report), !config.Quiet); err != nil {
 			log.Errorln(err)
 		}
 
