@@ -50,20 +50,20 @@ before_install:
   - git clone https://github.com/issmirnov/ansible-role-art-tester.git /home/travis/ansible-role-art-tester
 
 script:
-  # # Test the role from inside the container using the segmented commands.
-  # - cd /home/travis/my_role && ansible-role-tester run --name travis_test --user fubarhouse --distribution ${distro}
-  # - cd /home/travis/my_role && ansible-role-tester install --name travis_test
-  # - cd /home/travis/my_role && ansible-role-tester test --name travis_test --playbook ./tests/test-package.yml
-  # - cd /home/travis/my_role && ansible-role-tester destroy --name travis_test
-  # - sleep 10
-  # # Change the test playbook to work with remote hosts (inventory)
-  # - sed -i -e 's/- hosts:\ localhost/- hosts:\ all/g' /home/travis/my_role/tests/test-package.yml
-  # # Change the test playbook to refer to the correct path for the role.
-  # - sed -i -e 's/role_under_test/\/home\/travis\/my_role\//g' /home/travis/my_role/tests/test-package.yml
-  # # Test the role from outside the container using the one standard pipeline command.
-  # - cd /home/travis/my_role && ansible-role-tester full --name travis_test --user fubarhouse --distribution ${distro} --playbook tests/test-package.yml --remote
-  # # Phase 2: test other flags
-  # - cd /home/travis/ansible-role-art-tester &&  ansible-role-tester full --playbook tests/playbook-library.yml --library "$(pwd)/tests/library"
+  # Test the role from inside the container using the segmented commands.
+  - cd /home/travis/my_role && ansible-role-tester run --name travis_test --user fubarhouse --distribution ${distro}
+  - cd /home/travis/my_role && ansible-role-tester install --name travis_test
+  - cd /home/travis/my_role && ansible-role-tester test --name travis_test --playbook ./tests/test-package.yml
+  - cd /home/travis/my_role && ansible-role-tester destroy --name travis_test
+  - sleep 10
+  # Change the test playbook to work with remote hosts (inventory)
+  - sed -i -e 's/- hosts:\ localhost/- hosts:\ all/g' /home/travis/my_role/tests/test-package.yml
+  # Change the test playbook to refer to the correct path for the role.
+  - sed -i -e 's/role_under_test/\/home\/travis\/my_role\//g' /home/travis/my_role/tests/test-package.yml
+  # Test the role from outside the container using the one standard pipeline command.
+  - cd /home/travis/my_role && ansible-role-tester full --name travis_test --user fubarhouse --distribution ${distro} --playbook tests/test-package.yml --remote
+  # Phase 2: test other flags
+  - cd /home/travis/ansible-role-art-tester &&  ansible-role-tester full --playbook tests/playbook-library.yml --library "$(pwd)/tests/library"
   # Phase 3: run goconvey tests
   - cd $GOPATH/src/github.com/fubarhouse/ansible-role-tester/ && go test -short -v ./... 
   # cd /home/travis/ansible-role-art-tester &&  (ansible-role-tester full --playbook tests/playbook-syntax-fail.yml || export EXIT_CODE=$?; echo $EXIT_CODE;[[ "$EXIT_CODE" != "10" ]] )
