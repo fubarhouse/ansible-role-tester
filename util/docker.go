@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 
 	"fmt"
@@ -103,8 +104,8 @@ func buildDockerArgs(dist *Distribution, config *AnsibleConfig, report *AnsibleR
 	// than the role_under_test convention.
 	if !config.Remote {
 		pwd, _ := os.Getwd()
-		pwds := strings.Split(pwd, string(os.PathSeparator))
-		report.Docker.Volumes = append(report.Docker.Volumes, fmt.Sprintf("%s:/etc/ansible/roles/%v", config.HostPath, pwds[len(pwds)-1]))
+		dir := filepath.Base(pwd)
+		report.Docker.Volumes = append(report.Docker.Volumes, fmt.Sprintf("%s:/etc/ansible/roles/%v", config.HostPath, dir))
 	}
 
 	if config.ExtraRolesPath != "" {
@@ -152,7 +153,7 @@ func (dist *Distribution) DockerRun(config *AnsibleConfig, report *AnsibleReport
 			log.Printf("Running %v", dist.CID)
 		}
 
-		if _, err := DockerExec(buildDockerArgs(dist, config, report), true); err != nil {
+		if _, err := DockerExec(buildDockerArgs(dist, config, report), !config.Quiet); err != nil {
 			log.Errorln(err)
 		}
 

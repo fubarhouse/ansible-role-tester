@@ -47,8 +47,8 @@ type AnsibleReport struct {
 	}
 }
 
-// gitCmd will run git commands in the specified directory.
-func gitCmd(path string, args []string) (string, error) {
+// GitCmd will run git commands in the specified directory.
+func GitCmd(path string, args []string) (string, error) {
 	// Find git.
 	git, err := exec.LookPath("git")
 	if err != nil {
@@ -83,7 +83,7 @@ func gitCmd(path string, args []string) (string, error) {
 
 // isGit will identify if the path is a git repository.
 func isGit(path string) (bool, error) {
-	git, err := gitCmd(path, []string{"git", "status"})
+	git, err := GitCmd(path, []string{"git", "status"})
 	if strings.Contains(git, "Not a git repository") {
 		return false, err
 	}
@@ -99,7 +99,7 @@ func (report *AnsibleReport) IsGit() bool {
 // getGitChanges will identify if there are local changes in git.
 func getGitChanges(path string) (bool, error) {
 	// Pass arguments to common git command runner; return results.
-	git, err := gitCmd(path, []string{"git", "status", "--porcelain"})
+	git, err := GitCmd(path, []string{"git", "status", "--porcelain"})
 	if git != "" {
 		return true, err
 	}
@@ -110,7 +110,7 @@ func getGitChanges(path string) (bool, error) {
 func getGitRepo(path string) (string, error) {
 
 	// Pass arguments to common git command runner; return results.
-	git, err := gitCmd(path, []string{"git", "ls-remote", "--get-url", "origin"})
+	git, err := GitCmd(path, []string{"git", "ls-remote", "--get-url", "origin"})
 	return git, err
 
 }
@@ -119,7 +119,7 @@ func getGitRepo(path string) (string, error) {
 func getGitCommit(path string) (string, error) {
 
 	// Pass arguments to common git command runner; return results.
-	git, err := gitCmd(path, []string{"git", "rev-parse", "HEAD"})
+	git, err := GitCmd(path, []string{"git", "rev-parse", "HEAD"})
 	return git, err
 
 }
