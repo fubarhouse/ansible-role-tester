@@ -52,7 +52,6 @@ func DockerExec(args []string, stdout bool) (string, error) {
 	var wg sync.WaitGroup
 	wg.Add(1)
 	if err := cmd.Run(); err != nil {
-		return "", err
 		return out.String(), err
 	}
 	wg.Done()

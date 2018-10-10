@@ -71,7 +71,6 @@ func GitCmd(path string, args []string) (string, error) {
 	var wg sync.WaitGroup
 	wg.Add(1)
 	if err := cmd.Run(); err != nil {
-		return "", err
 		return out.String(), err
 	}
 	wg.Done()
