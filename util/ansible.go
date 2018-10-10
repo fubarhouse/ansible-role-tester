@@ -28,11 +28,6 @@ func (dist *Distribution) AnsibleHosts(config *AnsibleConfig, report *AnsibleRep
 
 	out, err := AnsiblePlaybook(args, false)
 
-	if err != nil {
-		log.Errorln(err)
-		return []string{}, err
-	}
-
 	hosts := []string{}
 
 	// Iterate over each line out output
@@ -50,6 +45,16 @@ func (dist *Distribution) AnsibleHosts(config *AnsibleConfig, report *AnsibleRep
 				hosts = append(hosts, host)
 			}
 		}
+	}
+
+	if len(hosts) == 0 {
+		log.Warnf("host has been delegated to localhost")
+		hosts = append(hosts, "localhost")
+	}
+
+	if len(hosts) == 0 && err != nil {
+		log.Errorln(err)
+		return []string{}, err
 	}
 
 	return hosts, nil
