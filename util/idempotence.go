@@ -16,9 +16,6 @@ import (
 func (dist *Distribution) IdempotenceTest(config *AnsibleConfig) (bool, time.Duration) {
 
 	// Test role idempotence.
-	if !config.Quiet {
-		log.Infoln("Testing role idempotence...")
-	}
 
 	args := []string{
 		"exec",
@@ -42,10 +39,10 @@ func (dist *Distribution) IdempotenceTest(config *AnsibleConfig) (bool, time.Dur
 	now := time.Now()
 	if !config.Quiet {
 		out, _ := DockerExec(args, true)
-		idempotence = IdempotenceResult(out)
+		idempotence, _ = IdempotenceResult(out)
 	} else {
 		out, _ := DockerExec(args, false)
-		idempotence = IdempotenceResult(out)
+		idempotence, _ = IdempotenceResult(out)
 	}
 
 	if !config.Quiet {
@@ -57,20 +54,19 @@ func (dist *Distribution) IdempotenceTest(config *AnsibleConfig) (bool, time.Dur
 }
 
 // PrintIdempotenceResult will log the results of the idempotence checks.
-func PrintIdempotenceResult(start time.Time, idempotence bool) {
+func PrintIdempotenceResult(start time.Time, idempotence bool) error {
 	log.Infof("Idempotence was checked in %v", time.Since(start))
-	if idempotence {
-		log.Infoln("Idempotence test: PASS")
-	} else {
-		log.Errorln("Idempotence test: FAIL")
+	if !idempotence {
+		return errors.New("idempotence test failed")
 	}
+	return nil
 }
 
 // IdempotenceResult will get the result of an idempotence test
 // which is the full output of a role, and it will identify each
 // of the applicable checks for idempotence. In this case, we
 // simply need the values of changed and failed and some basic logic.
-func IdempotenceResult(output string) bool {
+func IdempotenceResult(output string) (bool, error) {
 
 	lines := strings.Split(output, "\n")
 
@@ -91,17 +87,16 @@ func IdempotenceResult(output string) bool {
 	}
 
 	if error != nil {
-		log.Errorln(error)
-		return false
+		return false, error
 	}
 
 	if failed > 0 {
-		return false
+		return false, errors.New("idempotence failed")
 	}
 
 	if changed > 0 {
-		return false
+		return false, errors.New("idempotence failed")
 	}
 
-	return true
+	return true, nil
 }

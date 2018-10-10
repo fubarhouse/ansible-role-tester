@@ -21,6 +21,7 @@
 package cmd
 
 import (
+	"io/ioutil"
 	"os"
 
 	"fmt"
@@ -51,6 +52,12 @@ the local file system. If you encounter errors, there's a lot
 of flexibility in configuration, just change the defaults as
 required.
 `,
+		PreRun: func(cmd *cobra.Command, args []string) {
+			if quiet {
+				logrus := log.New()
+				logrus.Out = ioutil.Discard
+			}
+		},
 		Run: func(cmd *cobra.Command, args []string) {
 			config = util.AnsibleConfig{
 				HostPath:         source,
@@ -122,14 +129,14 @@ required.
 				}
 			}
 
-			report.Ansible.Requirements = dist.RoleInstall(&config)
+			report.Ansible.Requirements, _ = dist.RoleInstall(&config)
 			if !remote {
-				report.Ansible.Syntax = dist.RoleSyntaxCheck(&config)
-				report.Ansible.Run.Result, report.Ansible.Run.Time = dist.RoleTest(&config)
+				report.Ansible.Syntax, _ = dist.RoleSyntaxCheck(&config)
+				report.Ansible.Run.Result, report.Ansible.Run.Time, _ = dist.RoleTest(&config)
 				report.Ansible.Idempotence.Result, report.Ansible.Idempotence.Time = dist.IdempotenceTest(&config)
 			} else {
-				report.Ansible.Syntax = dist.RoleSyntaxCheckRemote(&config)
-				report.Ansible.Run.Result, report.Ansible.Run.Time = dist.RoleTestRemote(&config)
+				report.Ansible.Syntax, _ = dist.RoleSyntaxCheckRemote(&config)
+				report.Ansible.Run.Result, report.Ansible.Run.Time, _ = dist.RoleTestRemote(&config)
 				report.Ansible.Idempotence.Result, report.Ansible.Idempotence.Time = dist.IdempotenceTestRemote(&config)
 			}
 
@@ -145,7 +152,6 @@ required.
 		},
 		// Analyze report and return the proper exit code.
 		PostRun: func(cmd *cobra.Command, args []string) {
-			// fmt.Println("PostRun called")
 			if !report.Docker.Run {
 				os.Exit(util.DockerRunCode)
 			} else if !report.Ansible.Syntax {

@@ -3,7 +3,6 @@ package util
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
@@ -13,7 +12,7 @@ import (
 	"time"
 
 	log "github.com/Sirupsen/logrus"
-	yaml "gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v2"
 )
 
 // AnsibleReport will contain metadata about the run which will be, is and has executed.
@@ -52,7 +51,7 @@ func GitCmd(path string, args []string) (string, error) {
 	// Find git.
 	git, err := exec.LookPath("git")
 	if err != nil {
-		log.Errorln(err)
+		return "", err
 	}
 
 	// Generate the command, based on input.
@@ -72,7 +71,7 @@ func GitCmd(path string, args []string) (string, error) {
 	var wg sync.WaitGroup
 	wg.Add(1)
 	if err := cmd.Run(); err != nil {
-		log.Errorln(err)
+		return "", err
 		return out.String(), err
 	}
 	wg.Done()
@@ -166,7 +165,6 @@ func (report *AnsibleReport) GetJSON(data interface{}) ([]byte, error) {
 	// Marshal as JSON
 	result, err := json.Marshal(data)
 	if err != nil {
-		log.Errorln(err)
 		return []byte{}, err
 	}
 
@@ -181,7 +179,6 @@ func (report *AnsibleReport) GetYAML(data interface{}) ([]byte, error) {
 	// Marshal as JSON
 	result, err := yaml.Marshal(data)
 	if err != nil {
-		log.Errorln(err)
 		return []byte{}, err
 	}
 
@@ -210,17 +207,12 @@ func (report *AnsibleReport) printFile(data []byte) (err error) {
 	if _, err := os.Stat(filename); err != nil {
 		if file, err := os.Create(filename); err != nil {
 			// File could not be created.
-			log.Errorf("could not create file %v\n", filename)
 			return err
 		} else {
 			// File was created, attempt to write to it
 			if err = ioutil.WriteFile(filename, data, 0644); err != nil {
 				// Could not write to file.
-				log.Errorf("could not write data to %v\n", filename)
 				return err
-			} else {
-				// Wrote to file successfully.
-				log.Infof("Report data has been written to %v\n", filename)
 			}
 			// Close the file.
 			file.Sync()
@@ -233,29 +225,6 @@ func (report *AnsibleReport) printFile(data []byte) (err error) {
 
 // Printf will print the report in a formatted way.
 func (report *AnsibleReport) Printf() {
-
-	fmt.Println()
-	fmt.Println("----------------------------------------------------------")
-	fmt.Println("Ansible Role Tester Report")
-	fmt.Println("----------------------------------------------------------")
-	fmt.Printf("Timestamp: \t\t\t%v\n", report.Meta.Timestamp)
-	if report.IsGit() {
-		fmt.Printf("Repository URL: \t\t%v\n", report.Meta.Repository)
-		fmt.Printf("Repository commit: \t\t%v\n", report.Meta.CommitHash)
-		fmt.Printf("Local changes: \t\t\t%v\n", report.Meta.LocalChanges)
-	}
-	fmt.Println("----------------------------------------------------------")
-	fmt.Printf("Syntax check: \t\t\t%v\n", report.Ansible.Syntax)
-	fmt.Printf("Requirements installed: \t%v\n", report.Ansible.Requirements)
-	fmt.Printf("Run result: \t\t\t%v\n", report.Ansible.Run.Result)
-	fmt.Printf("Run time: \t\t\t%v\n", report.Ansible.Run.Time)
-	fmt.Printf("Idempotence result: \t\t%v\n", report.Ansible.Idempotence.Result)
-	fmt.Printf("Idempotence time: \t\t%v\n", report.Ansible.Idempotence.Time)
-	fmt.Println("----------------------------------------------------------")
-	fmt.Printf("Docker run: \t\t\t%v\n", report.Docker.Run)
-	fmt.Printf("Docker kill: \t\t\t%v\n", report.Docker.Kill)
-	fmt.Println("----------------------------------------------------------")
-	fmt.Println()
 
 	if strings.HasSuffix(report.Meta.ReportFile, ".yaml") {
 		yamlReport, _ := report.GetYAML(report)

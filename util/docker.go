@@ -2,6 +2,7 @@ package util
 
 import (
 	"bytes"
+	"errors"
 	"io"
 	"os"
 	"os/exec"
@@ -51,7 +52,7 @@ func DockerExec(args []string, stdout bool) (string, error) {
 	var wg sync.WaitGroup
 	wg.Add(1)
 	if err := cmd.Run(); err != nil {
-		log.Errorln(err)
+		return "", err
 		return out.String(), err
 	}
 	wg.Done()
@@ -142,7 +143,7 @@ func buildDockerArgs(dist *Distribution, config *AnsibleConfig, report *AnsibleR
 
 // DockerRun will launch a new container (containerID) using
 // the fields in a AnsibleConfig struct.
-func (dist *Distribution) DockerRun(config *AnsibleConfig, report *AnsibleReport) bool {
+func (dist *Distribution) DockerRun(config *AnsibleConfig, report *AnsibleReport) (bool, error) {
 
 	if dist.CID == "" {
 		dist.CID = fmt.Sprint(time.Now().Unix())
@@ -154,7 +155,7 @@ func (dist *Distribution) DockerRun(config *AnsibleConfig, report *AnsibleReport
 		}
 
 		if _, err := DockerExec(buildDockerArgs(dist, config, report), !config.Quiet); err != nil {
-			log.Errorln(err)
+			return false, err
 		}
 
 	} else {
@@ -163,12 +164,12 @@ func (dist *Distribution) DockerRun(config *AnsibleConfig, report *AnsibleReport
 		}
 	}
 
-	return dist.DockerCheck()
+	return dist.DockerCheck(), nil
 
 }
 
 // DockerKill will stop the container and remove it.
-func (dist *Distribution) DockerKill(quiet bool) bool {
+func (dist *Distribution) DockerKill(quiet bool) (bool, error) {
 
 	if dist.CID != "" {
 
@@ -181,7 +182,7 @@ func (dist *Distribution) DockerKill(quiet bool) bool {
 				"stop",
 				dist.CID,
 			}, false); err != nil {
-				log.Errorln(err)
+				return false, err
 			}
 
 			if !quiet {
@@ -191,20 +192,16 @@ func (dist *Distribution) DockerKill(quiet bool) bool {
 				"rm",
 				dist.CID,
 			}, false); err != nil {
-				log.Errorln(err)
+				return false, err
 			}
 		} else {
-			if !quiet {
-				log.Errorf("container %v is not running\n", dist.CID)
-			}
+			return false, errors.New("container " + dist.CID + " is not running")
 		}
 
 	} else {
-		if !quiet {
-			log.Errorln("container name was not specified")
-		}
+		return false, errors.New("container name was not specified")
 	}
 
-	return dist.DockerCheck()
+	return dist.DockerCheck(), nil
 
 }

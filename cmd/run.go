@@ -103,7 +103,7 @@ Volume mount locations image and id are all configurable.
 			report = util.AnsibleReport{}
 
 			if !dist.DockerCheck() {
-				report.Docker.Run = dist.DockerRun(&config, &report)
+				report.Docker.Run, _ = dist.DockerRun(&config, &report)
 			} else {
 				if !quiet {
 					log.Warnf("Container %v is already running", dist.CID)

@@ -1,6 +1,7 @@
 package util
 
 import (
+	"errors"
 	"fmt"
 
 	log "github.com/Sirupsen/logrus"
@@ -20,7 +21,7 @@ func (config *AnsibleConfig) IsAnsibleRole() bool {
 }
 
 // RoleInstall will install the requirements if the file is configured.
-func (dist *Distribution) RoleInstall(config *AnsibleConfig) bool {
+func (dist *Distribution) RoleInstall(config *AnsibleConfig) (bool, error) {
 
 	if config.RequirementsFile != "" {
 		req := fmt.Sprintf("%v/%v", config.RemotePath, config.RequirementsFile)
@@ -48,35 +49,30 @@ func (dist *Distribution) RoleInstall(config *AnsibleConfig) bool {
 		if !config.Quiet {
 			_, err := DockerExec(args, true)
 			if err != nil {
-				log.Errorln(err)
-				return false
+				return false, err
 			}
 		} else {
 			_, err := DockerExec(args, false)
 			if err != nil {
-				log.Errorln(err)
-				return false
+				return false, err
 			}
 		}
 
 	} else {
 		if !config.Quiet {
 			log.Warnln("Requirements file is not configured (empty/null), skipping...")
-			return false
+			return false, nil
 		}
 	}
-	return true
+	return true, nil
 }
 
 // RoleSyntaxCheck will run a syntax check of the mounted volume inside
 // of the active container. This helps with pure isolation of the syntax
 // to separate it from other potential Ansible versions.
-func (dist *Distribution) RoleSyntaxCheck(config *AnsibleConfig) bool {
+func (dist *Distribution) RoleSyntaxCheck(config *AnsibleConfig) (bool, error) {
 
 	// Ansible syntax check.
-	if !config.Quiet {
-		log.Infoln("Checking role syntax...")
-	}
 
 	args := []string{
 		"exec",
@@ -100,31 +96,25 @@ func (dist *Distribution) RoleSyntaxCheck(config *AnsibleConfig) bool {
 	if !config.Quiet {
 		_, err := DockerExec(args, true)
 		if err != nil {
-			log.Errorln("Syntax check: FAIL")
-			return false
+			return false, errors.New("syntax check failed")
 		} else {
-			log.Infoln("Syntax check: PASS")
-			return true
+			return true, nil
 		}
 	} else {
 		_, err := DockerExec(args, false)
 		if err != nil {
-			log.Errorln(err)
-			return false
+			return false, err
 		}
 	}
-	return true
+	return true, nil
 }
 
 // RoleTest will execute the specified playbook inside
 // the container once. It will assemble a request to
 // pass into the Docker execution function DockerRun.
-func (dist *Distribution) RoleTest(config *AnsibleConfig) (bool, time.Duration) {
+func (dist *Distribution) RoleTest(config *AnsibleConfig) (bool, time.Duration, error) {
 
 	// Test role.
-	if !config.Quiet {
-		log.Infoln("Running the role...")
-	}
 
 	args := []string{
 		"exec",
@@ -147,17 +137,15 @@ func (dist *Distribution) RoleTest(config *AnsibleConfig) (bool, time.Duration) 
 	now := time.Now()
 	if !config.Quiet {
 		if _, err := DockerExec(args, true); err != nil {
-			log.Errorln(err)
-			return false, time.Since(now)
+			return false, time.Since(now), err
 		}
 	} else {
 		if _, err := DockerExec(args, false); err != nil {
-			log.Errorln(err)
-			return false, time.Since(now)
+			return false, time.Since(now), err
 		}
 	}
 	if !config.Quiet {
 		log.Infof("Role ran in %v", time.Since(now))
 	}
-	return true, time.Since(now)
+	return true, time.Since(now), nil
 }
