@@ -21,7 +21,6 @@
 package cmd
 
 import (
-	"fmt"
 	log "github.com/Sirupsen/logrus"
 	"github.com/fubarhouse/ansible-role-tester/util"
 	"github.com/spf13/cobra"
@@ -38,8 +37,6 @@ var testCmd = &cobra.Command{
 If container does not exist it will be created, however
 containers won't be removed after completion.`,
 	PreRun: func(cmd *cobra.Command, args []string) {
-		fmt.Print(quiet)
-		os.Exit(9)
 		if quiet {
 			logrus := log.New()
 			logrus.Out = ioutil.Discard
