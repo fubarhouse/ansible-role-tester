@@ -21,7 +21,7 @@
 package cmd
 
 import (
-	log "github.com/Sirupsen/logrus"
+	"github.com/Sirupsen/logrus"
 	"github.com/fubarhouse/ansible-role-tester/util"
 	"github.com/spf13/cobra"
 	"io/ioutil"
@@ -36,12 +36,6 @@ var testCmd = &cobra.Command{
 
 If container does not exist it will be created, however
 containers won't be removed after completion.`,
-	PreRun: func(cmd *cobra.Command, args []string) {
-		if quiet {
-			logrus := log.New()
-			logrus.Out = ioutil.Discard
-		}
-	},
 	Run: func(cmd *cobra.Command, args []string) {
 		config := util.AnsibleConfig{
 			HostPath:         source,
@@ -52,6 +46,11 @@ containers won't be removed after completion.`,
 			Verbose:          verbose,
 			Remote:           remote,
 			Quiet:            quiet,
+		}
+
+		log := logrus.New()
+		if quiet {
+			log.Out = ioutil.Discard
 		}
 
 		dist, _ := util.GetDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)

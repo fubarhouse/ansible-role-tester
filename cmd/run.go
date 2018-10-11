@@ -21,12 +21,13 @@
 package cmd
 
 import (
+	"io/ioutil"
 	"os"
 
 	"fmt"
 	"strings"
 
-	log "github.com/Sirupsen/logrus"
+	"github.com/Sirupsen/logrus"
 	"github.com/fubarhouse/ansible-role-tester/util"
 	"github.com/spf13/cobra"
 )
@@ -56,6 +57,11 @@ Volume mount locations image and id are all configurable.
 				Verbose:          verbose,
 				Remote:           remote,
 				Quiet:            quiet,
+			}
+
+			log := logrus.New()
+			if quiet {
+				log.Out = ioutil.Discard
 			}
 
 			var dist util.Distribution

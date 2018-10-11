@@ -21,9 +21,10 @@
 package cmd
 
 import (
-	log "github.com/Sirupsen/logrus"
+	"github.com/Sirupsen/logrus"
 	"github.com/fubarhouse/ansible-role-tester/util"
 	"github.com/spf13/cobra"
+	"io/ioutil"
 )
 
 // shellCmd represents the shell command
@@ -37,6 +38,11 @@ var shellCmd = &cobra.Command{
 			"-it",
 			containerID,
 			"bash",
+		}
+
+		log := logrus.New()
+		if quiet {
+			log.Out = ioutil.Discard
 		}
 
 		dist, _ := util.GetDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)

@@ -21,9 +21,10 @@
 package cmd
 
 import (
-	log "github.com/Sirupsen/logrus"
+	"github.com/Sirupsen/logrus"
 	"github.com/fubarhouse/ansible-role-tester/util"
 	"github.com/spf13/cobra"
+	"io/ioutil"
 )
 
 // destroyCmd represents the destroy command
@@ -33,14 +34,18 @@ var destroyCmd = &cobra.Command{
 	Long: `Destroys a container with a specified ID
 `,
 	Run: func(cmd *cobra.Command, args []string) {
+
+		log := logrus.New()
+		if quiet {
+			log.Out = ioutil.Discard
+		}
+
 		dist, _ := util.GetDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)
 		dist.CID = containerID
 		if dist.DockerCheck() {
 			dist.DockerKill(quiet)
 		} else {
-			if !quiet {
-				log.Warnf("Container %v is not currently running", dist.CID)
-			}
+			log.Warnf("Container %v is not currently running", dist.CID)
 		}
 	},
 }

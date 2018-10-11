@@ -27,7 +27,7 @@ import (
 	"fmt"
 	"strings"
 
-	log "github.com/Sirupsen/logrus"
+	"github.com/Sirupsen/logrus"
 	"github.com/fubarhouse/ansible-role-tester/util"
 	"github.com/spf13/cobra"
 )
@@ -52,12 +52,6 @@ the local file system. If you encounter errors, there's a lot
 of flexibility in configuration, just change the defaults as
 required.
 `,
-		PreRun: func(cmd *cobra.Command, args []string) {
-			if quiet {
-				logrus := log.New()
-				logrus.Out = ioutil.Discard
-			}
-		},
 		Run: func(cmd *cobra.Command, args []string) {
 			config = util.AnsibleConfig{
 				HostPath:         source,
@@ -70,6 +64,11 @@ required.
 				Verbose:          verbose,
 				Remote:           remote,
 				Quiet:            quiet,
+			}
+
+			log := logrus.New()
+			if quiet {
+				log.Out = ioutil.Discard
 			}
 
 			var dist util.Distribution

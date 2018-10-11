@@ -21,9 +21,10 @@
 package cmd
 
 import (
+	"io/ioutil"
 	"os"
 
-	log "github.com/Sirupsen/logrus"
+	"github.com/Sirupsen/logrus"
 	"github.com/fubarhouse/ansible-role-tester/util"
 	"github.com/spf13/cobra"
 )
@@ -43,6 +44,11 @@ var installCmd = &cobra.Command{
 			Verbose:          verbose,
 			Remote:           remote,
 			Quiet:            quiet,
+		}
+
+		log := logrus.New()
+		if quiet {
+			log.Out = ioutil.Discard
 		}
 
 		dist, e := util.GetDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)
