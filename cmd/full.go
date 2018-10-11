@@ -128,14 +128,32 @@ required.
 				}
 			}
 
-			report.Ansible.Requirements, _ = dist.RoleInstall(&config)
+			_, err := dist.RoleInstall(&config)
+			if err == nil {
+				report.Ansible.Requirements = true
+			} else {
+				report.Ansible.Requirements = false
+			}
 			if !remote {
-				report.Ansible.Syntax, _ = dist.RoleSyntaxCheck(&config)
-				report.Ansible.Run.Result, report.Ansible.Run.Time, _ = dist.RoleTest(&config)
+
+				_, err := dist.RoleSyntaxCheck(&config)
+				if err == nil {
+					report.Ansible.Syntax = true
+				}
+				_, report.Ansible.Run.Time, err = dist.RoleTest(&config)
+				if err == nil {
+					report.Ansible.Run.Result = true
+				}
 				report.Ansible.Idempotence.Result, report.Ansible.Idempotence.Time = dist.IdempotenceTest(&config)
 			} else {
-				report.Ansible.Syntax, _ = dist.RoleSyntaxCheckRemote(&config)
-				report.Ansible.Run.Result, report.Ansible.Run.Time, _ = dist.RoleTestRemote(&config)
+				_, err = dist.RoleSyntaxCheckRemote(&config)
+				if err == nil {
+					report.Ansible.Syntax = true
+				}
+				_, report.Ansible.Run.Time, err = dist.RoleTestRemote(&config)
+				if err == nil {
+					report.Ansible.Run.Result = true
+				}
 				report.Ansible.Idempotence.Result, report.Ansible.Idempotence.Time = dist.IdempotenceTestRemote(&config)
 			}
 
