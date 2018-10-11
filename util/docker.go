@@ -103,9 +103,8 @@ func buildDockerArgs(dist *Distribution, config *AnsibleConfig, report *AnsibleR
 	// so we can call the roles by name in the playbook, rather
 	// than the role_under_test convention.
 	if !config.Remote {
-		pwd, _ := os.Getwd()
-		dir := filepath.Base(pwd)
-		report.Docker.Volumes = append(report.Docker.Volumes, fmt.Sprintf("%s:/etc/ansible/roles/%v", config.HostPath, dir))
+		roleDir := filepath.Base(config.HostPath)
+		report.Docker.Volumes = append(report.Docker.Volumes, fmt.Sprintf("%s:/etc/ansible/roles/%v", config.HostPath, roleDir))
 	}
 
 	if config.ExtraRolesPath != "" {
