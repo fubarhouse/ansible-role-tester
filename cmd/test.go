@@ -54,11 +54,13 @@ containers won't be removed after completion.`,
 
 		if dist.DockerCheck() {
 
-			hosts, _ := dist.AnsibleHosts(&config, &report)
-			for _, host := range hosts {
-				if host == "localhost" {
-					log.Errorln("remote runs should be run directly, not through this tool")
-					os.Exit(1)
+			if remote {
+				hosts, _ := dist.AnsibleHosts(&config, &report)
+				for _, host := range hosts {
+					if host == "localhost" {
+						log.Errorln("remote runs should be run directly, not through this tool")
+						os.Exit(1)
+					}
 				}
 			}
 
