@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 )
 
 // GenericFileAssignment will take a path and parse check it for specific
