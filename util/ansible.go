@@ -11,7 +11,7 @@ import (
 
 	"strings"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 )
 
 func (dist *Distribution) AnsibleHosts(config *AnsibleConfig, report *AnsibleReport) ([]string, error) {

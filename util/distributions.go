@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"reflect"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 )
 
 // A Distribution declares the options to
