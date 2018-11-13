@@ -43,7 +43,7 @@ before_install:
   - GO111MODULE=on go install .
   # Style checks
   - diff -u <(echo -n) <(gofmt -d $(find . -not -path "./vendor/*" -name "*.go"))
-  - go vet $(go list ./...)
+  # - go vet $(go list ./...)
   # Download repos used in testing
   - git clone https://github.com/fubarhouse/ansible-role-curl.git ${TRAVIS_HOME}/my_role
   - git clone https://github.com/issmirnov/ansible-role-art-tester.git ${TRAVIS_HOME}/ansible-role-art-tester
