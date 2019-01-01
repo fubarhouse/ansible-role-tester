@@ -30,7 +30,8 @@ None.
 git clone git@github.com:fubarhouse/ansible-role-tester.git
 cd ansible-role-tester
 GO111MODULE=on go mod download
-GO111MODULE=on go install .
+GO111MODULE=on go build .
+mv ansible-role-tester /usr/bin/ansible-role-tester
 ```
   
 ## Usage
