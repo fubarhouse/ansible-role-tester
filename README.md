@@ -14,6 +14,7 @@ This self-contained command line tool is inspired from a [script](https://gist.g
 ## Requirements
 
   * [Docker](https://www.docker.com/)
+  * [Go](https://golang.org/) 1.11 or later may be required if building from source, see installation instructions.
 
 ## Dependencies
 
@@ -21,8 +22,17 @@ None.
 
 ## Installation
 
-  * If you have [Go](https://golang.org/) installed, you can install it using `go get github.com/fubarhouse/ansible-role-tester`
-  * Releases will accompany compiled binaries excluding windows executables.
+### Releases
+* Releases will accompany compiled binaries excluding windows executables.
+
+### Building from source
+```sh
+git clone git@github.com:fubarhouse/ansible-role-tester.git
+cd ansible-role-tester
+GO111MODULE=on go mod download
+GO111MODULE=on go build .
+mv ansible-role-tester /usr/bin/ansible-role-tester
+```
   
 ## Usage
 

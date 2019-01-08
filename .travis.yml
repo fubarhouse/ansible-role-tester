@@ -1,7 +1,7 @@
 ---
 language: go
 go:
-  - "1.10"
+  - "1.11"
 
 python:
   - 2.7
@@ -38,20 +38,12 @@ before_install:
   # Install dependencies:
   - sudo pip install --upgrade pip
   - sudo pip install ansible
-  - curl -L -s https://github.com/golang/dep/releases/download/v0.5.0/dep-linux-amd64 -o $GOPATH/bin/dep && chmod +x $GOPATH/bin/dep 
-  # ansible-role-tester consists of multiple Go packages, which refer to each other by
-  # their absolute GitHub path, e.g. github.com/fubarhouse/ansible-role-tester/util.
-  # This will break all travis tests in forks of this repo. We move the directory manually as a fix.
-  - mkdir -p $TRAVIS_BUILD_DIR $GOPATH/src/github.com/fubarhouse
-  - test ! -d $GOPATH/src/github.com/fubarhouse/ansible-role-tester && mv $TRAVIS_BUILD_DIR $GOPATH/src/github.com/fubarhouse/ansible-role-tester || true
-  - export TRAVIS_BUILD_DIR=${TRAVIS_HOME}/gopath/src/github.com/fubarhouse/ansible-role-tester
-  - cd ${TRAVIS_BUILD_DIR}
   # Install golang deps
-  - dep ensure
-  - go install ./...
+  - GO111MODULE=on go mod download
+  - GO111MODULE=on go install .
   # Style checks
   - diff -u <(echo -n) <(gofmt -d $(find . -not -path "./vendor/*" -name "*.go"))
-  - go vet $(go list ./... | grep -v /vendor/)
+  - GO111MODULE=on go vet $(go list ./...)
   # Download repos used in testing
   - git clone https://github.com/fubarhouse/ansible-role-curl.git ${TRAVIS_HOME}/my_role
   - git clone https://github.com/issmirnov/ansible-role-art-tester.git ${TRAVIS_HOME}/ansible-role-art-tester
