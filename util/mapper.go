@@ -75,8 +75,9 @@ func GenericPlaybookAssignment(input, path string) (string, error) {
 func MapPlaybook(config *AnsibleConfig) {
 
 	playbook, err := GenericFileAssignment(config.PlaybookFile, config.HostPath, true)
-	playbook, err = GenericPlaybookAssignment(config.PlaybookFile, config.HostPath)
-
+	if err != nil {
+		playbook, err = GenericPlaybookAssignment(config.PlaybookFile, config.HostPath)
+	}
 	config.PlaybookFile = playbook
 
 	if err != nil {
