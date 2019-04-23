@@ -196,6 +196,28 @@ var Fedora28 = Distribution{
 	Fedora,
 }
 
+// Fedora29 Distribution declaration
+var Fedora29 = Distribution{
+	"",
+	"fedora29",
+	true,
+	"fubarhouse/docker-ansible:fedora-29",
+	"fubarhouse",
+	"fedora29",
+	Fedora,
+}
+
+// Fedora30 Distribution declaration
+var Fedora30 = Distribution{
+	"",
+	"fedora30",
+	true,
+	"fubarhouse/docker-ansible:fedora-30",
+	"fubarhouse",
+	"fedora30",
+	Fedora,
+}
+
 // Fedora31 Distribution declaration
 var Fedora31 = Distribution{
 	"",
@@ -204,7 +226,7 @@ var Fedora31 = Distribution{
 	"fubarhouse/docker-ansible:fedora-31",
 	"fubarhouse",
 	"fedora31",
-	Fedora,
+  Fedora,
 }
 
 // Ubuntu1204 Distribution declaration
@@ -484,6 +506,8 @@ var Distributions = []Distribution{
 	Fedora26,
 	Fedora27,
 	Fedora28,
+	Fedora29,
+	Fedora30,
 	Fedora31,
 	Ubuntu1204,
 	Ubuntu1210,
