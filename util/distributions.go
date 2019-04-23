@@ -226,7 +226,7 @@ var Fedora31 = Distribution{
 	"fubarhouse/docker-ansible:fedora-31",
 	"fubarhouse",
 	"fedora31",
-  Fedora,
+	Fedora,
 }
 
 // Ubuntu1204 Distribution declaration
