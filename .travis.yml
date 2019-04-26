@@ -39,6 +39,7 @@ env:
   - distro: fedora31
 
 before_install:
+  - ROLE="yarn"
   # Install dependencies:
   - sudo pip install --upgrade pip
   - sudo pip install ansible
@@ -49,23 +50,24 @@ before_install:
   - diff -u <(echo -n) <(gofmt -d $(find . -not -path "./vendor/*" -name "*.go"))
   - GO111MODULE=on go vet $(go list ./...)
   # Download repos used in testing
-  - git clone https://github.com/fubarhouse/ansible-role-yarn.git ${TRAVIS_HOME}/my_role
+  - git clone https://github.com/fubarhouse/ansible-role-${ROLE}.git ${TRAVIS_HOME}/my_role
   - git clone https://github.com/issmirnov/ansible-role-art-tester.git ${TRAVIS_HOME}/ansible-role-art-tester
 
 script:
+  - PLAYBOOK="tests/playbook.yml";
   # Test the role from inside the container using the segmented commands.
   - cd ${TRAVIS_HOME}/my_role
   - ansible-role-tester run --name travis_test --user fubarhouse --distribution ${distro}
   - ansible-role-tester install --name travis_test
-  - ansible-role-tester test --name travis_test
+  - ansible-role-tester test --name travis_test --playbook ${PLAYBOOK}
   - ansible-role-tester destroy --name travis_test
   - sleep 10
   # Change the test playbook to work with remote hosts (inventory)
-  - sed -i -e 's/- hosts:\ localhost/- hosts:\ all/g' ${TRAVIS_HOME}/my_role/tests/test-package.yml
+  - sed -i -e 's/- hosts:\ localhost/- hosts:\ all/g' ${TRAVIS_HOME}/my_role/${PLAYBOOK}
   # Change the test playbook to refer to the correct path for the role.
-  - sed -i -e 's/role_under_test/\/home\/travis\/my_role\//g' ${TRAVIS_HOME}/my_role/tests/test-package.yml
+  - sed -i -e 's/role_under_test/\/home\/travis\/my_role\//g' ${TRAVIS_HOME}/my_role/${PLAYBOOK}
   # Test the role from outside the container using the one standard pipeline command.
-  - ansible-role-tester full --name travis_test --user fubarhouse --distribution ${distro} --playbook tests/test-package.yml --remote
+  - ansible-role-tester full --name travis_test --user fubarhouse --distribution ${distro} --playbook ${PLAYBOOK} --remote
   # Phase 2: test other flags
   - cd ${TRAVIS_HOME}/ansible-role-art-tester
   - ansible-role-tester full --playbook tests/playbook-library.yml --library "$(pwd)/tests/library"
