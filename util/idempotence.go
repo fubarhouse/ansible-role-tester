@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"time"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 )
 
 // IdempotenceTest will run an Ansible playbook once and check the

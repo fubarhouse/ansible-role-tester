@@ -21,8 +21,8 @@
 package cmd
 
 import (
-	log "github.com/Sirupsen/logrus"
 	"github.com/fubarhouse/ansible-role-tester/util"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"os"
 )
@@ -53,6 +53,16 @@ containers won't be removed after completion.`,
 		dist.CID = containerID
 
 		if dist.DockerCheck() {
+
+			if remote {
+				hosts, _ := dist.AnsibleHosts(&config, &report)
+				for _, host := range hosts {
+					if host == "localhost" {
+						log.Errorln("remote runs should be run directly, not through this tool")
+						os.Exit(1)
+					}
+				}
+			}
 
 			util.MapPlaybook(&config)
 			util.MapInventory(dist.CID, &config)

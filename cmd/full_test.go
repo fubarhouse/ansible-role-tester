@@ -10,9 +10,9 @@ import (
 
 	"fmt"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 
-	"github.com/bouk/monkey"
+	"bou.ke/monkey"
 	"github.com/fubarhouse/ansible-role-tester/util"
 	. "github.com/smartystreets/goconvey/convey"
 	"github.com/spf13/afero"

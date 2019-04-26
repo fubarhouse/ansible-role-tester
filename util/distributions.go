@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"reflect"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 )
 
 // A Distribution declares the options to
@@ -196,6 +196,39 @@ var Fedora28 = Distribution{
 	Fedora,
 }
 
+// Fedora29 Distribution declaration
+var Fedora29 = Distribution{
+	"",
+	"fedora29",
+	true,
+	"fubarhouse/docker-ansible:fedora-29",
+	"fubarhouse",
+	"fedora29",
+	Fedora,
+}
+
+// Fedora30 Distribution declaration
+var Fedora30 = Distribution{
+	"",
+	"fedora30",
+	true,
+	"fubarhouse/docker-ansible:fedora-30",
+	"fubarhouse",
+	"fedora30",
+	Fedora,
+}
+
+// Fedora31 Distribution declaration
+var Fedora31 = Distribution{
+	"",
+	"fedora31",
+	true,
+	"fubarhouse/docker-ansible:fedora-31",
+	"fubarhouse",
+	"fedora31",
+	Fedora,
+}
+
 // Ubuntu1204 Distribution declaration
 var Ubuntu1204 = Distribution{
 	"",
@@ -350,6 +383,17 @@ var Ubuntu1810 = Distribution{
 	Ubuntu,
 }
 
+// Ubuntu1904 Distribution declaration
+var Ubuntu1904 = Distribution{
+	"",
+	"ubuntu1904",
+	true,
+	"fubarhouse/docker-ansible:disco",
+	"fubarhouse",
+	"ubuntu1904",
+	Ubuntu,
+}
+
 // JeffCentOS6 Distribution declaration
 var JeffCentOS6 = Distribution{
 	"",
@@ -473,6 +517,9 @@ var Distributions = []Distribution{
 	Fedora26,
 	Fedora27,
 	Fedora28,
+	Fedora29,
+	Fedora30,
+	Fedora31,
 	Ubuntu1204,
 	Ubuntu1210,
 	Ubuntu1304,
@@ -487,6 +534,7 @@ var Distributions = []Distribution{
 	Ubuntu1710,
 	Ubuntu1804,
 	Ubuntu1810,
+	Ubuntu1904,
 	JeffCentOS6,
 	JeffCentOS7,
 	JeffUbuntu1204,
