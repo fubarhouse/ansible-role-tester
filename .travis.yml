@@ -49,7 +49,7 @@ before_install:
   - diff -u <(echo -n) <(gofmt -d $(find . -not -path "./vendor/*" -name "*.go"))
   - GO111MODULE=on go vet $(go list ./...)
   # Download repos used in testing
-  - git clone https://github.com/fubarhouse/ansible-role-yarn.git ${TRAVIS_HOME}/my_role
+  - git clone https://github.com/fubarhouse/ansible-role-curl.git ${TRAVIS_HOME}/my_role
   - git clone https://github.com/issmirnov/ansible-role-art-tester.git ${TRAVIS_HOME}/ansible-role-art-tester
 
 script:
@@ -57,7 +57,7 @@ script:
   - cd ${TRAVIS_HOME}/my_role
   - ansible-role-tester run --name travis_test --user fubarhouse --distribution ${distro}
   - ansible-role-tester install --name travis_test
-  - ansible-role-tester test --name travis_test
+  - ansible-role-tester test --name travis_test --playbook ./tests/test-package.yml
   - ansible-role-tester destroy --name travis_test
   - sleep 10
   # Change the test playbook to work with remote hosts (inventory)
