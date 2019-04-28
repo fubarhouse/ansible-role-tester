@@ -57,7 +57,7 @@ func TestFullCmd(t *testing.T) {
 					fmt.Sprintf("--playbook=%s", "tests/playbook-simple.yml"),
 					fmt.Sprintf("--source=%s", artRepo),
 					fmt.Sprintf("--destination=%s", "/etc/ansible/roles/ansible-role-art-tester"),
-					"--quiet",
+					fmt.Sprint("--verbose"),
 				})
 				err := fullCmd.Execute()
 				So(err, ShouldBeNil)
@@ -72,7 +72,7 @@ func TestFullCmd(t *testing.T) {
 					fmt.Sprintf("--playbook=%s", "tests/playbook-syntax-fail.yml"),
 					fmt.Sprintf("--source=%s", artRepo),
 					fmt.Sprintf("--destination=%s", "/etc/ansible/roles/ansible-role-art-tester"),
-					"--quiet",
+					fmt.Sprint("--verbose"),
 				})
 				err := fullCmd.Execute()
 				So(err, ShouldBeNil)
@@ -87,7 +87,7 @@ func TestFullCmd(t *testing.T) {
 					fmt.Sprintf("--playbook=%s", "tests/playbook-idempotency-fail.yml"),
 					fmt.Sprintf("--source=%s", artRepo),
 					fmt.Sprintf("--destination=%s", "/etc/ansible/roles/ansible-role-art-tester"),
-					"--quiet",
+					fmt.Sprint("--verbose"),
 				})
 				err := fullCmd.Execute()
 				So(err, ShouldBeNil)
