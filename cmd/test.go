@@ -21,10 +21,11 @@
 package cmd
 
 import (
+	"os"
+
 	"github.com/fubarhouse/ansible-role-tester/util"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"os"
 )
 
 // testCmd represents the test command
@@ -70,18 +71,18 @@ containers won't be removed after completion.`,
 
 			if !remote {
 				report.Ansible.Syntax = dist.RoleSyntaxCheck(&config)
-				if !report.Ansible.Syntax {
+				if report.Ansible.Syntax {
 					report.Ansible.Run.Result, report.Ansible.Run.Time = dist.RoleTest(&config)
 				}
-				if !report.Ansible.Run.Result {
+				if report.Ansible.Run.Result {
 					report.Ansible.Idempotence.Result, report.Ansible.Idempotence.Time = dist.IdempotenceTest(&config)
 				}
 			} else {
 				report.Ansible.Syntax = dist.RoleSyntaxCheckRemote(&config)
-				if !report.Ansible.Syntax {
+				if report.Ansible.Syntax {
 					report.Ansible.Run.Result, report.Ansible.Run.Time = dist.RoleTestRemote(&config)
 				}
-				if !report.Ansible.Run.Result {
+				if report.Ansible.Run.Result {
 					report.Ansible.Idempotence.Result, report.Ansible.Idempotence.Time = dist.IdempotenceTestRemote(&config)
 				}
 				hosts, _ := dist.AnsibleHosts(&config, &report)
