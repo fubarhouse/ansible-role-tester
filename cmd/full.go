@@ -125,12 +125,20 @@ required.
 			report.Ansible.Requirements = dist.RoleInstall(&config)
 			if !remote {
 				report.Ansible.Syntax = dist.RoleSyntaxCheck(&config)
-				report.Ansible.Run.Result, report.Ansible.Run.Time = dist.RoleTest(&config)
-				report.Ansible.Idempotence.Result, report.Ansible.Idempotence.Time = dist.IdempotenceTest(&config)
+				if report.Ansible.Syntax {
+					report.Ansible.Run.Result, report.Ansible.Run.Time = dist.RoleTest(&config)
+				}
+				if report.Ansible.Run.Result {
+					report.Ansible.Idempotence.Result, report.Ansible.Idempotence.Time = dist.IdempotenceTest(&config)
+				}
 			} else {
 				report.Ansible.Syntax = dist.RoleSyntaxCheckRemote(&config)
-				report.Ansible.Run.Result, report.Ansible.Run.Time = dist.RoleTestRemote(&config)
-				report.Ansible.Idempotence.Result, report.Ansible.Idempotence.Time = dist.IdempotenceTestRemote(&config)
+				if report.Ansible.Syntax {
+					report.Ansible.Run.Result, report.Ansible.Run.Time = dist.RoleTestRemote(&config)
+				}
+				if report.Ansible.Run.Result {
+					report.Ansible.Idempotence.Result, report.Ansible.Idempotence.Time = dist.IdempotenceTestRemote(&config)
+				}
 			}
 
 			dist.DockerKill(quiet)
