@@ -12,3 +12,6 @@ vendor/*
 
 # reports
 **/report.yml
+
+## compiled binaries (go build .)
+ansible-role-tester
