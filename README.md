@@ -102,9 +102,8 @@ This allows you to only have the nessisary software on the host, in the event yo
 | geerlingguy | centos7    | geerlingguy/docker-centos7-ansible:latest    |
 | geerlingguy | debian8    | geerlingguy/docker-debian8-ansible:latest    |
 | geerlingguy | debian9    | geerlingguy/docker-debian9-ansible:latest    |
-| geerlingguy | fedora24   | geerlingguy/docker-fedora24-ansible:latest    |
-| geerlingguy | fedora27   | geerlingguy/docker-fedora27-ansible:latest    |
-| geerlingguy | ubuntu1204 | geerlingguy/docker-ubuntu1204-ansible:latest |
+| geerlingguy | fedora27   | geerlingguy/docker-fedora27-ansible:latest   |
+| geerlingguy | fedora29   | geerlingguy/docker-fedora29-ansible:latest   |
 | geerlingguy | ubuntu1404 | geerlingguy/docker-ubuntu1404-ansible:latest |
 | geerlingguy | ubuntu1604 | geerlingguy/docker-ubuntu1604-ansible:latest |
 | geerlingguy | ubuntu1804 | geerlingguy/docker-ubuntu1804-ansible:latest |

@@ -416,17 +416,6 @@ var JeffCentOS7 = Distribution{
 	CentOS,
 }
 
-// JeffUbuntu1204 Distribution declaration
-var JeffUbuntu1204 = Distribution{
-	"",
-	"ubuntu1204",
-	true,
-	"geerlingguy/docker-ubuntu1204-ansible:latest",
-	"geerlingguy",
-	"ubuntu1204",
-	Ubuntu,
-}
-
 // JeffUbuntu1404 Distribution declaration
 var JeffUbuntu1404 = Distribution{
 	"",
@@ -482,17 +471,6 @@ var JeffDebian9 = Distribution{
 	Debian,
 }
 
-// JeffFedora24 Distribution declaration
-var JeffFedora24 = Distribution{
-	"",
-	"fedora24",
-	true,
-	"geerlingguy/docker-fedora24-ansible:latest",
-	"geerlingguy",
-	"fedora24",
-	Fedora,
-}
-
 // JeffFedora27 Distribution declaration
 var JeffFedora27 = Distribution{
 	"",
@@ -501,6 +479,17 @@ var JeffFedora27 = Distribution{
 	"geerlingguy/docker-fedora27-ansible:latest",
 	"geerlingguy",
 	"fedora27",
+	Fedora,
+}
+
+// JeffFedora29 Distribution declaration
+var JeffFedora29 = Distribution{
+	"",
+	"fedora24",
+	true,
+	"geerlingguy/docker-fedora29-ansible:latest",
+	"geerlingguy",
+	"fedora29",
 	Fedora,
 }
 
@@ -537,14 +526,13 @@ var Distributions = []Distribution{
 	Ubuntu1904,
 	JeffCentOS6,
 	JeffCentOS7,
-	JeffUbuntu1204,
 	JeffUbuntu1404,
 	JeffUbuntu1604,
 	JeffUbuntu1804,
 	JeffDebian8,
 	JeffDebian9,
-	JeffFedora24,
 	JeffFedora27,
+	JeffFedora29,
 }
 
 // NewCustomDistribution will return an empty distribution.
