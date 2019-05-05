@@ -84,6 +84,9 @@ This allows you to only have the nessisary software on the host, in the event yo
 | fubarhouse  | fedora26   | fubarhouse/docker-ansible:fedora-26          |
 | fubarhouse  | fedora27   | fubarhouse/docker-ansible:fedora-27          |
 | fubarhouse  | fedora28   | fubarhouse/docker-ansible:fedora-28          |
+| fubarhouse  | fedora29   | fubarhouse/docker-ansible:fedora-29          |
+| fubarhouse  | fedora30   | fubarhouse/docker-ansible:fedora-30          |
+| fubarhouse  | fedora31   | fubarhouse/docker-ansible:fedora-31          |
 | fubarhouse  | ubuntu1204 | fubarhouse/docker-ansible:precise            |
 | fubarhouse  | ubuntu1210 | fubarhouse/docker-ansible:quantal            |
 | fubarhouse  | ubuntu1304 | fubarhouse/docker-ansible:raring             |
@@ -98,12 +101,13 @@ This allows you to only have the nessisary software on the host, in the event yo
 | fubarhouse  | ubuntu1710 | fubarhouse/docker-ansible:artful             |
 | fubarhouse  | ubuntu1804 | fubarhouse/docker-ansible:bionic             |
 | fubarhouse  | ubuntu1810 | fubarhouse/docker-ansible:cosmic             |
+| fubarhouse  | ubuntu1904 | fubarhouse/docker-ansible:disco              |
 | geerlingguy | centos6    | geerlingguy/docker-centos6-ansible:latest    |
 | geerlingguy | centos7    | geerlingguy/docker-centos7-ansible:latest    |
 | geerlingguy | debian8    | geerlingguy/docker-debian8-ansible:latest    |
 | geerlingguy | debian9    | geerlingguy/docker-debian9-ansible:latest    |
-| geerlingguy | fedora24   | geerlingguy/docker-fedora24-ansible:latest    |
-| geerlingguy | fedora27   | geerlingguy/docker-fedora27-ansible:latest    |
+| geerlingguy | fedora24   | geerlingguy/docker-fedora24-ansible:latest   |
+| geerlingguy | fedora27   | geerlingguy/docker-fedora27-ansible:latest   |
 | geerlingguy | ubuntu1204 | geerlingguy/docker-ubuntu1204-ansible:latest |
 | geerlingguy | ubuntu1404 | geerlingguy/docker-ubuntu1404-ansible:latest |
 | geerlingguy | ubuntu1604 | geerlingguy/docker-ubuntu1604-ansible:latest |
