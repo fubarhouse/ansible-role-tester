@@ -71,3 +71,6 @@ script:
   - ansible-role-tester full --playbook tests/playbook-library.yml --library "$(pwd)/tests/library"
   # Phase 3: run goconvey tests
   - cd ${TRAVIS_BUILD_DIR} && go test -short -v ./... 
+
+notifications:
+  slack: fubarhouse:upHoIzmKb4ikkBOt2cOwgKXY
