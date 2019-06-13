@@ -125,6 +125,7 @@ required.
 			report.Ansible.Requirements = dist.RoleInstall(&config)
 			if !remote {
 				report.Ansible.Syntax = dist.RoleSyntaxCheck(&config)
+				report.Ansible.Lint = dist.RoleLintCheck(&config)
 				if report.Ansible.Syntax {
 					report.Ansible.Run.Result, report.Ansible.Run.Time = dist.RoleTest(&config)
 				}

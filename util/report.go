@@ -30,6 +30,7 @@ type AnsibleReport struct {
 		Distribution Distribution
 		Hosts        []string
 		Syntax       bool
+		Lint         bool
 		Requirements bool
 		Run          struct {
 			Result bool

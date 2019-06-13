@@ -71,6 +71,7 @@ containers won't be removed after completion.`,
 
 			if !remote {
 				report.Ansible.Syntax = dist.RoleSyntaxCheck(&config)
+				report.Ansible.Lint = dist.RoleLintCheck(&config)
 				if report.Ansible.Syntax {
 					report.Ansible.Run.Result, report.Ansible.Run.Time = dist.RoleTest(&config)
 				}
@@ -79,6 +80,7 @@ containers won't be removed after completion.`,
 				}
 			} else {
 				report.Ansible.Syntax = dist.RoleSyntaxCheckRemote(&config)
+				report.Ansible.Lint = dist.RoleLintCheck(&config)
 				if report.Ansible.Syntax {
 					report.Ansible.Run.Result, report.Ansible.Run.Time = dist.RoleTestRemote(&config)
 				}
