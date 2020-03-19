@@ -9,6 +9,7 @@ python:
 services: docker
 
 env:
+  - distro: arch
   - distro: ubuntu1204
   - distro: ubuntu1210
   - distro: ubuntu1304

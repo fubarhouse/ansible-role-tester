@@ -47,6 +47,13 @@ type Family struct {
 	Volume     string
 }
 
+// Arch Family
+var Arch = Family{
+	"Arch",
+	"/sbin/init",
+	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
+}
+
 // CentOS Family Distribution Identifier
 var CentOS = Family{
 	"CentOS",
@@ -73,6 +80,17 @@ var Ubuntu = Family{
 	"Ubuntu",
 	"/sbin/init",
 	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
+}
+
+var ArchLinux = Distribution{
+	"",
+	"arch",
+	false,
+	"fubarhouse/docker-arch-ansible:latest",
+	"fubarhouse",
+	"docker-arch-ansible",
+	Arch,
+	
 }
 
 // CentOS6 Distribution declaration
@@ -506,6 +524,7 @@ var JeffFedora27 = Distribution{
 
 // Distributions is a slice of all distributions listed above.
 var Distributions = []Distribution{
+	ArchLinux,
 	CentOS6,
 	CentOS7,
 	DebianWheezy,
