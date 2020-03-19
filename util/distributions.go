@@ -14,6 +14,9 @@ import (
 // pass to Docker to dockerRun and test the container.
 type Distribution struct {
 
+	// Alias is an alternative reference to identify the target distribution.
+	Alias string
+
 	// CID is the name/id of the container.
 	CID string
 
@@ -84,6 +87,7 @@ var Ubuntu = Family{
 
 var ArchLinux = Distribution{
 	"",
+	"",
 	"arch",
 	false,
 	"fubarhouse/docker-arch-ansible:latest",
@@ -94,6 +98,7 @@ var ArchLinux = Distribution{
 
 // CentOS6 Distribution declaration
 var CentOS6 = Distribution{
+	"",
 	"",
 	"centos6",
 	true,
@@ -106,6 +111,7 @@ var CentOS6 = Distribution{
 // CentOS7 Distribution declaration
 var CentOS7 = Distribution{
 	"",
+	"",
 	"centos7",
 	true,
 	"fubarhouse/docker-ansible:centos-7",
@@ -116,6 +122,7 @@ var CentOS7 = Distribution{
 
 // DebianWheezy Distribution declaration
 var DebianWheezy = Distribution{
+	"",
 	"",
 	"wheezy",
 	true,
@@ -128,6 +135,7 @@ var DebianWheezy = Distribution{
 // DebianJessie Distribution declaration
 var DebianJessie = Distribution{
 	"",
+	"",
 	"jessie",
 	true,
 	"fubarhouse/docker-ansible:jessie",
@@ -138,6 +146,7 @@ var DebianJessie = Distribution{
 
 // DebianStretch Distribution declaration
 var DebianStretch = Distribution{
+	"",
 	"",
 	"stretch",
 	true,
@@ -150,6 +159,7 @@ var DebianStretch = Distribution{
 // DebianBuster Distribution declaration
 var DebianBuster = Distribution{
 	"",
+	"",
 	"buster",
 	true,
 	"fubarhouse/docker-ansible:buster",
@@ -160,6 +170,7 @@ var DebianBuster = Distribution{
 
 // Fedora24 Distribution declaration
 var Fedora24 = Distribution{
+	"",
 	"",
 	"fedora24",
 	true,
@@ -172,6 +183,7 @@ var Fedora24 = Distribution{
 // Fedora25 Distribution declaration
 var Fedora25 = Distribution{
 	"",
+	"",
 	"fedora25",
 	true,
 	"fubarhouse/docker-ansible:fedora-25",
@@ -182,6 +194,7 @@ var Fedora25 = Distribution{
 
 // Fedora26 Distribution declaration
 var Fedora26 = Distribution{
+	"",
 	"",
 	"fedora26",
 	true,
@@ -194,6 +207,7 @@ var Fedora26 = Distribution{
 // Fedora27 Distribution declaration
 var Fedora27 = Distribution{
 	"",
+	"",
 	"fedora27",
 	true,
 	"fubarhouse/docker-ansible:fedora-27",
@@ -204,6 +218,7 @@ var Fedora27 = Distribution{
 
 // Fedora28 Distribution declaration
 var Fedora28 = Distribution{
+	"",
 	"",
 	"fedora28",
 	true,
@@ -216,6 +231,7 @@ var Fedora28 = Distribution{
 // Fedora29 Distribution declaration
 var Fedora29 = Distribution{
 	"",
+	"",
 	"fedora29",
 	true,
 	"fubarhouse/docker-ansible:fedora-29",
@@ -226,6 +242,7 @@ var Fedora29 = Distribution{
 
 // Fedora30 Distribution declaration
 var Fedora30 = Distribution{
+	"",
 	"",
 	"fedora30",
 	true,
@@ -238,6 +255,7 @@ var Fedora30 = Distribution{
 // Fedora31 Distribution declaration
 var Fedora31 = Distribution{
 	"",
+	"",
 	"fedora31",
 	true,
 	"fubarhouse/docker-ansible:fedora-31",
@@ -248,6 +266,7 @@ var Fedora31 = Distribution{
 
 // Ubuntu1204 Distribution declaration
 var Ubuntu1204 = Distribution{
+	"",
 	"",
 	"ubuntu1204",
 	true,
@@ -260,6 +279,7 @@ var Ubuntu1204 = Distribution{
 // Ubuntu1210 Distribution declaration
 var Ubuntu1210 = Distribution{
 	"",
+	"",
 	"ubuntu1210",
 	true,
 	"fubarhouse/docker-ansible:quantal",
@@ -270,6 +290,7 @@ var Ubuntu1210 = Distribution{
 
 // Ubuntu1304 Distribution declaration
 var Ubuntu1304 = Distribution{
+	"",
 	"",
 	"ubuntu1304",
 	true,
@@ -282,6 +303,7 @@ var Ubuntu1304 = Distribution{
 // Ubuntu1310 Distribution declaration
 var Ubuntu1310 = Distribution{
 	"",
+	"",
 	"ubuntu1310",
 	true,
 	"fubarhouse/docker-ansible:saucy",
@@ -292,6 +314,7 @@ var Ubuntu1310 = Distribution{
 
 // Ubuntu1404 Distribution declaration
 var Ubuntu1404 = Distribution{
+	"",
 	"",
 	"ubuntu1404",
 	true,
@@ -304,6 +327,7 @@ var Ubuntu1404 = Distribution{
 // Ubuntu1410 Distribution declaration
 var Ubuntu1410 = Distribution{
 	"",
+	"",
 	"ubuntu1410",
 	true,
 	"fubarhouse/docker-ansible:utopic",
@@ -314,6 +338,7 @@ var Ubuntu1410 = Distribution{
 
 // Ubuntu1504 Distribution declaration
 var Ubuntu1504 = Distribution{
+	"",
 	"",
 	"ubuntu1504",
 	true,
@@ -326,6 +351,7 @@ var Ubuntu1504 = Distribution{
 // Ubuntu1510 Distribution declaration
 var Ubuntu1510 = Distribution{
 	"",
+	"",
 	"ubuntu1510",
 	true,
 	"fubarhouse/docker-ansible:wily",
@@ -336,6 +362,7 @@ var Ubuntu1510 = Distribution{
 
 // Ubuntu1604 Distribution declaration
 var Ubuntu1604 = Distribution{
+	"",
 	"",
 	"ubuntu1604",
 	true,
@@ -348,6 +375,7 @@ var Ubuntu1604 = Distribution{
 // Ubuntu1610 Distribution declaration
 var Ubuntu1610 = Distribution{
 	"",
+	"",
 	"ubuntu1610",
 	true,
 	"fubarhouse/docker-ansible:yakkety",
@@ -358,6 +386,7 @@ var Ubuntu1610 = Distribution{
 
 // Ubuntu1704 Distribution declaration
 var Ubuntu1704 = Distribution{
+	"",
 	"",
 	"ubuntu1704",
 	true,
@@ -370,6 +399,7 @@ var Ubuntu1704 = Distribution{
 // Ubuntu1710 Distribution declaration
 var Ubuntu1710 = Distribution{
 	"",
+	"",
 	"ubuntu1710",
 	true,
 	"fubarhouse/docker-ansible:artful",
@@ -380,6 +410,7 @@ var Ubuntu1710 = Distribution{
 
 // Ubuntu1804 Distribution declaration
 var Ubuntu1804 = Distribution{
+	"",
 	"",
 	"ubuntu1804",
 	true,
@@ -392,6 +423,7 @@ var Ubuntu1804 = Distribution{
 // Ubuntu1810 Distribution declaration
 var Ubuntu1810 = Distribution{
 	"",
+	"",
 	"ubuntu1810",
 	true,
 	"fubarhouse/docker-ansible:cosmic",
@@ -402,6 +434,7 @@ var Ubuntu1810 = Distribution{
 
 // Ubuntu1904 Distribution declaration
 var Ubuntu1904 = Distribution{
+	"",
 	"",
 	"ubuntu1904",
 	true,
@@ -414,6 +447,7 @@ var Ubuntu1904 = Distribution{
 // JeffCentOS6 Distribution declaration
 var JeffCentOS6 = Distribution{
 	"",
+	"",
 	"centos6",
 	true,
 	"geerlingguy/docker-centos6-ansible:latest",
@@ -424,6 +458,7 @@ var JeffCentOS6 = Distribution{
 
 // JeffCentOS7 Distribution declaration
 var JeffCentOS7 = Distribution{
+	"",
 	"",
 	"centos7",
 	true,
@@ -436,6 +471,7 @@ var JeffCentOS7 = Distribution{
 // JeffUbuntu1204 Distribution declaration
 var JeffUbuntu1204 = Distribution{
 	"",
+	"",
 	"ubuntu1204",
 	true,
 	"geerlingguy/docker-ubuntu1204-ansible:latest",
@@ -446,6 +482,7 @@ var JeffUbuntu1204 = Distribution{
 
 // JeffUbuntu1404 Distribution declaration
 var JeffUbuntu1404 = Distribution{
+	"",
 	"",
 	"ubuntu1404",
 	true,
@@ -458,6 +495,7 @@ var JeffUbuntu1404 = Distribution{
 // JeffUbuntu1604 Distribution declaration
 var JeffUbuntu1604 = Distribution{
 	"",
+	"",
 	"ubuntu1604",
 	true,
 	"geerlingguy/docker-ubuntu1604-ansible:latest",
@@ -468,6 +506,7 @@ var JeffUbuntu1604 = Distribution{
 
 // JeffUbuntu1804 Distribution declaration
 var JeffUbuntu1804 = Distribution{
+	"",
 	"",
 	"ubuntu1804",
 	true,
@@ -480,6 +519,7 @@ var JeffUbuntu1804 = Distribution{
 // JeffDebian8 Distribution declaration
 var JeffDebian8 = Distribution{
 	"",
+	"",
 	"debian8",
 	true,
 	"geerlingguy/docker-debian8-ansible:latest",
@@ -490,6 +530,7 @@ var JeffDebian8 = Distribution{
 
 // JeffDebian9 Distribution declaration
 var JeffDebian9 = Distribution{
+	"",
 	"",
 	"debian9",
 	true,
@@ -502,6 +543,7 @@ var JeffDebian9 = Distribution{
 // JeffFedora24 Distribution declaration
 var JeffFedora24 = Distribution{
 	"",
+	"",
 	"fedora24",
 	true,
 	"geerlingguy/docker-fedora24-ansible:latest",
@@ -512,6 +554,7 @@ var JeffFedora24 = Distribution{
 
 // JeffFedora27 Distribution declaration
 var JeffFedora27 = Distribution{
+	"",
 	"",
 	"fedora27",
 	true,
@@ -632,6 +675,10 @@ func GetDistribution(container, target, init, volume, user, distro string) (Dist
 		}
 		// Check for explicit matches for user and distro.
 		if dist.User == user && dist.Distro == distro {
+			return dist, nil
+		}
+		// Check for the alternative alias
+		if dist.Alias == container {
 			return dist, nil
 		}
 	}

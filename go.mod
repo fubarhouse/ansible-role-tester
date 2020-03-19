@@ -1,5 +1,7 @@
 module github.com/fubarhouse/ansible-role-tester
 
+go 1.14
+
 require (
 	bou.ke/monkey v1.0.1
 	github.com/gopherjs/gopherjs v0.0.0-20181103185306-d547d1d9531e // indirect
