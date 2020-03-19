@@ -116,6 +116,51 @@ func (dist *Distribution) RoleSyntaxCheck(config *AnsibleConfig) bool {
 	return true
 }
 
+// RoleLintCheck will attempt to run Ansible-Lint.
+func (dist *Distribution) RoleLintCheck(config *AnsibleConfig) bool {
+
+	// Ansible Lint.
+	if !config.Quiet {
+		log.Infoln("Checking role syntax...")
+	}
+
+	args := []string{
+		"exec",
+		"--tty",
+		dist.CID,
+		"ansible-lint",
+		fmt.Sprintf("%v/%v", config.RemotePath, config.PlaybookFile),
+	}
+
+	// Add inventory file if configured
+	if config.Inventory != "" {
+		args = append(args, fmt.Sprintf("-i=%v", config.Inventory))
+	}
+
+	// Add verbose if configured
+	if config.Verbose {
+		args = append(args, "-vvvv")
+	}
+
+	if !config.Quiet {
+		_, err := DockerExec(args, true)
+		if err != nil {
+			log.Errorln("Lint check: FAIL")
+			return false
+		} else {
+			log.Infoln("Lint check: PASS")
+			return true
+		}
+	} else {
+		_, err := DockerExec(args, false)
+		if err != nil {
+			log.Errorln(err)
+			return false
+		}
+	}
+	return true
+}
+
 // RoleTest will execute the specified playbook inside
 // the container once. It will assemble a request to
 // pass into the Docker execution function DockerRun.

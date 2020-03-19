@@ -123,6 +123,7 @@ required.
 			}
 
 			report.Ansible.Requirements = dist.RoleInstall(&config)
+			report.Ansible.Lint = dist.RoleLintCheck(&config)
 			if !remote {
 				report.Ansible.Syntax = dist.RoleSyntaxCheck(&config)
 				if report.Ansible.Syntax {

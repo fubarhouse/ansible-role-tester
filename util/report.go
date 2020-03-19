@@ -13,7 +13,7 @@ import (
 	"time"
 
 	log "github.com/sirupsen/logrus"
-	yaml "gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v2"
 )
 
 // AnsibleReport will contain metadata about the run which will be, is and has executed.
@@ -30,6 +30,7 @@ type AnsibleReport struct {
 		Distribution Distribution
 		Hosts        []string
 		Syntax       bool
+		Lint         bool
 		Requirements bool
 		Run          struct {
 			Result bool
