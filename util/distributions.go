@@ -53,7 +53,7 @@ type Family struct {
 // Arch Family
 var Arch = Family{
 	"Arch",
-	"/sbin/init",
+	"",
 	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
 }
 
