@@ -90,7 +90,6 @@ var ArchLinux = Distribution{
 	"fubarhouse",
 	"docker-arch-ansible",
 	Arch,
-	
 }
 
 // CentOS6 Distribution declaration
