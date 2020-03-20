@@ -39,7 +39,7 @@ var shellCmd = &cobra.Command{
 			"bash",
 		}
 
-		dist, _ := util.GetDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)
+		dist, _ := util.GetDistribution(image, user, distro)
 		dist.CID = containerID
 
 		if dist.DockerCheck() {

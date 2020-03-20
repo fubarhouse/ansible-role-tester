@@ -53,7 +53,7 @@ type Family struct {
 // Arch Family
 var Arch = Family{
 	"Arch",
-	"",
+	"/usr/lib/systemd/systemd",
 	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
 }
 
@@ -665,7 +665,7 @@ func CustomFamilyValueGet(family *Family, key string) (string, error) {
 // loading of different distributions. A suitable struct will be compiled
 // from the inputs and returned with an error if the specified container
 // cannot be found.
-func GetDistribution(container, target, init, volume, user, distro string) (Distribution, error) {
+func GetDistribution(container, user, distro string) (Distribution, error) {
 
 	// We will search for the exact container.
 	for _, dist := range Distributions {

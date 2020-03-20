@@ -48,7 +48,7 @@ containers won't be removed after completion.`,
 			Quiet:            quiet,
 		}
 
-		dist, _ := util.GetDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)
+		dist, _ := util.GetDistribution(image, user, distro)
 		report := util.NewReport(&config)
 
 		dist.CID = containerID

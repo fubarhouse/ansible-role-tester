@@ -33,7 +33,7 @@ var destroyCmd = &cobra.Command{
 	Long: `Destroys a container with a specified ID
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		dist, _ := util.GetDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)
+		dist, _ := util.GetDistribution(image, user, distro)
 		dist.CID = containerID
 		if dist.DockerCheck() {
 			dist.DockerKill(quiet)
