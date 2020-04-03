@@ -27,7 +27,7 @@ None.
 
 ### Building from source
 ```sh
-git clone git@github.com:fubarhouse/ansible-role-tester.git
+git clone https://github.com/fubarhouse/ansible-role-tester.git
 cd ansible-role-tester
 GO111MODULE=on go mod download
 GO111MODULE=on go build .
