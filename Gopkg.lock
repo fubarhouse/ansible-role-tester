@@ -62,7 +62,7 @@
   version = "1.8.3"
 
 [[projects]]
-  digest = "1:a3e081e593ee8e3b0a9af6a5dcac964c67a40c4f2034b5345b2ad78d05920728"
+  digest = "1:483aa658b8b58e357a07ebdfcbcb0202b46f0c0f91e9b63c8807f7d4f5cd30f9"
   name = "github.com/smartystreets/goconvey"
   packages = [
     "convey",
@@ -70,8 +70,8 @@
     "convey/reporting",
   ]
   pruneopts = "UT"
-  revision = "9e8dc3f972df6c8fcc0375ef492c24d0bb204857"
-  version = "1.6.3"
+  revision = "505e419363375c0dc132d3ac02632a4ee32199ca"
+  version = "v1.6.4"
 
 [[projects]]
   digest = "1:bb495ec276ab82d3dd08504bbc0594a65de8c3b22c6f2aaa92d05b73fbf3a82e"
