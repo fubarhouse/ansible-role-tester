@@ -134,6 +134,7 @@ func buildDockerArgs(dist *Distribution, config *AnsibleConfig, report *AnsibleR
 	}
 	dockerArgs = append(dockerArgs, []string{
 		dist.Container,
+		dist.Family.Initialise,
 	}...)
 	return dockerArgs
 }
