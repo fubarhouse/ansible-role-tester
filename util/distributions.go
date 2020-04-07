@@ -53,7 +53,7 @@ type Family struct {
 // Arch Family
 var Arch = Family{
 	"Arch",
-	"/usr/lib/systemd/systemd",
+	"/lib/systemd/systemd",
 	"/sys/fs/cgroup:/sys/fs/cgroup:ro",
 }
 
