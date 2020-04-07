@@ -678,10 +678,9 @@ func GetDistribution(container, user, distro string) (Distribution, error) {
 			return dist, nil
 		}
 		// Check for the alternative alias
-		// @TODO: the following breaks builds.
-		//if dist.Alias == container {
-		//	return dist, nil
-		//}
+		if dist.Alias == distro || dist.Name == distro {
+			return dist, nil
+		}
 	}
 
 	c, _ := DockerExec([]string{
