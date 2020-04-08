@@ -41,7 +41,6 @@ env:
 
 before_install:
   # Install dependencies:
-  - sudo mkdir -p /.ansible/tmp && sudo chmod -R 777 /.ansible
   - sudo pip install --upgrade pip
   - sudo pip install ansible
   # Install golang deps
