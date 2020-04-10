@@ -51,7 +51,7 @@ func TestFullCmd(t *testing.T) {
 		artRepo = fmt.Sprintf("%s/%s", baseDir, "ansible-role-art-tester")
 
 		// fmt.Printf("Setup complete, initiating testing.")
-		fmt.Sprint(exitCode)
+		//fmt.Sprint(exitCode)
 	})
 
 	//Convey("Verify all exit code scenarios", t, func() {
