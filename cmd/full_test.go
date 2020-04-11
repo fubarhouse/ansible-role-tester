@@ -32,7 +32,7 @@ func TestFullCmd(t *testing.T) {
 		// NOTE: If there are multiple calls to os.Exit in a single test case,
 		// we will only see the last one here. This is a case where real world
 		// behavior and test behavior differs.
-		var exitCode int // flag for exit code.
+		//var exitCode int // flag for exit code.
 		fakeExit := func(i int) {
 			exitCode = i
 		}
