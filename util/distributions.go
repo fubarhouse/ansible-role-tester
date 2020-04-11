@@ -460,11 +460,11 @@ var Ubuntu1910 = Distribution{
 var Ubuntu2004 = Distribution{
 	"",
 	"",
-	"ubuntu1910",
+	"ubuntu2004",
 	true,
 	"fubarhouse/docker-ansible:focal",
 	"fubarhouse",
-	"ubuntu1910",
+	"ubuntu2004",
 	Ubuntu,
 }
 
