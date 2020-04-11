@@ -26,6 +26,7 @@ env:
   - distro: ubuntu1810
   - distro: ubuntu1904
   - distro: ubuntu1910
+  - distro: ubuntu2004
   - distro: centos6
   - distro: centos7
   - distro: debian8
