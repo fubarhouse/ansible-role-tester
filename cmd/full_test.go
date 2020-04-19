@@ -20,7 +20,11 @@ import (
 
 func TestFullCmd(t *testing.T) {
 
-	Convey("Setup", t, func() {
+	var artRepo = ""
+	var baseDir = ""
+	var exitCode = 0
+
+	Convey("Setup", t, func(c C) {
 		// Send testing output to /dev/null
 		log.SetOutput(ioutil.Discard)
 
@@ -28,7 +32,7 @@ func TestFullCmd(t *testing.T) {
 		// NOTE: If there are multiple calls to os.Exit in a single test case,
 		// we will only see the last one here. This is a case where real world
 		// behavior and test behavior differs.
-		var exitCode int // flag for exit code.
+		//var exitCode int // flag for exit code.
 		fakeExit := func(i int) {
 			exitCode = i
 		}
@@ -43,65 +47,66 @@ func TestFullCmd(t *testing.T) {
 		}
 		defer fs.RemoveAll(baseDir)
 		_, err = util.GitCmd(baseDir, []string{"git", "clone", "https://github.com/issmirnov/ansible-role-art-tester.git"})
-		So(err, ShouldBeNil)
-		artRepo := fmt.Sprintf("%s/%s", baseDir, "ansible-role-art-tester")
+		c.So(err, ShouldBeNil)
+		artRepo = fmt.Sprintf("%s/%s", baseDir, "ansible-role-art-tester")
 
 		// fmt.Printf("Setup complete, initiating testing.")
-
-		Convey("Verify all exit code scenarios", func() {
-			Convey("Correct runs return 0", func() {
-				fullCmd := InitFullCmdForTest(baseDir)
-				buf := new(bytes.Buffer)
-				fullCmd.SetOutput(buf)
-				fullCmd.SetArgs([]string{
-					fmt.Sprintf("--playbook=%s", "tests/playbook-simple.yml"),
-					fmt.Sprintf("--source=%s", artRepo),
-					fmt.Sprintf("--destination=%s", "/etc/ansible/roles/ansible-role-art-tester"),
-					"--quiet",
-				})
-				err := fullCmd.Execute()
-				So(err, ShouldBeNil)
-				So(exitCode, ShouldEqual, util.OKCode)
-			})
-
-			Convey(fmt.Sprintf("Syntax errors in playbook return %d", util.AnsibleSyntaxCode), func() {
-				fullCmd := InitFullCmdForTest(baseDir)
-				buf := new(bytes.Buffer)
-				fullCmd.SetOutput(buf)
-				fullCmd.SetArgs([]string{
-					fmt.Sprintf("--playbook=%s", "tests/playbook-syntax-fail.yml"),
-					fmt.Sprintf("--source=%s", artRepo),
-					fmt.Sprintf("--destination=%s", "/etc/ansible/roles/ansible-role-art-tester"),
-					"--quiet",
-				})
-				err := fullCmd.Execute()
-				So(err, ShouldBeNil)
-				So(exitCode, ShouldEqual, util.AnsibleSyntaxCode)
-			})
-
-			Convey(fmt.Sprintf("Idempotency failures return %d", util.AnsibleIdempotenceCode), func() {
-				fullCmd := InitFullCmdForTest(baseDir)
-				buf := new(bytes.Buffer)
-				fullCmd.SetOutput(buf)
-				fullCmd.SetArgs([]string{
-					fmt.Sprintf("--playbook=%s", "tests/playbook-idempotency-fail.yml"),
-					fmt.Sprintf("--source=%s", artRepo),
-					fmt.Sprintf("--destination=%s", "/etc/ansible/roles/ansible-role-art-tester"),
-					"--quiet",
-				})
-				err := fullCmd.Execute()
-				So(err, ShouldBeNil)
-				So(exitCode, ShouldEqual, util.AnsibleIdempotenceCode)
-			})
-
-			// Currently disabled. The PostRun hooks ends up overwriting our exit code.
-			// Convey(fmt.Sprintf("Running outside of a role directory returns %d", util.NotARoleCode), func() {
-			// 	fullCmd := InitFullCmdForTest("/tmp")
-			// 	fullCmd.SetArgs([]string{})
-			// 	err := fullCmd.Execute()
-			// 	So(err, ShouldBeNil)
-			// 	So(exitCode, ShouldEqual, util.NotARoleCode)
-			// })
-		})
+		//fmt.Sprint(exitCode)
 	})
+
+	//Convey("Verify all exit code scenarios", t, func() {
+	Convey("Correct runs return 0", t, func(c C) {
+		fullCmd := InitFullCmdForTest(baseDir)
+		buf := new(bytes.Buffer)
+		fullCmd.SetOutput(buf)
+		fullCmd.SetArgs([]string{
+			fmt.Sprintf("--playbook=%s", "tests/playbook-simple.yml"),
+			fmt.Sprintf("--source=%s", artRepo),
+			fmt.Sprintf("--destination=%s", "/etc/ansible/roles/ansible-role-art-tester"),
+			"--quiet",
+		})
+		err := fullCmd.Execute()
+		c.So(err, ShouldBeNil)
+		c.So(exitCode, ShouldEqual, util.OKCode)
+	})
+
+	Convey(fmt.Sprintf("Syntax errors in playbook return %d", util.AnsibleSyntaxCode), t, func(c C) {
+		fullCmd := InitFullCmdForTest(baseDir)
+		buf := new(bytes.Buffer)
+		fullCmd.SetOutput(buf)
+		fullCmd.SetArgs([]string{
+			fmt.Sprintf("--playbook=%s", "tests/playbook-syntax-fail.yml"),
+			fmt.Sprintf("--source=%s", artRepo),
+			fmt.Sprintf("--destination=%s", "/etc/ansible/roles/ansible-role-art-tester"),
+			"--quiet",
+		})
+		err := fullCmd.Execute()
+		c.So(err, ShouldBeNil)
+		c.So(exitCode, ShouldEqual, util.AnsibleSyntaxCode)
+	})
+
+	Convey(fmt.Sprintf("Idempotency failures return %d", util.AnsibleIdempotenceCode), t, func(c C) {
+		fullCmd := InitFullCmdForTest(baseDir)
+		buf := new(bytes.Buffer)
+		fullCmd.SetOutput(buf)
+		fullCmd.SetArgs([]string{
+			fmt.Sprintf("--playbook=%s", "tests/playbook-idempotency-fail.yml"),
+			fmt.Sprintf("--source=%s", artRepo),
+			fmt.Sprintf("--destination=%s", "/etc/ansible/roles/ansible-role-art-tester"),
+			"--quiet",
+		})
+		err := fullCmd.Execute()
+		c.So(err, ShouldBeNil)
+		c.So(exitCode, ShouldEqual, util.AnsibleIdempotenceCode)
+	})
+
+	// Currently disabled. The PostRun hooks ends up overwriting our exit code.
+	// Convey(fmt.Sprintf("Running outside of a role directory returns %d", util.NotARoleCode), func(c C) {
+	// 	fullCmd := InitFullCmdForTest("/tmp")
+	// 	fullCmd.SetArgs([]string{})
+	// 	err := fullCmd.Execute()
+	// 	c.So(err, ShouldBeNil)
+	// 	c.So(exitCode, ShouldEqual, util.NotARoleCode)
+	// })
+	//})
 }

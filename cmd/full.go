@@ -69,7 +69,7 @@ required.
 
 			if !custom {
 				var e error
-				dist, e = util.GetDistribution(image, image, "/sbin/init", "/sys/fs/cgroup:/sys/fs/cgroup:ro", user, distro)
+				dist, e = util.GetDistribution(image, user, distro)
 				if e != nil && !quiet {
 					log.Fatalln("Incompatible distribution was inputted.")
 				}
