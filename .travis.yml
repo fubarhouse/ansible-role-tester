@@ -44,7 +44,6 @@ env:
 matrix:
   allow_failures:
     - env: distro=ubuntu1404
-    - env: distro=ubuntu1810
 
 before_install:
   # Install dependencies:
