@@ -74,15 +74,15 @@
   version = "v1.6.4"
 
 [[projects]]
-  digest = "1:bb495ec276ab82d3dd08504bbc0594a65de8c3b22c6f2aaa92d05b73fbf3a82e"
+  digest = "1:ef433ff3fe7a464ceb7c7d1654ac9c7ae8d379d0ed83a69a7d263e4cc78b1a5c"
   name = "github.com/spf13/afero"
   packages = [
     ".",
     "mem",
   ]
   pruneopts = "UT"
-  revision = "588a75ec4f32903aa5e39a2619ba6a4631e28424"
-  version = "v1.2.2"
+  revision = "5d9e780691031108454ca1486803a187e1ab02f1"
+  version = "v1.3.2"
 
 [[projects]]
   digest = "1:f6adcf4df6c030a53a14a8fdbb3fade7cac3d014ff78a4e0de500b4c0cf5154f"
