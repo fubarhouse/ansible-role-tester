@@ -394,6 +394,17 @@ var Ubuntu1904 = Distribution{
 	Ubuntu,
 }
 
+// Ubuntu2004 Distribution declaration
+var Ubuntu2004 = Distribution{
+	"",
+	"ubuntu2004",
+	true,
+	"fubarhouse/docker-ansible:focal",
+	"fubarhouse",
+	"ubuntu2004",
+	Ubuntu,
+}
+
 // JeffCentOS6 Distribution declaration
 var JeffCentOS6 = Distribution{
 	"",
@@ -535,6 +546,7 @@ var Distributions = []Distribution{
 	Ubuntu1804,
 	Ubuntu1810,
 	Ubuntu1904,
+	Ubuntu2004,
 	JeffCentOS6,
 	JeffCentOS7,
 	JeffUbuntu1204,
