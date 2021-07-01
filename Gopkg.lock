@@ -85,12 +85,12 @@
   version = "v1.2.2"
 
 [[projects]]
-  digest = "1:f6adcf4df6c030a53a14a8fdbb3fade7cac3d014ff78a4e0de500b4c0cf5154f"
+  digest = "1:a4355c8fd75d4279eec9f537ceacef7147bb4da19135891c70272c8d936f6ea9"
   name = "github.com/spf13/cobra"
   packages = ["."]
   pruneopts = "UT"
-  revision = "a684a6d7f5e37385d954dd3b5a14fc6912c6ab9d"
-  version = "v1.0.0"
+  revision = "07861c800d0779867f821501b892e635660847d2"
+  version = "v1.2.0"
 
 [[projects]]
   digest = "1:c1b1102241e7f645bc8e0c22ae352e8f0dc6484b6cb4d132fa9f24174e0119e2"
